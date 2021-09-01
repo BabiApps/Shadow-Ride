@@ -7,4 +7,4 @@ You can't look out the window, because you're burning hot.
 So, you're trying to figure out where you should sit for the most shade.
 
 # What does it do?
-This feature calculates where the shadow is on your bus ride and tells you where you should sit. 
+This feature calculates where the most shadow on your bus's rides and tells you where you should sit.
