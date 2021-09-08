@@ -12,5 +12,5 @@ function per2stops(startStop, endStop){
 
 
 
-    return {celius:"",side:""};
+    return {celius:a,side:"Left"};
 }

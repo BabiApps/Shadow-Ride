@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Theme Company</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+    .jumbotron {
+      background-color: #a6a838; /* Orange */
+      color: #ffffff;
+    }
+    </style>
+  </head>
+    <body>
+      <div class="jumbotron text-center">
+        <h1>Shadow-Ride</h1>
+        <p>We specialize in telling you where to sit</p>
+        
+        
+      </div>
+      <button id='b1' onclick="b1func()">click here</button>
+      <div id='here'></div>
+    
+
+
+      <script src="./fun.js"></script>
+      <script>
+        
+        function b1func(){
+          var result = '';
+          result = per2stops()['celius'];
+          $('#here').text(result);
+
+        };
+  
+      </script>
+    </body>
+</html>   
