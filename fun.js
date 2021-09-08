@@ -5,10 +5,12 @@ function per2stops(startStop, endStop){
     console.log('eldar hagever');
     console.log('lo nachon');
 
-    var a='whatsapp';
+    var a='lo_shave_whatsapp';
     if (a == "whatsapp")
         a='no problom';
     console.log(a);
+
+
 
     return {celius:"",side:""};
 }
