@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <script src="https://raw.githack.com/mourner/suncalc/master/suncalc.js"></script>
+  <script src="https://raw.githack.com/mourner/suncalc/master/suncalc.js"></script>*/
   <style>
     .jumbotron {
       background-color: #a6a838; /* Orange */
@@ -30,14 +30,14 @@
 
       <script src="./fun.js"></script>
       <script>
-        document.getElementById('try').innerHTML=SunCalc.getPosition(times.sunrise, 51.5, -0.1)['azimuth'];
+        //document.getElementById('try').innerHTML=SunCalc.getPosition(times.sunrise, 51.5, -0.1)['azimuth'];
         
-        function b1func(){
-          var result = '';
-          result = per2stops({x:31,y:21},{x:31,y:20})['side'];
-          $('#here').text(result);
-
-        };
+        
+        var result = '';
+        result = per2stops({x:31,y:21},{x:31,y:21})['side'];
+        $('#here').text(result);
+        //function b1func(){
+        //};
   
       </script>
     </body>

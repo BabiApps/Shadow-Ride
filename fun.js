@@ -2,41 +2,18 @@
 //מחזירה את ההפרש המעלות בין האוטובוס לשמש, ובאיזה צד השמש
 function per2stops(startStop, endStop){
     
-    //Find the m of the bus
-    var mBus=1;
+    //Find the celuis of the bus to Y-axis
     var cBus;
     xDiff = endStop.x - startStop.x; //.x is Longitude
     yDIff = endStop.y - startStop.y; //.y is Latitude
 
-    if (xDiff>0){
-        mBus=yDIff/xDiff;
-
-    } else if (xDiff<0){
-
-
+    if(yDIff==0&&xDiff==0){
+        //ERROR: Same location!!
     }
-    /*
-    If the longitude are the same (xDiff=0)
-    the cBus is according to yDiff (0 or 180)
-    */
-    else if (xDiff==0){ 
-        if (yDIff>0){
-            cBus=0;
-        } else if (yDIff<0){
-            cBus=180;
-        } else{ //yDiff ==0
-            //ERROR: Same location!! --------------------
-        }
-    }
-
-    //Find the celius of the bus (per X Line)
-    // --------TODO: Math.atan or Math.atan2
-    /*
-    cBus_x = Math.atan2(mBus) * 180 / Math.PI; // Math.atan2 return value in radians.
-    cBus = xAngle_to_yAngle(cBus_x);
-    */
-    cBus = Math.atan2(yDIff,xDiff) * 180 / Math.PI; // Math.atan2 return value in radians.
-    
+    // Math.atan2 return value in radians.
+    cBus = Math.atan2(yDIff,xDiff) * 180 / Math.PI;
+    // cBus has celius to X-axis, so we need to convert it.
+    cBus = xAngle_to_yAngle(cBus);
 
 
     var a='lo_shave_whatsapp';
@@ -48,12 +25,16 @@ function per2stops(startStop, endStop){
 }
 
 /*
-* Get the angle between bus and the X line
-* Return the angle between bus and the Y line
+* Get the angle (c) between bus and the X-axis
+* Return the angle (c) between bus and the Y-axis
 */
 function xAngle_to_yAngle(xAngle){
 
-    yAngle=xAngle-90; //TODO: check the convert --------------
-
+    if (xAngle=>180){
+        yAngle=-(xAngle-90);
+    }
+    else{
+        yAngle=90+(-xAngle);
+    }
     return yAngle;
 }
