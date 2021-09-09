@@ -15,8 +15,10 @@ function per2stops(startStop, endStop){
 
 
     }
-    //If the longitude are the same (xDiff=0)
-    //the cBus is according to yDiff (0 or 180)
+    /*
+    If the longitude are the same (xDiff=0)
+    the cBus is according to yDiff (0 or 180)
+    */
     else if (xDiff==0){ 
         if (yDIff>0){
             cBus=0;
@@ -42,7 +44,7 @@ function per2stops(startStop, endStop){
         a='no problom';
     console.log(a);
 
-    return {celius:a,side:"Left"};
+    return {celius:a,side:cBus};
 }
 
 /*
