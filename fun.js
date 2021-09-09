@@ -29,8 +29,12 @@ function per2stops(startStop, endStop){
 
     //Find the celius of the bus (per X Line)
     // --------TODO: Math.atan or Math.atan2
-    cBus_x = Math.atan(mBus) * 180 / Math.PI; // Math.atan return value in radians.
+    /*
+    cBus_x = Math.atan2(mBus) * 180 / Math.PI; // Math.atan2 return value in radians.
     cBus = xAngle_to_yAngle(cBus_x);
+    */
+    cBus = Math.atan2(yDIff,xDiff) * 180 / Math.PI; // Math.atan2 return value in radians.
+    
 
 
     var a='lo_shave_whatsapp';
