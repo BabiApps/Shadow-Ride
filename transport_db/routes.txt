@@ -1,0 +1,9 @@
+route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color
+VNYi,LAX FlyAway,LAX FlyAway-VN2LAX,Van Nuys FlyAway to LAX,,3,,0000FF,FFFF00
+VNYo,LAX FlyAway,LAX FlyAway-LAX2VN,FlyAway to Van Nuys,,3,,0000FF,FFFF00
+USTi,LAX FlyAway,LAX FlyAway-US2LAX,Union Station FlyAway to LAX,,3,,0000FF,FFFF00
+USTo,LAX FlyAway,LAX FlyAway-LAX2US,FlyAway to Union Station/Downtown,,3,,0000FF,FFFF00
+ESHTLi,LAX FlyAway,Lot E Shuttle,Shuttle E to Terminals,,3,,0000FF,FFFF00
+ESHTLo,LAX FlyAway,Lot E Shuttle,Shuttle E to Parking Lot E,,3,,0000FF,FFFF00
+GSHTLi,LAX FlyAway,Greenline Shuttle,Shuttle G to Terminals,,3,,0000FF,FFFF00
+GSHTLo,LAX FlyAway,Greenline Shuttle,Shuttle G to Metro Rail,,3,,0000FF,FFFF00
