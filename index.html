@@ -34,9 +34,11 @@
 
       <script src="./fun.js"></script>
       <script>
-        //document.getElementById('try').innerHTML=SunCalc.getPosition(times.sunrise, 51.5, -0.1)['azimuth'];
         
         
+        mishtane=SunCalc.getPosition(Date.now(), 32.2337,34.9732);
+        document.getElementById('try').innerHTML=mishtane['azimuth']* 180 / Math.PI + 180;
+
         var result = '';
         result = per2stops({x:31,y:21},{x:31,y:21})['side'];
         $('#here').text(result);
