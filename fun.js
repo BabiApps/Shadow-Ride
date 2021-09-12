@@ -1,11 +1,8 @@
 /*
 * Get: two stops (close to each other) on a bus line.
-* Return: the remainder between bus and sun, and on which side the sun.
-*
-* Future: receive time
+* Return: the angle (c) of the bus.
 */
-function per2stops(startStop, endStop){ 
-    
+function anglePer2stops(startStop, endStop){ 
     //Find the celuis of the bus to Y-axis
     var cBus;
     xDiff = endStop.x - startStop.x; //.x is Longitude
@@ -19,17 +16,9 @@ function per2stops(startStop, endStop){
     // cBus has celius to X-axis, so we need to convert it.
     cBus = xAngle_to_yAngle(cBus);
 
-
-    
-
-
-    //for checking...
-    var a='lo_shave_whatsapp';
-    if (a == "whatsapp")
-        a='no problom';
-    console.log(a);
-
-    return {celius:a,side:cBus};
+    //check if xDiff is nagtiv.
+    //check if XDiff is equale (yDiff is the angle)
+    return cBus;
 }
 
 

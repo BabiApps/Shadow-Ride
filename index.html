@@ -22,13 +22,18 @@
         
         
       </div>
-      <input type="text" id="input1" width="12px" value="31" name="x1"></input>
-      <input type="text" id="input2" width="12px" value="31" name="y1"></input>
-      <input type="text" id="input3" width="12px" value="32" name="x2"></input>
-      <input type="text" id="input4" width="12px" value="32" name="y2"></input>
+      <input type="text" id="x1" width="12px" value="31" name="x1"></input>
+      <input type="text" id="y1" width="12px" value="31" name="y1"></input>
+      <input type="text" id="x2" width="12px" value="32" name="x2"></input>
+      <input type="text" id="y2" width="12px" value="32" name="y2"></input>
       <button id='b1' onclick="b1func()">click here</button>
-      <div id='here'></div>
-      <div id='try'></div>
+      <div id='c_bus'></div>
+      <div id='c_sun'></div>
+      <div id='c_diff'></div>
+      <div>
+        <p id="koteret">כותרת</h1>
+        <p id="mispar">מספר</p>
+      </div>
     
 
 
@@ -36,14 +41,40 @@
       <script>
         
         
-        mishtane=SunCalc.getPosition(Date.now(), 32.2337,34.9732);
-        document.getElementById('try').innerHTML=mishtane['azimuth']* 180 / Math.PI + 180;
+        
 
-        var result = '';
-        result = per2stops({x:31,y:21},{x:31,y:21})['side'];
-        $('#here').text(result);
-        //function b1func(){
-        //};
+        function p2stops(startStop, endStop){
+          date = Date.now();
+
+          cBus = anglePer2stops(startStop, endStop);
+          document.getElementById('c_bus').innerHTML=cBus;
+
+          mishtane=SunCalc.getPosition(Date.now(), startStop.x, startStop.y);
+          cSun = mishtane['azimuth']* 180 / Math.PI + 180;
+          document.getElementById('c_sun').innerHTML=cSun;
+
+          cDiff=cSun-cBus;
+          document.getElementById('c_diff').innerHTML=cDiff;
+
+
+          document.getElementById('koteret').innerHTML="הצליח";
+          document.getElementById('mispar').innerHTML="לשנות";
+
+        }
+
+        
+        
+        //$('#here').text(result);
+
+        function b1func(){
+          x1 = document.getElementById('x1').value;
+          y1 = document.getElementById('y1').value;
+          x2 = document.getElementById('x2').value;
+          y2 = document.getElementById('y2').value;
+
+
+          p2stops({x: x1,y: y1},{x: x2,y: y2});
+        };
   
       </script>
     </body>
