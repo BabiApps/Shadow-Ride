@@ -56,9 +56,11 @@
           cDiff=cSun-cBus;
           document.getElementById('c_diff').innerHTML=cDiff;
 
+          
 
-          document.getElementById('koteret').innerHTML="הצליח";
-          document.getElementById('mispar').innerHTML="לשנות";
+
+          document.getElementById('koteret').innerHTML=SunCalc.getTimes(/*Date*/ date, /*Number*/ 31, /*Number*/ 32, /*Number (default=0)*/ 1)["sunrise"];
+          document.getElementById('mispar').innerHTML=SunCalc.getTimes(/*Date*/ date, /*Number*/ 31, /*Number*/ 32, /*Number (default=0)*/ 1)["sunset"];
 
         }
 
