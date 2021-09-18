@@ -32,6 +32,7 @@
       <div id='c_diff'></div>
       <div>
         <p id="koteret">כותרת</h1>
+        <p id="koteret1">1כותרת</h1>
         <p id="mispar">מספר</p>
       </div>
     
@@ -58,7 +59,7 @@
 
           
 
-
+          document.getElementById('koteret1').innerHTML=date.toString();
           document.getElementById('koteret').innerHTML=SunCalc.getTimes(/*Date*/ date, /*Number*/ 31, /*Number*/ 32, /*Number (default=0)*/ 1)["sunrise"];
           document.getElementById('mispar').innerHTML=SunCalc.getTimes(/*Date*/ date, /*Number*/ 31, /*Number*/ 32, /*Number (default=0)*/ 1)["sunset"];
 
