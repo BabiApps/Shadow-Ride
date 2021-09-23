@@ -197,6 +197,7 @@
       </div>
       <input type="text" placeholder="lat" id="lat" width="12px" value="31.878745" name="lat"></input>
       <input type="text" placeholder="lon" id="lon" width="12px" value="35.246465" name="lon"></input>
+      <input type="text" placeholder="radius" id="radius" width="12px" value="300" name="radius"></input>
 
       <button id='b1' onclick="apirequest()">click here</button>
       
@@ -208,12 +209,23 @@
 
       <script src="./fun.js"></script>
       <script>
+        function routes(data)
+        {
+          route_data = '';
+          for(i=0; i < data['route_stops'].length; i++)
+          {
+            route_data+=`<li>${data["route_stops"][i]["route"]["route_short_name"]}</li>\n`;
+          } 
+          //route_data += '</ul>'
+          return route_data;
+        }
         
         function apirequest()
         {
           var lat = document.getElementById('lat').value;
           var lon = document.getElementById('lon').value;
-          var url='https://transit.land/api/v2/rest/stops?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&feed_onestop_id=f-sv-גלים~מועצהאזוריתגולן~אפיקים~דןצפון~דןבדרום~דןבארשבע~ירושלים&lat='+lat+'&lon='+lon+'&radius=300&format=geojson';
+          var radius = document.getElementById('radius').value;
+          var url='https://transit.land/api/v2/rest/stops?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&feed_onestop_id=f-sv-גלים~מועצהאזוריתגולן~אפיקים~דןצפון~דןבדרום~דןבארשבע~ירושלים&lat='+lat+'&lon='+lon+'&radius='+radius+'&format=geojson';
           
           // Instantiate an new XHR Object
           const xhr = new XMLHttpRequest();
@@ -240,14 +252,12 @@
                               <div class="panel panel-default">
                                 <div class="panel-heading">
                                   <h4 class="panel-title">
-                                    <a data-toggle="collapse" href="#collapse${n+1}">${n+1} ${data['stop_name']} ${data['stop_code']}</a>
+                                    <a data-toggle="collapse" href="#collapse${n+1}"><b>${n+1}.</b> ${data['stop_name']} ${data['stop_code']}</a>
                                   </h4>
                                 </div>
                                   <div id="collapse${n+1}" class="panel-collapse collapse">
                                     <ul class="list-group">
-                                      ${function(){route_data = ''; for(i=0; i < data['route_stops'].length; i++){
-                                        
-                                      } return route_data;}}
+                                      ${ routes(data)}
                                     </ul>  
                                   </div>
                               </div>
