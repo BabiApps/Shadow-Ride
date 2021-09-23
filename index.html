@@ -9,11 +9,184 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <script src="./suncalc.js"></script>
   <style>
-    .jumbotron {
-      background-color: #a6a838; /* Orange */
-      color: #ffffff;
+  body {
+    font: 400 15px Lato, sans-serif;
+    line-height: 1.8;
+    color: #818181;
+  }
+  h2 {
+    font-size: 24px;
+    text-transform: uppercase;
+    color: #303030;
+    font-weight: 600;
+    margin-bottom: 30px;
+  }
+  h4 {
+    font-size: 19px;
+    line-height: 1.375em;
+    color: #303030;
+    font-weight: 400;
+    margin-bottom: 30px;
+  }  
+  .jumbotron {
+    background-color: #33375e;
+    color: #fff;
+    padding: 100px 25px;
+    font-family: Montserrat, sans-serif;
+  }
+  .container-fluid {
+    padding: 60px 50px;
+  } 
+  .bg-grey {
+    background-color: #f6f6f6;
+  }
+  .logo-small {
+    color: #33375e;
+    font-size: 50px;
+  }
+  .logo {
+    color: #33375e;
+    font-size: 200px;
+  }
+  .thumbnail {
+    padding: 0 0 15px 0;
+    border: none;
+    border-radius: 0;
+  }
+  .thumbnail img {
+    width: 100%;
+    height: 100%;
+    margin-bottom: 10px;
+  }
+  .carousel-control.right, .carousel-control.left {
+    background-image: none;
+    color: #33375e;
+  }
+  .carousel-indicators li {
+    border-color: #33375e;
+  }
+  .carousel-indicators li.active {
+    background-color: #33375e;
+  }
+  .item h4 {
+    font-size: 19px;
+    line-height: 1.375em;
+    font-weight: 400;
+    font-style: italic;
+    margin: 70px 0;
+  }
+  .item span {
+    font-style: normal;
+  }
+  .panel {
+    border: 1px solid #33375e; 
+    border-radius:0 !important;
+    transition: box-shadow 0.5s;
+  }
+  .panel:hover {
+    box-shadow: 5px 0px 40px rgba(0,0,0, .2);
+  }
+  .panel-footer .btn:hover {
+    border: 1px solid #33375e;
+    background-color: #fff !important;
+    color: #33375e;
+  }
+  .panel-heading {
+    color: #fff !important;
+    background-color: #33375e !important;
+    padding: 25px;
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+  }
+  .panel-footer {
+    background-color: white !important;
+  }
+  .panel-footer h3 {
+    font-size: 32px;
+  }
+  .panel-footer h4 {
+    color: #aaa;
+    font-size: 14px;
+  }
+  .panel-footer .btn {
+    margin: 15px 0;
+    background-color: #33375e;
+    color: #fff;
+  }
+  .navbar {
+    margin-bottom: 0;
+    background-color: #33375e;
+    z-index: 9999;
+    border: 0;
+    font-size: 12px !important;
+    line-height: 1.42857143 !important;
+    letter-spacing: 4px;
+    border-radius: 0;
+    font-family: Montserrat, sans-serif;
+  }
+  .navbar li a, .navbar .navbar-brand {
+    color: #fff !important;
+  }
+  .navbar-nav li a:hover, .navbar-nav li.active a {
+    color: #33375e !important;
+    background-color: #fff !important;
+  }
+  .navbar-default .navbar-toggle {
+    border-color: transparent;
+    color: #fff !important;
+  }
+  footer .glyphicon {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #33375e;
+  }
+  .slideanim {visibility:hidden;}
+  .slide {
+    animation-name: slide;
+    -webkit-animation-name: slide;
+    animation-duration: 1s;
+    -webkit-animation-duration: 1s;
+    visibility: visible;
+  }
+  @keyframes slide {
+    0% {
+      opacity: 0;
+      transform: translateY(70%);
+    } 
+    100% {
+      opacity: 1;
+      transform: translateY(0%);
     }
-    </style>
+  }
+  @-webkit-keyframes slide {
+    0% {
+      opacity: 0;
+      -webkit-transform: translateY(70%);
+    } 
+    100% {
+      opacity: 1;
+      -webkit-transform: translateY(0%);
+    }
+  }
+  @media screen and (max-width: 768px) {
+    .col-sm-4 {
+      text-align: center;
+      margin: 25px 0;
+    }
+    .btn-lg {
+      width: 100%;
+      margin-bottom: 35px;
+    }
+  }
+  @media screen and (max-width: 480px) {
+    .logo {
+      font-size: 150px;
+    }
+  }
+  </style>  
   </head>
     <body>
       <div class="jumbotron text-center">
@@ -22,26 +195,75 @@
         
         
       </div>
-      <input type="text" id="x1" width="12px" value="31" name="x1"></input>
-      <input type="text" id="y1" width="12px" value="31" name="y1"></input>
-      <input type="text" id="x2" width="12px" value="32" name="x2"></input>
-      <input type="text" id="y2" width="12px" value="32" name="y2"></input>
-      <button id='b1' onclick="b1func()">click here</button>
-      <div id='c_bus'></div>
-      <div id='c_sun'></div>
-      <div id='c_diff'></div>
-      <div>
-        <p id="koteret">כותרת</h1>
-        <p id="koteret1">1כותרת</h1>
-        <p id="mispar">מספר</p>
-      </div>
+      <input type="text" placeholder="lat" id="lat" width="12px" value="31.878745" name="lat"></input>
+      <input type="text" placeholder="lon" id="lon" width="12px" value="35.246465" name="lon"></input>
+
+      <button id='b1' onclick="apirequest()">click here</button>
+      
+      <!-- Collaps -->
+      <div id='list'></div>
+
     
 
 
       <script src="./fun.js"></script>
       <script>
         
-        
+        function apirequest()
+        {
+          var lat = document.getElementById('lat').value;
+          var lon = document.getElementById('lon').value;
+          var url='https://transit.land/api/v2/rest/stops?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&feed_onestop_id=f-sv-גלים~מועצהאזוריתגולן~אפיקים~דןצפון~דןבדרום~דןבארשבע~ירושלים&lat='+lat+'&lon='+lon+'&radius=300&format=geojson';
+          
+          // Instantiate an new XHR Object
+          const xhr = new XMLHttpRequest();
+
+          // Open an obejct (GET/POST, PATH,
+          // ASYN-TRUE/FALSE)
+          xhr.open("GET", url, true);
+
+          // When response is ready
+          xhr.onload = function () {
+              if (this.status === 200) {
+
+                  // Changing string data into JSON Object
+                  obj = JSON.parse(this.responseText);
+
+                  // Getting the ul element
+                  let list = document.getElementById("list");
+                  str = ""
+                  var n = 0;
+                  while(n<obj['features'].length)
+                  {
+                    data = obj['features'][n]['properties'];
+                    str += `<div class="panel-group">
+                              <div class="panel panel-default">
+                                <div class="panel-heading">
+                                  <h4 class="panel-title">
+                                    <a data-toggle="collapse" href="#collapse${n+1}">${n+1} ${data['stop_name']} ${data['stop_code']}</a>
+                                  </h4>
+                                </div>
+                                  <div id="collapse${n+1}" class="panel-collapse collapse">
+                                    <ul class="list-group">
+                                      ${function(){route_data = ''; for(i=0; i < data['route_stops'].length; i++){
+                                        
+                                      } return route_data;}}
+                                    </ul>  
+                                  </div>
+                              </div>
+                            </div>`; 
+                    n++;
+                  }
+                  list.innerHTML = str;
+              }
+              else {
+                  console.log("File not found");
+              }
+          }
+
+          // At last send the request
+          xhr.send();
+        };
         
 
         function p2stops(startStop, endStop){

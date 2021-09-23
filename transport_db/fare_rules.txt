@@ -1,9 +1,0 @@
-fare_id,route_id,origin_id,destination_id,contains_id
-VNYf,VNYi,,,
-VNYf,VNYo,,,
-USTf,USTi,,,
-USTf,USTo,,,
-ESHTLf,ESHTLi,,,
-ESHTLf,ESHTLo,,,
-GSHTLf,GSHTLi,,,
-GSHTLf,GSHTLo,,,
