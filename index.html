@@ -214,9 +214,8 @@
           route_data = '';
           for(i=0; i < data['route_stops'].length; i++)
           {
-            route_data+=`<li>${data["route_stops"][i]["route"]["route_short_name"]}</li>\n`;
+            route_data+=`<li><b>${data["route_stops"][i]["route"]["route_short_name"]}:</b> ${data["route_stops"][i]["route"]["route_long_name"]}</li>\n`;
           } 
-          //route_data += '</ul>'
           return route_data;
         }
         
