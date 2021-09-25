@@ -212,7 +212,16 @@
         <br>
       <button id='b1' class="btn-primary" onclick="apirequest()">click here</button>
       </div>
-      <br><br>
+      <br>
+      <div>
+        <p>sunrise</p><p id="sunrise"></p>
+        <p>sunset</p><p id="sunset"></p>
+        <p>date now</p><p id="dateUTC"></p>
+        <p>angle of bus</p><p id="c_bus"></p>
+        <p>angle of sun Azimuth</p><p id="c_sun"></p>
+        <p>angle of sun Altitude</p><p id="c_sun_alt"></p>
+      </div>
+      <br>
       <!-- Collaps -->
       <h1 id=collapse_head class=" text-center" style="color: black;"></h1>
       <div id='list' class="container" style="width:530px"></div>
@@ -239,6 +248,11 @@
           var radius = document.getElementById('radius').value * 10;
           var url='https://transit.land/api/v2/rest/stops?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&feed_onestop_id=f-sv-גלים~מועצהאזוריתגולן~אפיקים~דןצפון~דןבדרום~דןבארשבע~ירושלים&lat='+lat+'&lon='+lon+'&radius='+radius+'&format=geojson';
           
+          //for testing....
+          lat2=parseFloat(lat) + 0.0022
+          lon2=parseFloat(lon) + 0.0022
+          p2stops({"x":lat,"y":lon},{"x":lat2,"y":lon2},Date.now())
+
           // Instantiate an new XHR Object
           const xhr = new XMLHttpRequest();
 
@@ -293,9 +307,11 @@
           // At last send the request
           xhr.send();
         };
+
+        
         
 
-        function p2stops(startStop, endStop){
+        function p2stops(startStop, endStop, date){
           date = Date.now();
 
           cBus = anglePer2stops(startStop, endStop);
@@ -305,14 +321,20 @@
           cSun = mishtane['azimuth']* 180 / Math.PI + 180;
           document.getElementById('c_sun').innerHTML=cSun;
 
+          mishtane2=SunCalc.getPosition(Date.now(), startStop.x, startStop.y);
+          cSun_alt = mishtane2['altitude']* 180 / Math.PI + 180;
+          document.getElementById('c_sun_alt').innerHTML=cSun_alt;
+
           cDiff=cSun-cBus;
-          document.getElementById('c_diff').innerHTML=cDiff;
+          //document.getElementById('c_diff').innerHTML=cDiff;
 
-          
+          const tryDate = new Date()
 
-          document.getElementById('koteret1').innerHTML=date.toString();
-          document.getElementById('koteret').innerHTML=SunCalc.getTimes(/*Date*/ date, /*Number*/ 31, /*Number*/ 32, /*Number (default=0)*/ 1)["sunrise"];
-          document.getElementById('mispar').innerHTML=SunCalc.getTimes(/*Date*/ date, /*Number*/ 31, /*Number*/ 32, /*Number (default=0)*/ 1)["sunset"];
+          document.getElementById('dateUTC').innerHTML=tryDate.getHours()
+
+          //document.getElementById('koteret1').innerHTML=date.toString();
+          document.getElementById('sunrise').innerHTML=SunCalc.getTimes(/*Date*/ date, /*Number*/ startStop.x, /*Number*/ startStop.y, /*Number (default=0)*/ 1)["sunrise"];
+          document.getElementById('sunset').innerHTML=SunCalc.getTimes(/*Date*/ date, /*Number*/ startStop.x, /*Number*/ startStop.y, /*Number (default=0)*/ 1)["sunset"];
 
         }
 
