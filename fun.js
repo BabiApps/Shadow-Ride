@@ -1,4 +1,78 @@
 /*
+* Get: list of stops in route.
+* Do: calculate per 2 stop.
+* Return: final right/left.
+*/
+
+function persentPerRoute(stopslist){
+    var cBus,persent,persentSide, sum_cBus=0;
+    var sumR_cBus=0,sumL_cBus=0;
+    for( i=0 ; i<stopslist.lengh - 1 ; i++){
+        cBus = anglePer2stops(stopslist[i],stopslist[i+1]);
+        cBus_getSide = get_R_L_by_cBus(cBus);
+        
+        if (cBus_getSide=="r"){
+            sumR_cBus++;
+            sum_cBus++;
+        }
+        if (cBus_getSide=="l"){
+            sumL_cBus++;
+            sum_cBus--;
+        }
+    }
+
+    
+    if(sum_cBus>0){
+        persent = sumR_cBus/stopslist.lengh;
+        persentSide ="r";
+    }
+    else{
+        persent = sumL_cBus/stopslist.lengh;
+        persentSide ="l";
+    } 
+
+    return {persent,persentSide};
+
+}
+
+function get_R_L_by_cBus(cBus){
+    var side;
+
+    //reset to possitive number
+    if (cBus<0){
+        cBus+=360;
+    }
+
+    // in right side
+    if (cBus<180){
+
+        // diff littel then 10, will not count
+        if(Math.abs(cBus-180)<10){
+            side=null;
+        } 
+        else {
+            side = "r";
+        }
+    }
+    // in left side
+    else {
+
+        // diff littel then 10, will not count
+        cBus-=180; // for abs value
+        if(Math.abs(cBus-180)<10){
+            side=null;
+        } 
+        else {
+            side = "l";
+        }
+    }
+
+    return side;
+}
+
+
+
+/*
 * Get: two stops (close to each other) on a bus line.
 * Return: the angle (c) of the bus.
 */
