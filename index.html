@@ -382,7 +382,7 @@
 
           const tryDate = new Date()
 
-          document.getElementById('dateUTC').innerHTML=tryDate.getHours()
+          document.getElementById('dateUTC').innerHTML=tryDate.getHours()+":"+tryDate.getMinutes()+":"+tryDate.getSeconds()
 
           //document.getElementById('koteret1').innerHTML=date.toString();
           document.getElementById('sunrise').innerHTML=SunCalc.getTimes(/*Date*/ date, /*Number*/ startStop.x, /*Number*/ startStop.y, /*Number (default=0)*/ 1)["sunrise"];
