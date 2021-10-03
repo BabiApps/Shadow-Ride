@@ -223,7 +223,7 @@
             <option value="audi">Audi</option>
           
         </select>
-        <label id="vvrs">Choose </label>
+        
         
 
           <!-- Collaps -->
@@ -263,20 +263,18 @@
 
         function forTesting(){
           var val = document.getElementById('stops').value;
+          document.getElementById('vvrs').innerHTML=val;
           var x = `<label for="routes">Choose a Route:</label>
-                      <select name="routes" id="routes"">`
-                        +
-                          `<option value="volvo">Volvo</option>
-                          <option value="saab">Saab</option>
-                          <option value="mercedes">Mercedes</option>
-                          <option value="audi">Audi</option>`
-                        +
-                      `</select>
-                      <label id="vvrs">Choose </label>`
+                      <select name="routes" id="routes"">`;
+                          //<option value="volvo">Volvo</option>                
+          var y = `</select>`;
           var n = 0;
-          while (n<dataFile.length){
-            
+          while (n<dataFile[val].length)
+          {
+            x+=`<option value="volvo">${dataFile[val][n]["route_short_name"]}</option>`;
+            n++
           }
+          x+=y;
 
           document.getElementById('listForTest').innerHTML=x;
         }
@@ -341,7 +339,7 @@
 
                     n++;
                   }
-                  str+=`</select>`
+                  str+=`</select><label id="vvrs"> ChangeMe </label>`
 
 
                   if(str != ""){
