@@ -213,32 +213,68 @@
       <button id='b1' class="btn-primary" onclick="apirequest()">click here</button>
       </div>
       <br>
+
+      
+        <label for="cars">Choose a Stop:</label>
+        <select name="cars" id="cars" onchange="forTesting()">
+            <option value="volvo">Volvo</option>
+            <option value="saab">Saab</option>
+            <option value="mercedes">Mercedes</option>
+            <option value="audi">Audi</option>
+          
+        </select>
+        <label id="vvrs">Choose </label>
+        
+
+
       <div>
-        <p>sunrise</p><p id="sunrise"></p>
-        <p>sunset</p><p id="sunset"></p>
-        <p>date now</p><p id="dateUTC"></p>
-        <p>angle of bus</p><p id="c_bus"></p>
-        <p>angle of sun Azimuth</p><p id="c_sun"></p>
-        <p>angle of sun Altitude</p><p id="c_sun_alt"></p>
+        <label>sunrise</label><p id="sunrise"></p>
+        <label>sunset</label><p id="sunset"></p>
+        <label>date now</label><p id="dateUTC"></p>
+        <label>angle of bus</label><p id="c_bus"></p>
+        <label>angle of sun Azimuth</label><p id="c_sun"></p>
+        <label>angle of sun Altitude</label><p id="c_sun_alt"></p>
       </div>
       <br>
       <!-- Collaps -->
       <h1 id=collapse_head class=" text-center" style="color: black;"></h1>
       <div id='list' class="container" style="width:530px"></div>
-
+      <div id='listForTest' class="container" style="width:530px"></div>
     
 
 
       <script src="./fun.js"></script>
       <script>
+        var dataFile = {};
         function routes(data)
         {
-          route_data = '';
+          //route_data = '';
+          var routeList = [];
           for(i=0; i < data['route_stops'].length; i++)
           {
-            route_data+=`<li><b>${data["route_stops"][i]["route"]["route_short_name"]}:</b> ${data["route_stops"][i]["route"]["route_long_name"]}</li>\n`;
+            routeList.push([data["route_stops"][i]["route"]["id"]],[data["route_stops"][i]["route"]["route_short_name"]],data["route_stops"][i]["route"]["route_long_name"]);
+
+            //route_data+=`<li><b>${data["route_stops"][i]["route"]["route_short_name"]}:</b> ${data["route_stops"][i]["route"]["route_long_name"]}</li>\n`;
           } 
-          return route_data;
+          return routeList;
+        }
+
+        function forTesting(){
+          var x = `<label for="cars">Choose a Stop:</label>
+        <select name="cars" id="cars" onchange="forTesting()">
+            <option value="volvo">Volvo</option>
+            <option value="saab">Saab</option>
+            <option value="mercedes">Mercedes</option>
+            <option value="audi">Audi</option>
+          
+        </select>
+        <label id="vvrs">Choose </label>`
+          var n = 0;
+          while (n<dataFile.length){
+            
+          }
+
+          document.getElementById('listForTest').innerHTML=x;
         }
         
         function apirequest()
@@ -269,11 +305,18 @@
 
                   // Getting the ul element
                   let list = document.getElementById("list");
-                  str = ""
+                  str = `<label for="cars">Choose a Stop:</label>
+                          <select name="cars" id="cars" onchange="forTesting()">`;
+                             
+                          
                   var n = 0;
                   while(n<obj['features'].length)
                   {
                     data = obj['features'][n]['properties'];
+
+                    str += `<option value="stop_${n+1}">${data['stop_name']} ${data['stop_code']}</option>`;
+                    dataFile[n+1]=routes(data);
+                    /*
                     str += `<div class="panel-group">
                               <div class="panel panel-default">
                                 <div class="panel-heading">
@@ -288,8 +331,14 @@
                                   </div>
                               </div>
                             </div>`; 
+                    */
+
+
                     n++;
                   }
+                  str+=`</select>`
+
+
                   if(str != ""){
                     document.getElementById('collapse_head').innerHTML = 'Stations:';
                     list.innerHTML = str;
