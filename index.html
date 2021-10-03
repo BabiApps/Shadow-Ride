@@ -328,8 +328,8 @@
 
 
     function makeStopsInRoute() {
-
-      var idOfRoute = '11827762';
+    
+      var idOfRoute =  document.getElementById('routes').value;
       var linkRoute = `https://transit.land/api/v2/rest/routes/${idOfRoute}?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX`;
 
       // Instantiate an new XHR Object
@@ -354,6 +354,7 @@
           var n = 0;
           while (n < stopsData.length) {
             x+=`<option value="${stopsData[n]["stop"]["id"]}">${stopsData[n]["stop"]["stop_name"]}</option>`;
+            n++;
           }
           x += `</select>`;
         
