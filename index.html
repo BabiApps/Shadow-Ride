@@ -226,6 +226,11 @@
         <label id="vvrs">Choose </label>
         
 
+          <!-- Collaps -->
+      <h1 id=collapse_head class=" text-center" style="color: black;"></h1>
+      <div id='list' class="container" style="width:530px"></div>
+      <div id='listForTest' class="container" style="width:530px"></div>
+
 
       <div>
         <label>sunrise</label><p id="sunrise"></p>
@@ -236,23 +241,20 @@
         <label>angle of sun Altitude</label><p id="c_sun_alt"></p>
       </div>
       <br>
-      <!-- Collaps -->
-      <h1 id=collapse_head class=" text-center" style="color: black;"></h1>
-      <div id='list' class="container" style="width:530px"></div>
-      <div id='listForTest' class="container" style="width:530px"></div>
+      
     
 
 
       <script src="./fun.js"></script>
       <script>
-        var dataFile = {};
+        var dataFile = [];
         function routes(data)
         {
           //route_data = '';
           var routeList = [];
           for(i=0; i < data['route_stops'].length; i++)
           {
-            routeList.push([data["route_stops"][i]["route"]["id"]],[data["route_stops"][i]["route"]["route_short_name"]],data["route_stops"][i]["route"]["route_long_name"]);
+            routeList.push(data["route_stops"][i]["route"]);//{'short':[data["route_stops"][i]["route"]["route_short_name"]],'long':data["route_stops"][i]["route"]["route_long_name"]};
 
             //route_data+=`<li><b>${data["route_stops"][i]["route"]["route_short_name"]}:</b> ${data["route_stops"][i]["route"]["route_long_name"]}</li>\n`;
           } 
@@ -260,15 +262,17 @@
         }
 
         function forTesting(){
-          var x = `<label for="cars">Choose a Stop:</label>
-        <select name="cars" id="cars" onchange="forTesting()">
-            <option value="volvo">Volvo</option>
-            <option value="saab">Saab</option>
-            <option value="mercedes">Mercedes</option>
-            <option value="audi">Audi</option>
-          
-        </select>
-        <label id="vvrs">Choose </label>`
+          var val = document.getElementById('stops').value;
+          var x = `<label for="routes">Choose a Route:</label>
+                      <select name="routes" id="routes"">`
+                        +
+                          `<option value="volvo">Volvo</option>
+                          <option value="saab">Saab</option>
+                          <option value="mercedes">Mercedes</option>
+                          <option value="audi">Audi</option>`
+                        +
+                      `</select>
+                      <label id="vvrs">Choose </label>`
           var n = 0;
           while (n<dataFile.length){
             
@@ -305,8 +309,8 @@
 
                   // Getting the ul element
                   let list = document.getElementById("list");
-                  str = `<label for="cars">Choose a Stop:</label>
-                          <select name="cars" id="cars" onchange="forTesting()">`;
+                  str = `<label for="stops">Choose a Stop:</label>
+                          <select name="stops" id="stops" onchange="forTesting()">`;
                              
                           
                   var n = 0;
@@ -314,8 +318,9 @@
                   {
                     data = obj['features'][n]['properties'];
 
-                    str += `<option value="stop_${n+1}">${data['stop_name']} ${data['stop_code']}</option>`;
-                    dataFile[n+1]=routes(data);
+                    str += `<option value="${n+1}">${data['stop_name']} ${data['stop_code']}</option>`;
+                    dataFile[n+1]=routes(data); //n+1 is the kay, value is the return array
+
                     /*
                     str += `<div class="panel-group">
                               <div class="panel panel-default">
