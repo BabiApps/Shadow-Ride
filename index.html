@@ -330,7 +330,7 @@
     function makeStopsInRoute() {
     
       var idOfRoute =  document.getElementById('routes').value;
-      var linkRoute = `https://transit.land/api/v2/rest/routes/${idOfRoute}?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX`;
+      var linkRoute = `https://transit.land/api/v2/rest/routes/${idOfRoute}?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&format=geojson`;
 
       // Instantiate an new XHR Object
       const xhr = new XMLHttpRequest();
@@ -345,7 +345,7 @@
 
           // Changing string data into JSON Object
           obj = JSON.parse(this.responseText);
-          stopsData = obj["routes"][0]["route_stops"];
+          stopsData = obj["features"][0]["properties"]["route_stops"];
 
           var x = `<label for="endstops">Choose a End Stop:</label>
                       <select name="eStop" id="eStop">`;
