@@ -7,8 +7,9 @@
 function persentPerRoute(stopslist){
     var cBus,persent,persentSide, sum_cBus=0;
     var sumR_cBus=0,sumL_cBus=0;
-    for( i=0 ; i<stopslist.lengh - 1 ; i++){
+    for( i=0 ; i<stopslist.length - 1 ; i++){
         cBus = anglePer2stops(stopslist[i],stopslist[i+1]);
+        //miss suncalc
         cBus_getSide = get_R_L_by_cBus(cBus);
         
         if (cBus_getSide=="r"){
@@ -23,15 +24,15 @@ function persentPerRoute(stopslist){
 
     
     if(sum_cBus>0){
-        persent = sumR_cBus/stopslist.lengh;
-        persentSide ="r";
+        persent = sumR_cBus/stopslist.length;
+        persentSide ="Right";
     }
     else{
-        persent = sumL_cBus/stopslist.lengh;
-        persentSide ="l";
+        persent = sumL_cBus/stopslist.length;
+        persentSide ="Left";
     } 
 
-    return {persent,persentSide};
+    return {'persent':persent,'persentSide':persentSide};
 
 }
 
@@ -77,12 +78,17 @@ function get_R_L_by_cBus(cBus){
 * Return: the angle (c) of the bus.
 */
 function anglePer2stops(startStop, endStop){ 
+
+    startStop = startStop["stop"]["geometry"]["coordinates"];
+    endStop = endStop["stop"]["geometry"]["coordinates"];
+
     //Find the celuis of the bus to Y-axis
     var cBus;
-    xDiff = endStop.x - startStop.x; //.x is Longitude
-    yDIff = endStop.y - startStop.y; //.y is Latitude
+    xDiff = endStop[0] - startStop[0]; //.x is Longitude
+    yDIff = endStop[1] - startStop[1]; //.y is Latitude
 
     if(yDIff==0&&xDiff==0){
+        alert('same location!')
         //ERROR: Same location!! TODO:------------
     }
     // Math.atan2 return value in radians.
@@ -102,6 +108,7 @@ function anglePer2stops(startStop, endStop){
 * Return the angle (c) between bus and the Y-axis
 */
 function xAngle_to_yAngle(xAngle){
+    var yAngle=0;
     if (xAngle=>180)
     { yAngle=-(xAngle-90); }
     else
