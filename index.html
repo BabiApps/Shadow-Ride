@@ -233,8 +233,9 @@
 
 <body>
   <div class="jumbotron text-center">
-    <h1>Shadow-Ride</h1>
-    <p>We specialize in telling you where to sit</p>
+    <img src="shadowRidePic.jpg" alt="shadowRidePic" height="350" width="750">
+    <!--h1>Shadow-Ride</h1>
+    <p>We specialize in telling you where to sit</p-->
   </div>
 
   <div class='container text-center'>
@@ -302,19 +303,31 @@
     //globle varible
     var dataFile = [];
     var stopsData = [];
+    var rootAllFirstStopsID=[];
 
     function calculatePerFullRoute(){
 
-      var cBus,diffC,persent,persentSide, sum_cBus=0;
-      var sumR_cBus=0,sumL_cBus=0;
+      //find the first and last stop (to remove all stop out-line)
+      var firstStopID ,lastStopID;
+
+      tempValue1 = document.getElementById('stops').value;
+      firstStopID = rootAllFirstStopsID[tempValue1];
+      console.log('First stop id - '+firstStopID);
+
+      lastStopID = document.getElementById('eStop').value;
+      console.log('Last stop id - '+lastStopID);
       
+
+      var cBus,diffC,persent,persentSide, sum_cBus=0;
+      var sumR_cBus=0,sumL_cBus=0,sumNull=0;
+      
+      roadBetweenStops = stopsData.length - 1;
       for( i=0 ; i<stopsData.length - 1 ; i++){
           cBus = anglePer2stops(stopsData[i],stopsData[i+1]);
-          console.log("for stop "+i+", cBus is " + cBus);
+          
 
           suncalcVar = SunCalc.getPosition(Date.now(), stopsData[i]["stop"]["geometry"]["coordinates"][0], stopsData[i]["stop"]["geometry"]["coordinates"][1]);
           cSun = suncalcVar['azimuth'] * 180 / Math.PI + 180;
-          console.log("for stop "+i+", cSun is " + cSun);
 
           diffC = cSun - cBus;
           cBus_getSide = get_R_L_by_cBus(diffC);
@@ -323,27 +336,30 @@
               sumR_cBus++;
               sum_cBus++;
           }
-          if (cBus_getSide=="l"){
+          else if (cBus_getSide=="l"){
               sumL_cBus++;
               sum_cBus--;
+          } 
+          else{
+            sumNull++;
           }
-          console.log("for stop "+i+", get side " + cBus_getSide);
-          console.log("------");
+          console.log("For stop "+i+", cSun is " + cSun +", and cBus is " + cBus +", getSide - " + cBus_getSide);
       }
+      console.log('Sum R: '+sumR_cBus+', Sum L: '+sumL_cBus+', Undefined: '+sumNull);
 
       
       if(sum_cBus>0){
-          persent = sumR_cBus/stopsData.length;
+          persent = sumR_cBus/roadBetweenStops;
           persentSide ="Right";
       }
       else{
-          persent = sumL_cBus/stopsData.length;
+          persent = sumL_cBus/roadBetweenStops;
           persentSide ="Left";
       } 
 
       x = {'persent':persent,'persentSide':persentSide};
       
-      document.getElementById('showAnswer').innerHTML = `<p>${x["persent"]} Persent, To Side - ${x["persentSide"]}</p>`;
+      document.getElementById('showAnswer').innerHTML = `<p>${x["persent"]} % From the Route, The SUN Is On ${x["persentSide"]} Side</p>`;
     }
 
     function routes(data) {
@@ -360,13 +376,14 @@
     function makeRoutesList() {
       var val = document.getElementById('stops').value;
       document.getElementById('vvrs').innerHTML = val;
+
       var x = `<label for="routes">Choose a Route:</label>
-                      <select name="routes" id="routes" onchange="makeStopsInRoute()">`;
-      //<option value="volvo">Volvo</option>                
+                      <select name="routes" id="routes" onchange="makeStopsInRoute()">`;//<option value="volvo">Volvo</option>
+                      
 
       var n = 0;
       while (n < dataFile[val].length) {
-        x += `<option value="${dataFile[val][n]["id"]}">${dataFile[val][n]["route_short_name"]}</option>`;
+        x += `<option value="${dataFile[val][n]["id"]}">${dataFile[val][n]["route_short_name"]} - ${dataFile[val][n]["route_long_name"]}</option>`;
         n++
       }
       x += `</select>`;
@@ -451,27 +468,11 @@
           var n = 0;
           while (n < obj['features'].length) {
             data = obj['features'][n]['properties'];
+          
 
             str += `<option value="${n + 1}">${data['stop_name']} ${data['stop_code']}</option>`;
+            rootAllFirstStopsID[n+1] = data['id'];
             dataFile[n + 1] = routes(data); //n+1 is the kay, value is the return array
-
-            /*
-            str += `<div class="panel-group">
-                      <div class="panel panel-default">
-                        <div class="panel-heading">
-                          <h4 class="panel-title">
-                            <a data-toggle="collapse" href="#collapse${n+1}"><b>${n+1}.</b> ${data['stop_name']} ${data['stop_code']}</a>
-                          </h4>
-                        </div>
-                          <div id="collapse${n+1}" class="panel-collapse collapse">
-                            <ul class="list-group">
-                              ${ routes(data)}
-                            </ul>  
-                          </div>
-                      </div>
-                    </div>`; 
-            */
-
 
             n++;
           }

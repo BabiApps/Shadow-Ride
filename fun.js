@@ -5,6 +5,7 @@
 */
 
 function persentPerRoute(stopslist){
+    //---------------------------------------add distance between stops
     var cBus,persent,persentSide, sum_cBus=0;
     var sumR_cBus=0,sumL_cBus=0;
     for( i=0 ; i<stopslist.length - 1 ; i++){
