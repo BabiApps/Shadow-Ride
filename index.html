@@ -310,9 +310,11 @@
       
       for( i=0 ; i<stopsData.length - 1 ; i++){
           cBus = anglePer2stops(stopsData[i],stopsData[i+1]);
+          console.log("for stop "+i+", cBus is " + cBus);
 
           suncalcVar = SunCalc.getPosition(Date.now(), stopsData[i]["stop"]["geometry"]["coordinates"][0], stopsData[i]["stop"]["geometry"]["coordinates"][1]);
           cSun = suncalcVar['azimuth'] * 180 / Math.PI + 180;
+          console.log("for stop "+i+", cSun is " + cSun);
 
           diffC = cSun - cBus;
           cBus_getSide = get_R_L_by_cBus(diffC);
@@ -325,6 +327,8 @@
               sumL_cBus++;
               sum_cBus--;
           }
+          console.log("for stop "+i+", get side " + cBus_getSide);
+          console.log("------");
       }
 
       
