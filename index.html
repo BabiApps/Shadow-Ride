@@ -260,17 +260,6 @@
   <br>
 
 
-  <label for="cars">Choose a Stop:</label>
-  <select name="cars" id="cars" onchange="makeStopsInRoute()">
-    <option value="volvo">Volvo</option>
-    <option value="saab">Saab</option>
-    <option value="mercedes">Mercedes</option>
-    <option value="audi">Audi</option>
-
-  </select>
-
-
-
   <!-- Collaps -->
   <h1 id=collapse_head class=" text-center" style="color: black;"></h1>
   <div id='list' class="container" style="width:530px"></div>
@@ -279,8 +268,13 @@
   <div id='listForTest2' class="container" style="width:530px"></div>
   <div id='showAnswer' class="container" style="width:530px"></div>
 
-
-  <div>
+  <!--label for="cars">Choose a Stop:</label>
+  <select name="cars" id="cars" onchange="makeStopsInRoute()">
+    <option value="volvo">Volvo</option>
+    <option value="saab">Saab</option>
+  </select-->
+  
+  <!--div>
     <label>sunrise</label>
     <p id="sunrise"></p>
     <label>sunset</label>
@@ -293,8 +287,8 @@
     <p id="c_sun"></p>
     <label>angle of sun Altitude</label>
     <p id="c_sun_alt"></p>
-  </div>
-  <br>
+  </div-->
+ 
 
 
 
@@ -331,45 +325,49 @@
       lastStopID = document.getElementById('eStop').value;
       console.log('Last stop id - '+lastStopID);
       
-
+      var distanceR = 0, distanceL = 0, SumDistance_Air =0, sumNull=0;
       var cBus,diffC,persent,persentSide, sum_cBus=0;
-      var sumR_cBus=0,sumL_cBus=0,sumNull=0;
       
-      roadBetweenStops = stopsData.length - 1;
+      //roadBetweenStops = stopsData.length - 1;
       for( i=0 ; i<stopsData.length - 1 ; i++){
-          cBus = anglePer2stops(stopsData[i],stopsData[i+1]);
           
+          startStop = stopsData[i]["stop"]["geometry"]["coordinates"]; 
+          endStop = stopsData[i+1]["stop"]["geometry"]["coordinates"];
 
-          suncalcVar = SunCalc.getPosition(Date.now(), stopsData[i]["stop"]["geometry"]["coordinates"][0], stopsData[i]["stop"]["geometry"]["coordinates"][1]);
+          distance_Air = distanceBetweenStops(startStop, endStop);
+          //console.log(distance_Air);
+          SumDistance_Air+=distance_Air;
+
+          cBus = anglePer2stops(startStop, endStop);
+
+          suncalcVar = SunCalc.getPosition(Date.now(), startStop[0], startStop[1]);
           cSun = suncalcVar['azimuth'] * 180 / Math.PI + 180;
 
           diffC = cSun - cBus;
           cBus_getSide = get_R_L_by_cBus(diffC);
           
           if (cBus_getSide=="r"){
-              sumR_cBus++;
-              sum_cBus++;
+              distanceR +=distance_Air;
           }
           else if (cBus_getSide=="l"){
-              sumL_cBus++;
-              sum_cBus--;
+              distanceL+=distance_Air;
           } 
           else{
             sumNull++;
           }
           console.log("For stop "+i+", cSun is " + cSun +", and cBus is " + cBus +", getSide - " + cBus_getSide);
       }
-      console.log('Sum R: '+sumR_cBus+', Sum L: '+sumL_cBus+', Undefined: '+sumNull);
+      console.log('Sum R: '+distanceR+', Sum L: '+distanceL+', Undefined: '+sumNull);
 
-      
-      if(sum_cBus>0){
-          persent = sumR_cBus/roadBetweenStops;
+
+      if(distanceR>distanceL){
+          persent = distanceR/SumDistance_Air;
           persentSide ="Right";
       }
       else{
-          persent = sumL_cBus/roadBetweenStops;
+          persent = distanceL/SumDistance_Air;
           persentSide ="Left";
-      } 
+      }
 
       x = {'persent':persent,'persentSide':persentSide};
       
@@ -490,7 +488,7 @@
 
             n++;
           }
-          str += `</select><label id="vvrs"> ChangeMe </label>`
+          str += `</select><label id="vvrs"></label>`
 
 
           if (str != "") {
@@ -513,7 +511,7 @@
 
 
 
-
+    //not used
     function p2stops(startStop, endStop, date) {
       date = Date.now();
 
@@ -540,20 +538,6 @@
       document.getElementById('sunset').innerHTML = SunCalc.getTimes(/*Date*/ date, /*Number*/ startStop.x, /*Number*/ startStop.y, /*Number (default=0)*/ 1)["sunset"];
 
     }
-
-
-
-    //$('#here').text(result);
-
-    function b1func() {
-      x1 = document.getElementById('x1').value;
-      y1 = document.getElementById('y1').value;
-      x2 = document.getElementById('x2').value;
-      y2 = document.getElementById('y2').value;
-
-
-      p2stops({ x: x1, y: y1 }, { x: x2, y: y2 });
-    };
 
   </script>
 </body>

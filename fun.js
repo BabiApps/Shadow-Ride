@@ -4,8 +4,8 @@
 * Return: final right/left.
 */
 
+//------------------not in use-------------
 function persentPerRoute(stopslist){
-    //---------------------------------------add distance between stops
     var cBus,persent,persentSide, sum_cBus=0;
     var sumR_cBus=0,sumL_cBus=0;
     for( i=0 ; i<stopslist.length - 1 ; i++){
@@ -23,7 +23,6 @@ function persentPerRoute(stopslist){
         }
     }
 
-    
     if(sum_cBus>0){
         persent = sumR_cBus/stopslist.length;
         persentSide ="Right";
@@ -34,7 +33,12 @@ function persentPerRoute(stopslist){
     } 
 
     return {'persent':persent,'persentSide':persentSide};
+}
 
+function distanceBetweenStops(startStop, endStop){
+    x = startStop[0] - endStop[0];
+    y = startStop[1] - endStop[1];
+    return Math.sqrt(x*x+y*y);
 }
 
 function get_R_L_by_cBus(cBus){
@@ -79,9 +83,6 @@ function get_R_L_by_cBus(cBus){
 * Return: the angle (c) of the bus.
 */
 function anglePer2stops(startStop, endStop){ 
-
-    startStop = startStop["stop"]["geometry"]["coordinates"];
-    endStop = endStop["stop"]["geometry"]["coordinates"];
 
     //Find the celuis of the bus to Y-axis
     var cBus;
