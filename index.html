@@ -254,7 +254,8 @@
       </div>
     </div>
     <br>
-    <button id='b1' class="btn-primary" onclick="apirequest()">click here</button>
+    <button id='button_getLocation' onclick="getLocation()">Get my device location</button>
+    <button id='b1' class="btn-primary" onclick="apirequest()">Click here to find close stops</button>
   </div>
   <br>
 
@@ -304,6 +305,19 @@
     var dataFile = [];
     var stopsData = [];
     var rootAllFirstStopsID=[];
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+      } else { 
+        alert("Geolocation is not supported by this browser.");
+      }
+    }
+
+    function showPosition(position) {
+      document.getElementById('lat').value = position.coords.latitude;
+      document.getElementById('lon').value = position.coords.longitude;
+    }
 
     function calculatePerFullRoute(){
 
