@@ -1,5 +1,104 @@
 /*
-* Get: list of stops in route.
+*
+* used distanceBetweenStops
+*
+*/
+function sortStopsList(rootData){
+    const geometryArray = rootData['geometry']['coordinates']; //array of array
+    var route_stops = rootData['properties']['route_stops']; //array of list
+
+    //find the first and last stops (showing in route_long_name)
+    var route_long_name = rootData['properties']['route_long_name'];
+    var storeStops = [];
+    var closeToFirst = 10000; // check who is the closed to first coordinates - mean is first stop.
+    for (i=0;i<route_stops.length;i++){
+        stopName = route_stops[i]['stop']['stop_name'];
+        
+        if (route_long_name.includes(stopName)){
+            disM = distance_M_BetweenStops(route_stops[i]['stop']['geometry']['coordinates'],geometryArray[0]);
+            if (disM<closeToFirst){
+                storeStops.splice(0,0,route_stops[i]); //first stop in 0 index
+                closeToFirst=disM
+            } else{
+                storeStops.push(route_stops[i]);
+            }
+            route_stops.splice(i, 1); // remove the stop from the list
+        }
+    }
+    console.log('First - '+storeStops[0]['stop']['stop_name']+',End - '+storeStops[1]['stop']['stop_name']);
+
+
+    //make new list
+    var geometryArray_withChange = rootData['geometry']['coordinates']; //array of array
+    
+    for(stopIndex = 0; stopIndex< route_stops.length;stopIndex++){
+
+        var lowDistance = 30000, lowDistance2 = 30000;
+        var lowDistance_Kay = null, lowDistance2_Kay = null;
+
+        for (geoIndex in geometryArray){
+            
+            secend_Location =  route_stops[stopIndex]['stop']['geometry']['coordinates'];
+            distanceM = distance_M_BetweenStops(geometryArray[geoIndex], secend_Location);
+
+            //get the two geometry closest to stop
+            if (distanceM<lowDistance){
+                lowDistance = distanceM;
+                lowDistance_Kay = geoIndex;
+            }
+            else if (distanceM<lowDistance2){
+                lowDistance2 = distanceM;
+                lowDistance2_Kay = geoIndex;
+            }
+        }
+        if (lowDistance2<lowDistance){
+            lowDistance_Kay = lowDistance2_Kay;
+        }
+        console.log('Put stop in '+lowDistance_Kay);
+        geometryArray_withChange.splice(lowDistance_Kay,0,route_stops[stopIndex]);
+
+    }
+
+    for (n=0;n<geometryArray_withChange.length;n++){
+        storeStops.splice(n+1,0,geometryArray_withChange[n]);//all in one place sorted
+    }
+    //download(storeStops, 'json.txt', 'text/plain');
+
+    //console.log(storeStops);
+    return storeStops;
+
+}
+function download(content, fileName, contentType) {
+    var a = document.createElement("a");
+    var file = new Blob([content], {type: contentType});
+    a.href = URL.createObjectURL(file);
+    a.download = fileName;
+    a.click();
+}
+
+
+function distance_M_BetweenStops(startStop, endStop){
+    // use this method https://www.movable-type.co.uk/scripts/latlong.html
+
+    const R = 6371e3; // metres
+    const φ1 = startStop[1] * Math.PI/180; // φ, λ in radians
+    const φ2 = endStop[1] * Math.PI/180;
+    const Δφ = (endStop[1]-startStop[1]) * Math.PI/180;
+    const Δλ = (endStop[0]-startStop[0]) * Math.PI/180;
+
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    const d = R * c; // in metres
+    
+    return d;
+}
+
+
+/*
+* Get: list of stops in route. -- moved to index.html
 * Do: calculate per 2 stop.
 * Return: final right/left.
 */
@@ -35,10 +134,15 @@ function persentPerRoute(stopslist){
     return {'persent':persent,'persentSide':persentSide};
 }
 
+/*
+* Get:
+* Return:
+*/
 function distanceBetweenStops(startStop, endStop){
-    x = startStop[0] - endStop[0];
+    return distance_M_BetweenStops(startStop, endStop);
+    /*x = startStop[0] - endStop[0];
     y = startStop[1] - endStop[1];
-    return Math.sqrt(x*x+y*y);
+    return Math.sqrt(x*x+y*y);*/
 }
 
 function get_R_L_by_cBus(cBus){

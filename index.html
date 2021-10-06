@@ -265,7 +265,7 @@
       </div>
       <div class="col-sm-4">
         <h3><b>Radius (m)</b></h3>
-        <input type="text" placeholder="radius in meters" id="radius" width="12px" value="300" name="radius"></input>
+        <input type="text" placeholder="radius in meters" id="radius" width="12px" value="200" name="radius"></input>
       </div>
     </div>
     <br>
@@ -304,7 +304,7 @@
     <p id="c_sun_alt"></p>
   </div-->
  
-
+  <br><br>
 
 
 
@@ -339,6 +339,14 @@
 
       lastStopID = document.getElementById('eStop').value;
       console.log('Last stop id - '+lastStopID);
+
+      var index_lastStopID;
+      for(stopindex in stopsData){
+        if (stopsData[stopindex]['stop']['id']==lastStopID){
+          index_lastStopID=stopindex;
+        }
+      }
+      stopsData.length=index_lastStopID; //short the list to seleced stop
       
       var distanceR = 0, distanceL = 0, SumDistance_Air =0, sumNull=0;
       var cBus,diffC,persent,persentSide, sum_cBus=0;
@@ -441,7 +449,32 @@
           var x = `<label for="endstops">Choose a End Stop:</label>
                       <select name="eStop" id="eStop">`;
           //<option value="volvo">Volvo</option> 
+
+          tempValue1 = document.getElementById('stops').value;
+          firstStopID = rootAllFirstStopsID[tempValue1];
+
+          // sorted
+          sortedStops_withLine = sortStopsList(obj["features"][0]);
+          var sortStops = [];
+          var flag_firstStopID, sortStops_counter=0;
+          for (i=0;i<sortedStops_withLine.length;i++){
+            if ('stop' in sortedStops_withLine[i]){
+              stop_info = sortedStops_withLine[i];
+              sortStops.push(stop_info);
+              sortStops_counter++;
+              if(stop_info['stop']['id']==firstStopID){
+                flag_firstStopID =sortStops_counter;
+                console.log("Start stop: "+stop_info['stop']['stop_name']);
+              }
+              console.log(i+', Name - '+stop_info['stop']['stop_name']);
+            }
+          }
+          sortStops.splice(flag_firstStopID); //short the list from the seleced stop
+          stopsData = sortStops;
+
           
+          
+
           var n = 0;
           while (n < stopsData.length) {
             x+=`<option value="${stopsData[n]["stop"]["id"]}">${stopsData[n]["stop"]["stop_name"]}</option>`;
