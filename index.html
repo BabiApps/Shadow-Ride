@@ -33,9 +33,9 @@
     }
 
     .jumbotron {
-      background-color: #33375e;
+      background-color: #336B90;
       color: #fff;
-      padding: 100px 25px;
+      padding: 0px;
       font-family: Montserrat, sans-serif;
     }
 
@@ -228,12 +228,27 @@
         font-size: 150px;
       }
     }
+    
+    @media (max-width: 480px) {
+      img {
+        max-width: 100%;
+        width: auto ;
+        height: auto;
+      }
+    }
+    @media (min-width: 481px) {
+      img {
+        max-width: 50%;
+        width: auto ;
+        height: auto;
+      }
+    }
   </style>
 </head>
 
 <body>
   <div class="jumbotron text-center">
-    <img src="shadowRidePic.jpg" alt="shadowRidePic" height="350" width="750">
+    <img src="shadowRidePic.jpg" alt="shadowRidePic"  >
     <!--h1>Shadow-Ride</h1>
     <p>We specialize in telling you where to sit</p-->
   </div>
