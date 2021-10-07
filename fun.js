@@ -161,7 +161,7 @@ function get_R_L_by_cBus(cBus){
             side=null;
         } 
         else {
-            side = "r";
+            side = "Right";
         }
     }
     // in left side
@@ -173,7 +173,7 @@ function get_R_L_by_cBus(cBus){
             side=null;
         } 
         else {
-            side = "l";
+            side = "Left";
         }
     }
 

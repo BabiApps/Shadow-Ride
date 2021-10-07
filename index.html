@@ -228,18 +228,19 @@
         font-size: 150px;
       }
     }
-    
+
     @media (max-width: 480px) {
       img {
         max-width: 100%;
-        width: auto ;
+        width: auto;
         height: auto;
       }
     }
+
     @media (min-width: 481px) {
       img {
         max-width: 50%;
-        width: auto ;
+        width: auto;
         height: auto;
       }
     }
@@ -248,7 +249,7 @@
 
 <body>
   <div class="jumbotron text-center">
-    <img src="shadowRidePic.jpg" alt="shadowRidePic"  >
+    <img src="shadowRidePic.jpg" alt="shadowRidePic">
     <!--h1>Shadow-Ride</h1>
     <p>We specialize in telling you where to sit</p-->
   </div>
@@ -283,12 +284,7 @@
   <div id='listForTest2' class="container" style="width:530px"></div>
   <div id='showAnswer' class="container" style="width:530px"></div>
 
-  <!--label for="cars">Choose a Stop:</label>
-  <select name="cars" id="cars" onchange="makeStopsInRoute()">
-    <option value="volvo">Volvo</option>
-    <option value="saab">Saab</option>
-  </select-->
-  
+
   <!--div>
     <label>sunrise</label>
     <p id="sunrise"></p>
@@ -303,7 +299,7 @@
     <label>angle of sun Altitude</label>
     <p id="c_sun_alt"></p>
   </div-->
- 
+
   <br><br>
 
 
@@ -313,12 +309,13 @@
     //globle varible
     var dataFile = [];
     var stopsData = [];
-    var rootAllFirstStopsID=[];
+    var rootAllFirstStopsID = [];
+
 
     function getLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(showPosition);
-      } else { 
+      } else {
         alert("Geolocation is not supported by this browser.");
       }
     }
@@ -328,73 +325,81 @@
       document.getElementById('lon').value = position.coords.longitude;
     }
 
-    function calculatePerFullRoute(){
+    function calculatePerFullRoute() {
+      var stopsData_temp = [];
 
       //find the first and last stop (to remove all stop out-line)
-      var firstStopID ,lastStopID;
-
+      var firstStopID, lastStopID;
       tempValue1 = document.getElementById('stops').value;
       firstStopID = rootAllFirstStopsID[tempValue1];
-      console.log('First stop id - '+firstStopID);
-
       lastStopID = document.getElementById('eStop').value;
-      console.log('Last stop id - '+lastStopID);
+      console.log('First stop ID - ' + firstStopID);
+      console.log('Last stop ID - ' + lastStopID);
 
-      var index_lastStopID;
-      for(stopindex in stopsData){
-        if (stopsData[stopindex]['stop']['id']==lastStopID){
-          index_lastStopID=stopindex;
+      
+      for (stopindex in stopsData) {
+        stopsData_temp.push(stopsData[stopindex]);
+        if (stopsData[stopindex]['stop']['id'] == lastStopID) {
+          break; // stop pushing when end-stop founded
+        }      
+      }
+      console.log('Sum stop ' + stopsData_temp.length);
+
+      var distanceR = 0, distanceL = 0, SumDistance_Air = 0, sumNull = 0;
+      var cBus, diffC, persent, persentSide, sum_cBus = 0;
+
+      for (var i = 0; i < stopsData_temp.length - 1; i++) {
+
+        startStop = stopsData_temp[i]["stop"]["geometry"]["coordinates"];
+        endStop = stopsData_temp[i + 1]["stop"]["geometry"]["coordinates"];
+
+        distance_Air = distanceBetweenStops(startStop, endStop);
+        SumDistance_Air += distance_Air;
+
+        cBus = anglePer2stops(startStop, endStop);
+
+        suncalcVar = SunCalc.getPosition(Date.now(), startStop[0], startStop[1]);
+        cSun = suncalcVar['azimuth'] * 180 / Math.PI + 180;
+
+        diffC = cSun - cBus;
+        cBus_getSide = get_R_L_by_cBus(diffC);
+
+        if (cBus_getSide == "Right") {
+          distanceR += distance_Air;
         }
+        else if (cBus_getSide == "Left") {
+          distanceL += distance_Air;
+        }
+        else {
+          sumNull++;
+        }
+
+        console.log('From: ' + stopsData_temp[i]['stop']['stop_name'] + ', To: ' + stopsData_temp[i + 1]['stop']['stop_name'] +
+          '\nDistance ' + distance_Air +
+          '\nCalc num: ' + (i + 1) + ", cSun is " + cSun + ", and cBus is " + cBus + ",getSide - " + cBus_getSide);
+
+
       }
-      stopsData.length=index_lastStopID; //short the list to seleced stop
-      
-      var distanceR = 0, distanceL = 0, SumDistance_Air =0, sumNull=0;
-      var cBus,diffC,persent,persentSide, sum_cBus=0;
-      
-      //roadBetweenStops = stopsData.length - 1;
-      for( i=0 ; i<stopsData.length - 1 ; i++){
-          
-          startStop = stopsData[i]["stop"]["geometry"]["coordinates"]; 
-          endStop = stopsData[i+1]["stop"]["geometry"]["coordinates"];
+      console.log('Sum R: ' + distanceR + ', Sum L: ' + distanceL + ', Undefined: ' + sumNull);
 
-          distance_Air = distanceBetweenStops(startStop, endStop);
-          //console.log(distance_Air);
-          SumDistance_Air+=distance_Air;
 
-          cBus = anglePer2stops(startStop, endStop);
-
-          suncalcVar = SunCalc.getPosition(Date.now(), startStop[0], startStop[1]);
-          cSun = suncalcVar['azimuth'] * 180 / Math.PI + 180;
-
-          diffC = cSun - cBus;
-          cBus_getSide = get_R_L_by_cBus(diffC);
-          
-          if (cBus_getSide=="r"){
-              distanceR +=distance_Air;
-          }
-          else if (cBus_getSide=="l"){
-              distanceL+=distance_Air;
-          } 
-          else{
-            sumNull++;
-          }
-          console.log("For stop "+i+", cSun is " + cSun +", and cBus is " + cBus +", getSide - " + cBus_getSide);
+      if (distanceR > distanceL) {
+        persent = distanceR / SumDistance_Air;
+        persentSide = "Right";
       }
-      console.log('Sum R: '+distanceR+', Sum L: '+distanceL+', Undefined: '+sumNull);
-
-
-      if(distanceR>distanceL){
-          persent = distanceR/SumDistance_Air;
-          persentSide ="Right";
-      }
-      else{
-          persent = distanceL/SumDistance_Air;
-          persentSide ="Left";
+      else {
+        persent = distanceL / SumDistance_Air;
+        persentSide = "Left";
       }
 
-      x = {'persent':persent,'persentSide':persentSide};
-      
-      document.getElementById('showAnswer').innerHTML = `<p>${x["persent"]} % From the Route, The SUN Is On ${x["persentSide"]} Side</p>`;
+      x = { 'persent': persent, 'persentSide': persentSide };
+
+      if (i == 0) {
+        document.getElementById('showAnswer').innerHTML = "Please choose another stop that isn't start"
+        alert('Same Location! set another end stop.')
+      } else {
+        document.getElementById('showAnswer').innerHTML = `<p>${x["persent"]*100}% From the Route, The SUN Is On ${x["persentSide"]} Side</p>`;
+      }
     }
 
     function routes(data) {
@@ -414,7 +419,7 @@
 
       var x = `<label for="routes">Choose a Route:</label>
                       <select name="routes" id="routes" onchange="makeStopsInRoute()">`;//<option value="volvo">Volvo</option>
-                      
+
 
       var n = 0;
       while (n < dataFile[val].length) {
@@ -427,8 +432,8 @@
 
 
     function makeStopsInRoute() {
-    
-      var idOfRoute =  document.getElementById('routes').value;
+
+      var idOfRoute = document.getElementById('routes').value;
       var linkRoute = `https://transit.land/api/v2/rest/routes/${idOfRoute}?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&format=geojson`;
 
       // Instantiate an new XHR Object
@@ -456,32 +461,33 @@
           // sorted
           sortedStops_withLine = sortStopsList(obj["features"][0]);
           var sortStops = [];
-          var flag_firstStopID, sortStops_counter=0;
-          for (i=0;i<sortedStops_withLine.length;i++){
-            if ('stop' in sortedStops_withLine[i]){
+          var flag_firstStopID, sortStops_counter = 0;
+          for (i = 0; i < sortedStops_withLine.length; i++) {
+            if ('stop' in sortedStops_withLine[i]) {
               stop_info = sortedStops_withLine[i];
               sortStops.push(stop_info);
               sortStops_counter++;
-              if(stop_info['stop']['id']==firstStopID){
-                flag_firstStopID =sortStops_counter;
-                console.log("Start stop: "+stop_info['stop']['stop_name']);
+              if (stop_info['stop']['id'] == firstStopID) {
+                flag_firstStopID = sortStops_counter;
+                console.log("Start stop: " + stop_info['stop']['stop_name']);
               }
-              console.log(i+', Name - '+stop_info['stop']['stop_name']);
+              console.log(i + ', Name - ' + stop_info['stop']['stop_name']);
             }
           }
-          sortStops.splice(flag_firstStopID); //short the list from the seleced stop
+          sortStops.splice(0, flag_firstStopID - 1); //short the list from the seleced (start) stop
           stopsData = sortStops;
 
-          
-          
+
+          // TODO - Use sortedStops_withLine for calcultion
+
 
           var n = 0;
           while (n < stopsData.length) {
-            x+=`<option value="${stopsData[n]["stop"]["id"]}">${stopsData[n]["stop"]["stop_name"]}</option>`;
+            x += `<option value="${stopsData[n]["stop"]["id"]}">${stopsData[n]["stop"]["stop_name"]}</option>`;
             n++;
           }
           x += `</select><br><button onclick="calculatePerFullRoute()">Start Calculate</button>`;
-        
+
           document.getElementById('list_StopsInRoute').innerHTML = x;
 
         }
@@ -491,7 +497,7 @@
       }
       // At last send the request
       xhr.send();
-      
+
     }
 
     function apirequest() {
@@ -528,10 +534,10 @@
           var n = 0;
           while (n < obj['features'].length) {
             data = obj['features'][n]['properties'];
-          
+
 
             str += `<option value="${n + 1}">${data['stop_name']} ${data['stop_code']}</option>`;
-            rootAllFirstStopsID[n+1] = data['id'];
+            rootAllFirstStopsID[n + 1] = data['id'];
             dataFile[n + 1] = routes(data); //n+1 is the kay, value is the return array
 
             n++;
