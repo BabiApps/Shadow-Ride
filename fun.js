@@ -11,6 +11,8 @@ function sortStopsList(rootData){
     var route_long_name = rootData['properties']['route_long_name'];
     var storeStops = [];
     var closeToFirst = 10000; // check who is the closed to first coordinates - mean is first stop.
+
+    /*
     for (i=0;i<route_stops.length;i++){
         stopName = route_stops[i]['stop']['stop_name'];
         
@@ -25,7 +27,8 @@ function sortStopsList(rootData){
             route_stops.splice(i, 1); // remove the stop from the list
         }
     }
-    console.log('First - '+storeStops[0]['stop']['stop_name']+',End - '+storeStops[1]['stop']['stop_name']);
+    */
+    
 
 
     //make new list
@@ -62,6 +65,23 @@ function sortStopsList(rootData){
     for (n=0;n<geometryArray_withChange.length;n++){
         storeStops.splice(n+1,0,geometryArray_withChange[n]);//all in one place sorted
     }
+
+    
+    var count = 0;
+    var firstName ='',endName ='';
+    for (kay in storeStops){
+        if ('stop' in storeStops[kay]){
+            if (count ==0){
+                firstName = storeStops[kay]['stop']['stop_name'];
+            }
+            else {
+                endName = storeStops[kay]['stop']['stop_name']; //last that chenge is the end stop
+            }
+            count++;
+        }
+
+    }
+    console.log('First - '+firstName+',End - '+endName);
     //download(storeStops, 'json.txt', 'text/plain');
 
     //console.log(storeStops);
@@ -96,43 +116,6 @@ function distance_M_BetweenStops(startStop, endStop){
     return d;
 }
 
-
-/*
-* Get: list of stops in route. -- moved to index.html
-* Do: calculate per 2 stop.
-* Return: final right/left.
-*/
-
-//------------------not in use-------------
-function persentPerRoute(stopslist){
-    var cBus,persent,persentSide, sum_cBus=0;
-    var sumR_cBus=0,sumL_cBus=0;
-    for( i=0 ; i<stopslist.length - 1 ; i++){
-        cBus = anglePer2stops(stopslist[i],stopslist[i+1]);
-        //miss suncalc
-        cBus_getSide = get_R_L_by_cBus(cBus);
-        
-        if (cBus_getSide=="r"){
-            sumR_cBus++;
-            sum_cBus++;
-        }
-        if (cBus_getSide=="l"){
-            sumL_cBus++;
-            sum_cBus--;
-        }
-    }
-
-    if(sum_cBus>0){
-        persent = sumR_cBus/stopslist.length;
-        persentSide ="Right";
-    }
-    else{
-        persent = sumL_cBus/stopslist.length;
-        persentSide ="Left";
-    } 
-
-    return {'persent':persent,'persentSide':persentSide};
-}
 
 /*
 * Get:

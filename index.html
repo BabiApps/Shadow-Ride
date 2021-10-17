@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
-    <link rel="stylesheet" href="center-radar.css">
-  </head>
-  
 
 <head>
-  <title>Bootstrap Theme Company</title>
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
+  <link rel="stylesheet" href="center-radar.css">
+</head>
+
+
+<head>
+  <title>Shadow-Ride in WEB</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -249,6 +250,14 @@
         height: auto;
       }
     }
+
+    .blur {
+      filter: blur(5px);
+      -webkit-filter: blur(5px);
+      -moz-filter: blur(5px);
+      -o-filter: blur(5px);
+      -ms-filter: blur(5px);
+    }
   </style>
 </head>
 
@@ -258,25 +267,26 @@
     <!--h1>Shadow-Ride</h1>
     <p>We specialize in telling you where to sit</p-->
   </div>
+  <div id="overlayBlur" class="blur"></div>
 
   <div class='container text-center'>
     <div class="row">
       <div class="col-sm-4">
         <h3><b>Latitude</b></h3>
-        <input type="text" placeholder="lat" id="lat" width="12px" value="31.878745" name="lat"></input>
+        <input type="text" placeholder="lat" id="lat" width="12px" value="32.787318895576874" name="lat"></input>
       </div>
       <div class="col-sm-4">
         <h3><b>Longtitude</b></h3>
-        <input type="text" placeholder="lon" id="lon" width="12px" value="35.246465" name="lon"></input>
+        <input type="text" placeholder="lon" id="lon" width="12px" value="35.53646142386649" name="lon"></input>
       </div>
       <div class="col-sm-4">
         <h3><b>Radius (m)</b></h3>
-        <input type="text" placeholder="radius in meters" id="radius" width="12px" value="200" name="radius"></input>
+        <input type="text" placeholder="radius in meters" id="radius" width="12px" value="20" name="radius"></input>
       </div>
     </div>
     <br>
     <button id='button_getLocation' onclick="getLocation()">Get my device location</button>
-    <button id='b1' class="btn-primary" onclick="apirequest()">Click here to find close stops</button>
+    <button id='b1' class="btn-primary" onclick="findNearStops()">Click here to find close stops</button>
   </div>
   <br>
 
@@ -341,12 +351,12 @@
       console.log('First stop ID - ' + firstStopID);
       console.log('Last stop ID - ' + lastStopID);
 
-      
+
       for (stopindex in stopsData) {
         stopsData_temp.push(stopsData[stopindex]);
         if (stopsData[stopindex]['stop']['id'] == lastStopID) {
           break; // stop pushing when end-stop founded
-        }      
+        }
       }
       console.log('Sum stop ' + stopsData_temp.length);
 
@@ -403,7 +413,7 @@
         document.getElementById('showAnswer').innerHTML = "Please choose another stop that isn't start"
         alert('Same Location! set another end stop.')
       } else {
-        document.getElementById('showAnswer').innerHTML = `<p>${x["persent"]*100}% From the Route, The SUN Is On ${x["persentSide"]} Side</p>`;
+        document.getElementById('showAnswer').innerHTML = `<p>${x["persent"] * 100}% From the Route, The SUN Is On ${x["persentSide"]} Side</p>`;
       }
     }
 
@@ -420,7 +430,7 @@
 
     function makeRoutesList() {
       var val = document.getElementById('stops').value;
-      document.getElementById('vvrs').innerHTML = val;
+      //document.getElementById('val_num').innerHTML = val;
 
       var x = `<label for="routes">Choose a Route:</label>
                       <select name="routes" id="routes" onchange="makeStopsInRoute()">`;//<option value="volvo">Volvo</option>
@@ -440,7 +450,8 @@
 
       var idOfRoute = document.getElementById('routes').value;
       var linkRoute = `https://transit.land/api/v2/rest/routes/${idOfRoute}?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&format=geojson`;
-
+      //console.log(linkRoute);
+      
       // Instantiate an new XHR Object
       const xhr = new XMLHttpRequest();
 
@@ -463,6 +474,7 @@
           tempValue1 = document.getElementById('stops').value;
           firstStopID = rootAllFirstStopsID[tempValue1];
 
+          
           // sorted
           sortedStops_withLine = sortStopsList(obj["features"][0]);
           var sortStops = [];
@@ -505,16 +517,11 @@
 
     }
 
-    function apirequest() {
+    function findNearStops() {
       var lat = document.getElementById('lat').value;
       var lon = document.getElementById('lon').value;
       var radius = document.getElementById('radius').value * 10;
       var url = 'https://transit.land/api/v2/rest/stops?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&feed_onestop_id=f-sv-גלים~מועצהאזוריתגולן~אפיקים~דןצפון~דןבדרום~דןבארשבע~ירושלים&lat=' + lat + '&lon=' + lon + '&radius=' + radius + '&format=geojson';
-
-      //for testing....
-      lat2 = parseFloat(lat) + 0.0022
-      lon2 = parseFloat(lon) + 0.0022
-      //p2stops({ "x": lat, "y": lon }, { "x": lat2, "y": lon2 }, Date.now())
 
       // Instantiate an new XHR Object
       const xhr = new XMLHttpRequest();
@@ -537,17 +544,31 @@
 
 
           var n = 0;
+          var stop_code = [];
           while (n < obj['features'].length) {
             data = obj['features'][n]['properties'];
 
 
-            str += `<option value="${n + 1}">${data['stop_name']} ${data['stop_code']}</option>`;
-            rootAllFirstStopsID[n + 1] = data['id'];
-            dataFile[n + 1] = routes(data); //n+1 is the kay, value is the return array
+            // when the stop already in the list (רציפים)
+            if (stop_code.includes(data["stop_code"])) {
+              console.log("exist - " + data["stop_code"]);
+            }
+            else {
+              str += `<option value="${data['stop_code']}">${data['stop_name']} ${data['stop_code']}</option>`;
+              rootAllFirstStopsID[data['stop_code']] = data['id'];
+              stop_code.push(data["stop_code"]);
+              //console.log(data["stop_code"]);
+            }
 
+            if (dataFile[data['stop_code']]==null){
+              dataFile[data['stop_code']]=[];
+            }
+            dataFile[data['stop_code']] = [...dataFile[data['stop_code']],...routes(data)]; //n+1 is the kay, value is the return array
+            
             n++;
           }
-          str += `</select><label id="vvrs"></label>`
+          str += `</select>`;
+          //str += `<label id="val_num"></label>`;
 
 
           if (str != "") {
