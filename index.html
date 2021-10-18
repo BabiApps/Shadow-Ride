@@ -273,15 +273,16 @@
     <div class="row">
       <div class="col-sm-4">
         <h3><b>Latitude</b></h3>
-        <input type="text" placeholder="lat" id="lat" width="12px" value="32.787318895576874" name="lat"></input>
+        
+        <input type="text" placeholder="lat" id="lat" width="12px" value="31.87853651253915" name="lat"></input>
       </div>
       <div class="col-sm-4">
         <h3><b>Longtitude</b></h3>
-        <input type="text" placeholder="lon" id="lon" width="12px" value="35.53646142386649" name="lon"></input>
+        <input type="text" placeholder="lon" id="lon" width="12px" value="35.24756986614628" name="lon"></input>
       </div>
       <div class="col-sm-4">
         <h3><b>Radius (m)</b></h3>
-        <input type="text" placeholder="radius in meters" id="radius" width="12px" value="20" name="radius"></input>
+        <input type="text" placeholder="radius in meters" id="radius" width="12px" value="30" name="radius"></input>
       </div>
     </div>
     <br>
@@ -296,7 +297,7 @@
   <div id='list' class="container" style="width:530px"></div>
   <div id='listForTest' class="container" style="width:530px"></div>
   <div id='list_StopsInRoute' class="container" style="width:530px"></div>
-  <div id='listForTest2' class="container" style="width:530px"></div>
+  <div id='button_startCalc' class="container" style="width:530px"></div>
   <div id='showAnswer' class="container" style="width:530px"></div>
 
 
@@ -348,25 +349,47 @@
       tempValue1 = document.getElementById('stops').value;
       firstStopID = rootAllFirstStopsID[tempValue1];
       lastStopID = document.getElementById('eStop').value;
-      console.log('First stop ID - ' + firstStopID);
-      console.log('Last stop ID - ' + lastStopID);
+      //console.log('First stop ID - ' + firstStopID);
+      //console.log('Last stop ID - ' + lastStopID);
 
 
       for (stopindex in stopsData) {
         stopsData_temp.push(stopsData[stopindex]);
-        if (stopsData[stopindex]['stop']['id'] == lastStopID) {
-          break; // stop pushing when end-stop founded
+        if ('stop' in stopsData[stopindex]){
+          if (stopsData[stopindex]['stop']['id'] == lastStopID) {
+            break; // stop pushing when end-stop founded
+          }
         }
       }
-      console.log('Sum stop ' + stopsData_temp.length);
+      console.log('Sum mini location (geometry): ' + stopsData_temp.length);
 
       var distanceR = 0, distanceL = 0, SumDistance_Air = 0, sumNull = 0;
       var cBus, diffC, persent, persentSide, sum_cBus = 0;
 
       for (var i = 0; i < stopsData_temp.length - 1; i++) {
 
+        /*
+        --- moved to withLine method
         startStop = stopsData_temp[i]["stop"]["geometry"]["coordinates"];
         endStop = stopsData_temp[i + 1]["stop"]["geometry"]["coordinates"];
+        */
+
+        // start stop
+        if ('stop' in stopsData_temp[i]){
+          startStop = stopsData_temp[i]["stop"]["geometry"]["coordinates"];
+        }
+        else{
+          startStop = stopsData_temp[i];
+        }
+
+        // end stop
+        if ('stop' in stopsData_temp[i+1]){
+          endStop = stopsData_temp[i+1]["stop"]["geometry"]["coordinates"];
+        }
+        else{
+          endStop = stopsData_temp[i+1];
+        }
+        
 
         distance_Air = distanceBetweenStops(startStop, endStop);
         SumDistance_Air += distance_Air;
@@ -389,13 +412,15 @@
           sumNull++;
         }
 
+        /*
         console.log('From: ' + stopsData_temp[i]['stop']['stop_name'] + ', To: ' + stopsData_temp[i + 1]['stop']['stop_name'] +
           '\nDistance ' + distance_Air +
           '\nCalc num: ' + (i + 1) + ", cSun is " + cSun + ", and cBus is " + cBus + ",getSide - " + cBus_getSide);
 
+        */
 
       }
-      console.log('Sum R: ' + distanceR + ', Sum L: ' + distanceL + ', Undefined: ' + sumNull);
+      console.log('-------\nSum M in Right: ' + distanceR + '\nSum M in Left: ' + distanceL + '\nUndefined: ' + sumNull);
 
 
       if (distanceR > distanceL) {
@@ -433,7 +458,8 @@
       //document.getElementById('val_num').innerHTML = val;
 
       var x = `<label for="routes">Choose a Route:</label>
-                      <select name="routes" id="routes" onchange="makeStopsInRoute()">`;//<option value="volvo">Volvo</option>
+                      <select name="routes" id="routes" onchange="makeStopsInRoute()">
+                        <option value="" selected disabled hidden>Choose Route</option>`;//<option value="volvo">Volvo</option>
 
 
       var n = 0;
@@ -468,8 +494,8 @@
           stopsData = obj["features"][0]["properties"]["route_stops"];
 
           var x = `<label for="endstops">Choose a End Stop:</label>
-                      <select name="eStop" id="eStop">`;
-          //<option value="volvo">Volvo</option> 
+                      <select name="eStop" id="eStop" onchange="showButtonForCalc()">
+                        <option value="" selected disabled hidden>Choose End Stop</option>`;
 
           tempValue1 = document.getElementById('stops').value;
           firstStopID = rootAllFirstStopsID[tempValue1];
@@ -477,8 +503,9 @@
           
           // sorted
           sortedStops_withLine = sortStopsList(obj["features"][0]);
+
           var sortStops = [];
-          var flag_firstStopID, sortStops_counter = 0;
+          var flag_firstStopID, sortStops_counter = 0, flag_firstStopID_inWithLine;
           for (i = 0; i < sortedStops_withLine.length; i++) {
             if ('stop' in sortedStops_withLine[i]) {
               stop_info = sortedStops_withLine[i];
@@ -486,24 +513,33 @@
               sortStops_counter++;
               if (stop_info['stop']['id'] == firstStopID) {
                 flag_firstStopID = sortStops_counter;
+                flag_firstStopID_inWithLine = i;
                 console.log("Start stop: " + stop_info['stop']['stop_name']);
               }
               console.log(i + ', Name - ' + stop_info['stop']['stop_name']);
             }
           }
           sortStops.splice(0, flag_firstStopID - 1); //short the list from the seleced (start) stop
-          stopsData = sortStops;
+          //console.log('check '+sortStops[0]['stop']['stop_name']);
+
+          //stopsData = sortStops;
+
+          sortedStops_withLine.splice(0,flag_firstStopID_inWithLine );
+          //console.log('check withLine '+sortedStops_withLine[0]['stop']['stop_name']);
+
+          stopsData = sortedStops_withLine;
 
 
           // TODO - Use sortedStops_withLine for calcultion
 
 
+          //stopData replaced with sortStops
           var n = 0;
-          while (n < stopsData.length) {
-            x += `<option value="${stopsData[n]["stop"]["id"]}">${stopsData[n]["stop"]["stop_name"]}</option>`;
+          while (n < sortStops.length) {
+            x += `<option value="${sortStops[n]["stop"]["id"]}">${sortStops[n]["stop"]["stop_name"]}</option>`;
             n++;
           }
-          x += `</select><br><button onclick="calculatePerFullRoute()">Start Calculate</button>`;
+          x += `</select>`;
 
           document.getElementById('list_StopsInRoute').innerHTML = x;
 
@@ -515,6 +551,9 @@
       // At last send the request
       xhr.send();
 
+    }
+    function showButtonForCalc(){
+      document.getElementById('button_startCalc').innerHTML = `<button onclick="calculatePerFullRoute()">Start Calculate</button>`;
     }
 
     function findNearStops() {
@@ -540,18 +579,21 @@
           // Getting the ul element
           let list = document.getElementById("list");
           str = `<label for="stops">Choose a Stop:</label>
-                          <select name="stops" id="stops" onchange="makeRoutesList()">`;
+                          <select name="stops" id="stops" onchange="makeRoutesList()">
+                            <option value="" selected disabled hidden>Choose Start Stop</option>`;
 
 
           var n = 0;
           var stop_code = [];
+
+          console.log('stops near by: '+obj['features'].length);
           while (n < obj['features'].length) {
             data = obj['features'][n]['properties'];
 
 
             // when the stop already in the list (רציפים)
             if (stop_code.includes(data["stop_code"])) {
-              console.log("exist - " + data["stop_code"]);
+              //console.log("exist - " + data["stop_code"]);
             }
             else {
               str += `<option value="${data['stop_code']}">${data['stop_name']} ${data['stop_code']}</option>`;

@@ -81,7 +81,7 @@ function sortStopsList(rootData){
         }
 
     }
-    console.log('First - '+firstName+',End - '+endName);
+    console.log('First - '+firstName+'\nEnd - '+endName);
     //download(storeStops, 'json.txt', 'text/plain');
 
     //console.log(storeStops);
@@ -139,8 +139,8 @@ function get_R_L_by_cBus(cBus){
     // in right side
     if (cBus<180){
 
-        // diff littel then 10, will not count
-        if(Math.abs(cBus-180)<10){
+        // diff littel then 7, will not count
+        if(Math.abs(cBus-180)<7){
             side=null;
         } 
         else {
@@ -150,9 +150,9 @@ function get_R_L_by_cBus(cBus){
     // in left side
     else {
 
-        // diff littel then 10, will not count
+        // diff littel then 7, will not count
         cBus-=180; // for abs value
-        if(Math.abs(cBus-180)<10){
+        if(Math.abs(cBus-180)<7){
             side=null;
         } 
         else {
