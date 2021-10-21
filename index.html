@@ -106,7 +106,10 @@
     <!-- ##################################################################
   MAP
 ####################################################################### -->
-    <div class="w3-third w3-center" style="right: 0; position: absolute;">
+    <div class="w3-third w3-center" style="right: 0; ">
+      <!--#################################################### 
+        for right set: "position: absolute;"
+      but it over the input section -->
       <div class="w3-card w3-container" id="mapInRight" style="min-height:400px">
       </div>
     </div>
@@ -120,7 +123,7 @@
       var oldMarker = null;
 
       // Height has to be set. You can do this in CSS too.
-      element.style = 'height:400px;';
+      //element.style = 'height:400px;';
 
       // Create Leaflet map on map element.
       var map = L.map(element);
@@ -137,6 +140,7 @@
 
       // Set map's center to target with zoom 14.
       map.setView(target, 14);
+
       map.on('click', addMarker);
 
       function addMarker(e) {
@@ -192,7 +196,8 @@
     function showPosition(position) {
       document.getElementById('lat').value = position.coords.latitude;
       document.getElementById('lon').value = position.coords.longitude;
-      newMarker = new L.marker(L.latLng(position.coords.latitude, position.coords.longitude));
+      target = L.latLng(position.coords.latitude, position.coords.longitude);
+      newMarker = new L.marker(target);
 
       if (oldMarker != null) {
         map.removeLayer(oldMarker);
@@ -200,6 +205,7 @@
       } else {
         oldMarker = newMarker.addTo(map);
       }
+      map.setView(target, 14);
     }
 
     // ##################################################################################################################################
