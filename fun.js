@@ -57,7 +57,7 @@ function sortStopsList(rootData){
         if (lowDistance2<lowDistance){
             lowDistance_Kay = lowDistance2_Kay;
         }
-        console.log('Put stop in '+lowDistance_Kay);
+        //console.log('Put stop in '+lowDistance_Kay);
         geometryArray_withChange.splice(lowDistance_Kay,0,route_stops[stopIndex]);
 
     }

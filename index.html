@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+
 <style>
   .backgroud {
     background-color: #336B90;
@@ -26,6 +27,20 @@
       height: auto;
     }
   }
+  @media (max-width: 480px) {
+   .pedding_section {
+      padding-top: 10px;
+      padding-bottom: 10px;
+     
+   }
+}
+
+@media (min-width: 481px) {
+   .pedding_section {
+      padding-left: 0;
+      padding-right: 0;
+   }
+}
 </style>
 
 <body>
@@ -50,9 +65,10 @@
       <button class="w3-btn w3-xlarge w3-dark-grey w3-hover-light-grey" onclick="document.getElementById('id01').style.display='block'" style="font-weight:900;">כפתור מתחת לכותרת</button>
     </div> -->
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
     <link rel="stylesheet" href="center-radar.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   </header>
 
   <!-- Modal -->
@@ -102,11 +118,12 @@
 
       </div>
     </div>
+   
 
     <!-- ##################################################################
   MAP
 ####################################################################### -->
-    <div class="w3-third w3-center" style="right: 0; ">
+    <div class="w3-third w3-center pedding_section" style="right: 0; ">
       <!--#################################################### 
         for right set: "position: absolute;"
       but it over the input section -->
@@ -162,14 +179,20 @@
   //L.marker(target).addTo(map);
     </script>
 
+    
+
 <!-- middle -->
-    <div class="w3-third" id="section2" style="display: none;">
+    <div class="w3-third pedding_section" id="section2" style="display: none;">
       <div class="w3-card w3-container w3-center" style="min-height:400px">
         <h3 id=collapse_head></h3><br>
         <div id='list'></div>
+        <br>
         <div id='listForTest'></div>
+        <br>
         <div id='list_StopsInRoute'></div>
+        <br>
         <div id='button_startCalc'></div>
+        <br>
         <div id='showAnswer'></div>
         
       </div>
@@ -214,12 +237,21 @@
 
     function calculatePerFullRoute() {
       var stopsData_temp = [];
-
-      //find the first and last stop (to remove all stop out-line)
       var firstStopID, lastStopID;
-      tempValue1 = document.getElementById('stops').value;
+      
+      //find the first and last stop (to remove all stop out-line)
+      var element_input = document.getElementById('stops');
+      var element_datalist = document.getElementById('stops1');
+      var opSelected = element_datalist.querySelector(`[value="${element_input.value}"]`);
+      tempValue1 = opSelected.getAttribute('data-value');
       firstStopID = rootAllFirstStopsID[tempValue1];
-      lastStopID = document.getElementById('eStop').value;
+      
+      
+      var element_input = document.getElementById('eStop');
+      var element_datalist = document.getElementById('eStop1');
+      var opSelected = element_datalist.querySelector(`[value="${element_input.value}"]`);
+      lastStopID = opSelected.getAttribute('data-value');
+      
       //console.log('First stop ID - ' + firstStopID);
       //console.log('Last stop ID - ' + lastStopID);
 
@@ -309,7 +341,7 @@
         document.getElementById('showAnswer').innerHTML = "Please choose another stop that isn't start"
         alert('Same Location! set another end stop.')
       } else {
-        document.getElementById('showAnswer').innerHTML = `<p>${x["persent"] * 100}% From the Route, The SUN Is On ${x["persentSide"]} Side</p>`;
+        document.getElementById('showAnswer').innerHTML = `<p>${x["persent"] * 100}% From the Route,\nThe SUN Is On ${x["persentSide"]} Side.\nyou sould sit in the other side</p>`;
       }
     }
 
@@ -325,27 +357,45 @@
     }
 
     function makeRoutesList() {
-      var val = document.getElementById('stops').value;
-      //document.getElementById('val_num').innerHTML = val;
+      
+      var element_input = document.getElementById('stops');
+      var element_datalist = document.getElementById('stops1');
+      var opSelected = element_datalist.querySelector(`[value="${element_input.value}"]`);
+      var val = opSelected.getAttribute('data-value');
+      
 
-      var x = `<label for="routes">Choose a Route:</label>
-                      <select name="routes" id="routes" onchange="makeStopsInRoute()">
+      var x = `<label for="routes">Choose a Route: <input id="routes" list="routes1" onfocus="this.value=''" onChange="makeStopsInRoute()"></label>
+                      <datalist name="routes" id="routes1">
                         <option value="" selected disabled hidden>Choose Route</option>`;//<option value="volvo">Volvo</option>
 
 
       var n = 0;
       while (n < dataFile[val].length) {
-        x += `<option value="${dataFile[val][n]["id"]}">${dataFile[val][n]["route_short_name"]} - ${dataFile[val][n]["route_long_name"]}</option>`;
+        // split long name
+        route_long_name = dataFile[val][n]["route_long_name"];
+        end=route_long_name.slice(route_long_name.indexOf(">")+1, route_long_name.indexOf('#')-2);
+        first=route_long_name.slice(0, route_long_name.indexOf('<'));
+        routeNumber = route_long_name.slice(route_long_name.indexOf('#')-1)
+        console.log(routeNumber)
+        //console.log(end);
+        
+
+        x += `<option data-value="${dataFile[val][n]["id"]}" value="קו ${dataFile[val][n]["route_short_name"]}, מסלול ${routeNumber}">מ:${first}, לכיוון: ${end}</option>`;
         n++
       }
-      x += `</select>`;
+      x += `</datalist><br>`;
       document.getElementById('listForTest').innerHTML = x;
     }
 
 
     function makeStopsInRoute() {
 
-      var idOfRoute = document.getElementById('routes').value;
+      var element_input = document.getElementById('routes');
+      var element_datalist = document.getElementById('routes1');
+      var opSelected = element_datalist.querySelector(`[value="${element_input.value}"]`);
+      var idOfRoute = opSelected.getAttribute('data-value');
+
+      //var idOfRoute = document.getElementById('routes').value;
       var linkRoute = `https://transit.land/api/v2/rest/routes/${idOfRoute}?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&format=geojson`;
       //console.log(linkRoute);
 
@@ -364,11 +414,16 @@
           obj = JSON.parse(this.responseText);
           stopsData = obj["features"][0]["properties"]["route_stops"];
 
-          var x = `<label for="endstops">Choose a End Stop:</label>
-                      <select name="eStop" id="eStop" onchange="showButtonForCalc()">
+          var x = `<label for="endstops">Choose a End Stop: <input id="eStop" list="eStop1" onfocus="this.value=''" onChange="showButtonForCalc()"></label>
+                      <datalist name="eStop" id="eStop1">
                         <option value="" selected disabled hidden>Choose End Stop</option>`;
 
-          tempValue1 = document.getElementById('stops').value;
+      
+          var element_input = document.getElementById('stops');
+          var element_datalist = document.getElementById('stops1');
+          var opSelected = element_datalist.querySelector(`[value="${element_input.value}"]`);
+          var tempValue1 = opSelected.getAttribute('data-value');
+
           firstStopID = rootAllFirstStopsID[tempValue1];
 
 
@@ -385,9 +440,9 @@
               if (stop_info['stop']['id'] == firstStopID) {
                 flag_firstStopID = sortStops_counter;
                 flag_firstStopID_inWithLine = i;
-                console.log("Start stop: " + stop_info['stop']['stop_name']);
+                //console.log("Start stop: " + stop_info['stop']['stop_name']);
               }
-              console.log(i + ', Name - ' + stop_info['stop']['stop_name']);
+              //console.log(i + ', Name - ' + stop_info['stop']['stop_name']);
             }
           }
           sortStops.splice(0, flag_firstStopID - 1); //short the list from the seleced (start) stop
@@ -407,10 +462,10 @@
           //stopData replaced with sortStops
           var n = 0;
           while (n < sortStops.length) {
-            x += `<option value="${sortStops[n]["stop"]["id"]}">${sortStops[n]["stop"]["stop_name"]}</option>`;
+            x += `<option data-value="${sortStops[n]["stop"]["id"]}" value="${sortStops[n]["stop"]["stop_name"]}">`;
             n++;
           }
-          x += `</select>`;
+          x += `</datalist><br>`;
 
           document.getElementById('list_StopsInRoute').innerHTML = x;
 
@@ -452,10 +507,9 @@
 
           // Getting the ul element
           let list = document.getElementById("list");
-          str = `<label for="stops">Choose a Stop:</label>
-                          <select name="stops" id="stops" onchange="makeRoutesList()">
+          str = `<label for="stops">Choose a Stop:<input list="stops1" id="stops" onfocus="this.value=''" onChange="makeRoutesList()"></label>
+                          <datalist name="stops" id="stops1">
                             <option value="" selected disabled hidden>Choose Start Stop</option>`;
-
 
           var n = 0;
           var stop_code = [];
@@ -470,7 +524,7 @@
               //console.log("exist - " + data["stop_code"]);
             }
             else {
-              str += `<option value="${data['stop_code']}">${data['stop_name']} ${data['stop_code']}</option>`;
+              str += `<option data-value="${data['stop_code']}" value="${data['stop_name']}">`;//${data['stop_code']}
               rootAllFirstStopsID[data['stop_code']] = data['id'];
               stop_code.push(data["stop_code"]);
               //console.log(data["stop_code"]);
@@ -483,7 +537,7 @@
 
             n++;
           }
-          str += `</select>`;
+          str += `</datalist><br>`;
           //str += `<label id="val_num"></label>`;
 
 
@@ -504,7 +558,6 @@
       // At last send the request
       xhr.send();
     };
-
 
   </script>
 
