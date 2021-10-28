@@ -204,3 +204,32 @@ function xAngle_to_yAngle(xAngle){
     { yAngle=90+(-xAngle); }
     return yAngle;
 }
+
+
+//###########################################################################################################
+//traslate idea (with change)- https://www.codeproject.com/Tips/1165561/How-to-Create-a-Multilingual-Application-using-Jav
+
+function Translate() { 
+    //initialization
+    this.init =  function(attribute, lng, data){
+        this.attribute = attribute;
+        this.lng = lng;
+        this.LngObject = data;
+    }
+    //translate 
+    this.process = function(){
+                _self = this;
+                var allDom = document.getElementsByTagName("*");
+
+                for(var i =0; i < allDom.length; i++){
+                    var elem = allDom[i];
+                    var key = elem.getAttribute(_self.attribute);
+                        
+                    if(key != null) {
+                            console.log(key);
+                            elem.innerHTML = this.LngObject[this.lng][key]  ;
+                    }
+                }
+                
+    }    
+}
