@@ -205,6 +205,10 @@
     var dataFile = [];
     var stopsData = [];
     var rootAllFirstStopsID = [];
+    
+    var nearbyStopMarker = L.featureGroup().addTo(map);
+    // https://stackoverflow.com/a/39968118
+
 
     // find device location
     function getLocation() {
@@ -441,12 +445,23 @@
 
           firstStopID = rootAllFirstStopsID[tempValue1];
 
+          var stopOnRoute = L.featureGroup().addTo(map);
+          var nearbyIcon = L.icon({
+            iconUrl: 'icons8-marker-48inRoute.png',
+            iconSize:     [20, 20], // size of the icon
+          });
+          map.removeLayer(nearbyStopMarker);
+          //nearbyStopMarker.remove()
+          //map.removeLayer(layer)
+
 
           // sorted
           sortedStops_withLine = sortStopsList(obj["features"][0]);
 
           var sortStops = [];
           var flag_firstStopID, sortStops_counter = 0, flag_firstStopID_inWithLine;
+          previusCoordinates=null;
+
           for (i = 0; i < sortedStops_withLine.length; i++) {
             if ('stop' in sortedStops_withLine[i]) {
               stop_info = sortedStops_withLine[i];
@@ -459,6 +474,20 @@
               }
               //console.log(i + ', Name - ' + stop_info['stop']['stop_name']);
             }
+            else {
+              coordinates = [sortedStops_withLine[i][1],sortedStops_withLine[i][0]];
+              //[sortStops[n]["stop"]['geometry']['coordinates'][1],sortStops[n]["stop"]['geometry']['coordinates'][0]];
+              if (i < sortedStops_withLine.length-1){
+                if (previusCoordinates!=null){
+                  //coordinates2 = [sortedStops_withLine[i+1][1],sortedStops_withLine[i+1][0]];
+                  //[sortStops[n+1]["stop"]['geometry']['coordinates'][1],sortStops[n+1]["stop"]['geometry']['coordinates'][0]];
+                  var line = new L.polyline([previusCoordinates, coordinates]);
+                  stopOnRoute.addLayer(line);
+                  
+                }
+                previusCoordinates = coordinates;
+              } 
+            }
           }
           sortStops.splice(0, flag_firstStopID - 1); //short the list from the seleced (start) stop
           //console.log('check '+sortStops[0]['stop']['stop_name']);
@@ -470,12 +499,33 @@
 
           stopsData = sortedStops_withLine;
 
+
+          
+
+
+
           //stopData replaced with sortStops
           var n = 0;
-          while (n < sortStops.length) {
+          while (n < sortStops.length-1) {
             x += `<option data-value="${sortStops[n]["stop"]["id"]}" value="${sortStops[n]["stop"]["stop_name"]}">`;
+
+            coordinates = [sortStops[n]["stop"]['geometry']['coordinates'][1],sortStops[n]["stop"]['geometry']['coordinates'][0]];
+            coordinates2 = [sortStops[n+1]["stop"]['geometry']['coordinates'][1],sortStops[n+1]["stop"]['geometry']['coordinates'][0]];
+            var marker = new L.Marker(coordinates, {icon: nearbyIcon}).bindPopup(sortStops[n]["stop"]['stop_name']);
+
+            //var line = new L.polyline([coordinates, coordinates2]);
+            stopOnRoute.addLayer(marker);
+            //stopOnRoute.addLayer(line);
+
             n++;
           }
+          x += `<option data-value="${sortStops[sortStops.length-1]["stop"]["id"]}" value="${sortStops[sortStops.length-1]["stop"]["stop_name"]}">`;
+          
+          coordinates = [sortStops[sortStops.length-1]["stop"]['geometry']['coordinates'][1],sortStops[sortStops.length-1]["stop"]['geometry']['coordinates'][0]];
+          var marker = new L.Marker(coordinates, {icon: nearbyIcon}).bindPopup(sortStops[sortStops.length-1]["stop"]['stop_name']);
+          stopOnRoute.addLayer(marker);
+          map.fitBounds(stopOnRoute.getBounds());
+
           x += `</datalist><br>`;
 
           document.getElementById('list_StopsInRoute').innerHTML = x;
@@ -526,7 +576,13 @@ Time:<input id="time" type="time" name="task_time" /><br><br><button onclick="ca
 
           var n = 0;
           var stop_code = [];
+        
+          var nearbyIcon = L.icon({
+            iconUrl: 'icons8-bus-48.png',
+            iconSize:     [20, 20], // size of the icon
+          });
 
+           
           console.log('stops near by: ' + obj['features'].length);
           while (n < obj['features'].length) {
             data = obj['features'][n]['properties'];
@@ -541,6 +597,15 @@ Time:<input id="time" type="time" name="task_time" /><br><br><button onclick="ca
               rootAllFirstStopsID[data['stop_code']] = data['id'];
               stop_code.push(data["stop_code"]);
               //console.log(data["stop_code"]);
+
+              coordinates = [data['geometry']['coordinates'][1],data['geometry']['coordinates'][0]];
+
+              var marker = new L.Marker(coordinates, {icon: nearbyIcon}).bindPopup(data['stop_name']);
+            //var line = new L.polyline([markers[i],markers[i+1]]);
+            nearbyStopMarker.addLayer(marker);
+            //route.addLayer(line);
+
+              //nearbyStopMarker.push(L.marker(coordinates).bindPopup('This is Littleton, CO.'));
             }
 
             if (dataFile[data['stop_code']] == null) {
@@ -553,6 +618,15 @@ Time:<input id="time" type="time" name="task_time" /><br><br><button onclick="ca
 
           str += `</datalist><br>`;
           //str += `<label id="val_num"></label>`;
+
+          //var overlay = {'markers': nearbyStopMarker};
+          //L.layerGroup(nearbyStopMarker);
+          //L.control.layers(null,overlay).addTo(map);
+
+          //nearbyStopMarker.addLayer(new L.Marker(markers[n-1]));
+
+          map.fitBounds(nearbyStopMarker.getBounds());
+
 
 
           if (n != 0) {
