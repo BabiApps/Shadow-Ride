@@ -206,7 +206,9 @@
     var stopsData = [];
     var stopsData_temp = [];
     var rootAllFirstStopsID = [];
+    var rootAllNearbyStopsLocation = []; //###################################### TODO: need to be reset 
     var sortStops = []; // without geomrtry on road/line
+    var getOn;
     
     var nearbyStopMarker = L.featureGroup().addTo(map);
     var On_OffRoute = L.featureGroup().addTo(map);
@@ -282,15 +284,14 @@
       if (isDay){
         for (var i = 0; i < stopsData_temp.length - 1; i++) {
 
-          // start stop
+          // find start stop location
           if ('stop' in stopsData_temp[i]) {
             startStop = stopsData_temp[i]["stop"]["geometry"]["coordinates"];
           }
           else {
             startStop = stopsData_temp[i];
           }
-
-          // end stop
+          // finf end stop location
           if ('stop' in stopsData_temp[i + 1]) {
             endStop = stopsData_temp[i + 1]["stop"]["geometry"]["coordinates"];
           }
@@ -298,19 +299,22 @@
             endStop = stopsData_temp[i + 1];
           }
 
-
           distance_Air = distanceBetweenStops(startStop, endStop);
           SumDistance_Air += distance_Air;
-
-          cBus = anglePer2stops(startStop, endStop);
-    
-          
+          cBus = anglePer2stops(startStop, endStop);          
 
           suncalcVar = SunCalc.getPosition(customDate, startStop[0], startStop[1]);
           cSun = suncalcVar['azimuth'] * 180 / Math.PI + 180;
 
           diffC = cSun - cBus;
           cBus_getSide = get_R_L_by_cBus(diffC);
+
+
+        //#########################################################################################################################
+        //#########################################################################################################################
+        //#########################################################################################################################
+        //#########################################################################################################################
+        // todo : colored line on road, for visual 
 
           if (cBus_getSide == "Right") {
             distanceR += distance_Air;
@@ -372,15 +376,41 @@
       return routeList;
     }
 
-    function makeRoutesList() {
+    function showRoutesListInStop() {
+
+      /*
+      stopsData = [];
+      stopsData_temp = [];
+      rootAllFirstStopsID = [];
+      sortStops = [];
+      */
+
+
+      // reset old layer
+      map.removeLayer(nearbyStopMarker);
+      map.removeLayer(On_OffRoute);
+      map.removeLayer(stopOnRoute);
+      //nearbyStopMarker = L.featureGroup({}).addTo(map);
+      On_OffRoute = L.featureGroup({}).addTo(map);
+      stopOnRoute = L.featureGroup({}).addTo(map);
       
       var element_input = document.getElementById('stops');
       var element_datalist = document.getElementById('stops1');
       var opSelected = element_datalist.querySelector(`[value="${element_input.value}"]`);
       var val = opSelected.getAttribute('data-value');
+
+      // show on map the start stop
+      if (getOn != null) {
+        //map.removeLayer(oldMarker);
+        getOn.setLatLng(rootAllNearbyStopsLocation[val]).update();  // Updates your defined marker position
+      } else {
+        getOn = new L.Marker(rootAllNearbyStopsLocation[val], {icon: busGetOn}).bindPopup(element_input.value);
+        getOn.addTo(map);
+      }
+      map.setView(rootAllNearbyStopsLocation[val]);
       
 
-      var x = `<label for="routes">Choose a Route: <input id="routes" list="routes1" onfocus="this.value=''" onChange="makeStopsInRoute()"></label>
+      var x = `<label for="routes">Choose a Route: <input id="routes" list="routes1" onfocus="this.value=''" onChange="showStopsListInRoute()"></label>
                       <datalist name="routes" id="routes1">
                         <option value="" selected disabled hidden>Choose Route</option>`;//<option value="volvo">Volvo</option>
 
@@ -405,7 +435,27 @@
     }
 
 
-    function makeStopsInRoute() {
+    function showStopsListInRoute() {
+
+      //dataFile = [];
+      stopsData = [];
+      stopsData_temp = [];
+      //rootAllFirstStopsID = [];
+      sortStops = [];
+
+      
+
+      //var stopOnRoute = L.featureGroup().addTo(map);
+      //map.removeLayer(nearbyStopMarker);
+
+
+      // reset old layer
+      map.removeLayer(nearbyStopMarker);
+      map.removeLayer(On_OffRoute);
+      map.removeLayer(stopOnRoute);
+      nearbyStopMarker = L.featureGroup().addTo(map);
+      On_OffRoute = L.featureGroup().addTo(map);
+      stopOnRoute = L.featureGroup().addTo(map);
 
       var element_input = document.getElementById('routes');
       var element_datalist = document.getElementById('routes1');
@@ -442,28 +492,22 @@
           var tempValue1 = opSelected.getAttribute('data-value');
 
           firstStopID = rootAllFirstStopsID[tempValue1];
-
-          //var stopOnRoute = L.featureGroup().addTo(map);
-          map.removeLayer(nearbyStopMarker);
-
           
           var nearbyIcon = L.icon({
             iconUrl: 'icons8-marker-48inRoute.png',
-            iconSize:     [20, 20], // size of the icon
+            iconSize:     [13, 13], // size of the icon
           });
           
 
-          // sorted
+          // sort the list
           sortedStops_withLine = sortStopsList(obj["features"][0]);
-
           
           var flag_firstStopID, sortStops_counter = 0, flag_firstStopID_inWithLine = 0;
-          previusCoordinates=null;
 
           for (i = 0; i < sortedStops_withLine.length; i++) {
             if ('stop' in sortedStops_withLine[i]) {
               stop_info = sortedStops_withLine[i];
-              sortStops.push(stop_info);
+              sortStops.push(stop_info); // for storing list of stops only
               sortStops_counter++;
               if (stop_info['stop']['id'] == firstStopID) {
                 flag_firstStopID = sortStops_counter;
@@ -472,44 +516,34 @@
               }
               //console.log(i + ', Name - ' + stop_info['stop']['stop_name']);
             }
-            else {
-              coordinates = [sortedStops_withLine[i][1],sortedStops_withLine[i][0]];
-              //[sortStops[n]["stop"]['geometry']['coordinates'][1],sortStops[n]["stop"]['geometry']['coordinates'][0]];
-              if (i < sortedStops_withLine.length-1){
-                if (previusCoordinates!=null){
-                  //coordinates2 = [sortedStops_withLine[i+1][1],sortedStops_withLine[i+1][0]];
-                  //[sortStops[n+1]["stop"]['geometry']['coordinates'][1],sortStops[n+1]["stop"]['geometry']['coordinates'][0]];
-                  var line = new L.polyline([previusCoordinates, coordinates]);
-                  stopOnRoute.addLayer(line);
-                  
-                }
-                previusCoordinates = coordinates;
-              } 
-            }
           }
 
           //short the list from the seleced (start) stop
           sortStops.splice(0, flag_firstStopID - 1); // the (-1) for showing in the list the first stop
           sortedStops_withLine.splice(0, flag_firstStopID_inWithLine);
           
-
           // (OLD) stopsData = sortStops;
           stopsData = sortedStops_withLine;
 
 
-          
-
-          coordinates = [sortStops[0]["stop"]['geometry']['coordinates'][1],sortStops[0]["stop"]['geometry']['coordinates'][0]];          
-          var getOn = new L.Marker(coordinates, {icon: busGetOn}).bindPopup(sortStops[0]["stop"]['stop_name']);
-          //On_OffRoute.addLayer(getOn);
-          coordinates = [sortStops[sortStops.length-1]["stop"]['geometry']['coordinates'][1],sortStops[sortStops.length-1]["stop"]['geometry']['coordinates'][0]];
-          var getOff = new L.Marker(coordinates, {icon: busGetOff}).bindPopup(sortStops[sortStops.length-1]["stop"]['stop_name']);
-          //On_OffRoute.addLayer(getOff);
-
-          //map.fitBounds(On_OffRoute.getBounds());
+          // show the line from the selected stop to end stop on the map
+          previusCoordinates=null;
+          for (index in stopsData){
+            if (!('stop' in stopsData[index])){
+              coordinates = [stopsData[index][1],stopsData[index][0]];
+              if (index < stopsData.length-1){
+                if (previusCoordinates!=null){
+                  var line = new L.polyline([previusCoordinates, coordinates]);
+                  stopOnRoute.addLayer(line);
+                }
+                previusCoordinates = coordinates;
+              } 
+            }
+          }
 
 
           //stopData replaced with sortStops
+          // sortStops only contain the stops (without geometry) 
           var n = 0;
           while (n < sortStops.length-1) {
             x += `<option data-value="${sortStops[n]["stop"]["id"]}" value="${sortStops[n]["stop"]["stop_name"]}">`;
@@ -553,30 +587,23 @@
       Time:<input id="time" type="time" name="task_time" /><br><br><button onclick="calculatePerFullRoute()">Start Calculate</button>`;
 
       // remove old route
-      //map.removeLayer(On_OffRoute);
-      On_OffRoute = L.featureGroup({}).addTo(map);
+      map.removeLayer(On_OffRoute);
+      On_OffRoute = L.featureGroup().addTo(map);
 
-      // show on map the start and end stops
-      coordinates = [sortStops[0]["stop"]['geometry']['coordinates'][1],sortStops[0]["stop"]['geometry']['coordinates'][0]];          
-      var getOn = new L.Marker(coordinates, {icon: busGetOn}).bindPopup(sortStops[0]["stop"]['stop_name']);
-      On_OffRoute.addLayer(getOn);
 
       var element_input = document.getElementById('eStop');
       var element_datalist = document.getElementById('eStop1');
       var opSelected = element_datalist.querySelector(`[value="${element_input.value}"]`);
       lastStopID = opSelected.getAttribute('data-value');
 
+      
       var previusCoordinates = null;
-      
-      
-
-
       for (stopindex in stopsData) {
         stopsData_temp.push(stopsData[stopindex]);
         if ('stop' in stopsData[stopindex]) {
+          // show marker for end stop
           if (stopsData[stopindex]['stop']['id'] == lastStopID) {
             endStopLocation = stopsData[stopindex]["stop"]["geometry"]["coordinates"];
-
             coordinates = [endStopLocation[1],endStopLocation[0]];
             var getOff = new L.Marker(coordinates, {icon: busGetOff}).bindPopup(stopsData[stopindex]["stop"]['stop_name']);
             On_OffRoute.addLayer(getOff);
@@ -589,8 +616,7 @@
             var line = new L.polyline([previusCoordinates, coordinates]);
             On_OffRoute.addLayer(line);
           }
-          previusCoordinates = coordinates;
-          
+          previusCoordinates = coordinates;        
         }
       }
       //console.log('Sum mini location (geometry): ' + stopsData_temp.length);
@@ -606,13 +632,26 @@
       //show section
       document.getElementById('section2').style.display='block';
 
-      // reset old
+      // reset old layer
       map.removeLayer(nearbyStopMarker);
       map.removeLayer(On_OffRoute);
       map.removeLayer(stopOnRoute);
-      nearbyStopMarker = L.featureGroup({}).addTo(map);
-      On_OffRoute = L.featureGroup({}).addTo(map);
-      stopOnRoute = L.featureGroup({}).addTo(map);
+      nearbyStopMarker = L.featureGroup().addTo(map);
+      On_OffRoute = L.featureGroup().addTo(map);
+      stopOnRoute = L.featureGroup().addTo(map);
+
+      if (getOn!=null){
+        map.removeLayer(getOn);
+        getOn = null;
+      }
+
+      // reset old data files
+      dataFile = [];
+      stopsData = [];
+      stopsData_temp = [];
+      rootAllFirstStopsID = [];
+      rootAllNearbyStopsLocation = [];
+      sortStops = [];
 
       var lat = document.getElementById('lat').value;
       var lon = document.getElementById('lon').value;
@@ -635,7 +674,7 @@
 
           // Getting the ul element
           let list = document.getElementById("list");
-          str = `<label for="stops">Choose a Stop:<input list="stops1" id="stops" onfocus="this.value=''" onChange="makeRoutesList()"></label>
+          str = `<label for="stops">Choose a Stop:<input list="stops1" id="stops" onfocus="this.value=''" onChange="showRoutesListInStop()"></label>
                           <datalist name="stops" id="stops1">
                             <option value="" selected disabled hidden>Choose Start Stop</option>`;
 
@@ -648,7 +687,7 @@
           });
 
            
-          console.log('stops near by: ' + obj['features'].length);
+          //console.log('stops near by: ' + obj['features'].length);
           while (n < obj['features'].length) {
             data = obj['features'][n]['properties'];
 
@@ -660,16 +699,16 @@
             else {
               str += `<option data-value="${data['stop_code']}" value="${data['stop_name']}">`;//${data['stop_code']}
               rootAllFirstStopsID[data['stop_code']] = data['id'];
+              
               stop_code.push(data["stop_code"]);
               //console.log(data["stop_code"]);
 
               coordinates = [data['geometry']['coordinates'][1],data['geometry']['coordinates'][0]];
+              rootAllNearbyStopsLocation[data['stop_code']] = coordinates;
 
               var marker = new L.Marker(coordinates, {icon: nearbyIcon}).bindPopup(data['stop_name']);
-            //var line = new L.polyline([markers[i],markers[i+1]]);
-            nearbyStopMarker.addLayer(marker);
-            //route.addLayer(line);
-
+              nearbyStopMarker.addLayer(marker);
+              
               //nearbyStopMarker.push(L.marker(coordinates).bindPopup('This is Littleton, CO.'));
             }
 
