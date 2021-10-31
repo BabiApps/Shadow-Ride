@@ -81,7 +81,7 @@ function sortStopsList(rootData){
         }
 
     }
-    console.log('First - '+firstName+'\nEnd - '+endName);
+    //console.log('First - '+firstName+'\nEnd - '+endName);
     //download(storeStops, 'json.txt', 'text/plain');
 
     //console.log(storeStops);

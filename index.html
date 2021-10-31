@@ -204,11 +204,23 @@
     //globle varible
     var dataFile = [];
     var stopsData = [];
+    var stopsData_temp = [];
     var rootAllFirstStopsID = [];
+    var sortStops = []; // without geomrtry on road/line
     
     var nearbyStopMarker = L.featureGroup().addTo(map);
+    var On_OffRoute = L.featureGroup().addTo(map);
+    var stopOnRoute = L.featureGroup().addTo(map);
     // https://stackoverflow.com/a/39968118
 
+    var busGetOn = L.icon({
+            iconUrl: 'icons8-get-on-bus-100.png',
+            iconSize:     [25, 25], // size of the icon
+          });
+    var busGetOff = L.icon({
+      iconUrl: 'icons8-get-off-bus-100.png',
+      iconSize:     [25, 25], // size of the icon
+    });
 
     // find device location
     function getLocation() {
@@ -238,7 +250,7 @@
     // ##################################################################################################################################
 
     function calculatePerFullRoute() {
-      var stopsData_temp = [];
+      
       var firstStopID, lastStopID;
       
       //find the first and last stop (to remove all stop out-line)
@@ -258,16 +270,8 @@
       //console.log('Last stop ID - ' + lastStopID);
 
 
-      for (stopindex in stopsData) {
-        stopsData_temp.push(stopsData[stopindex]);
-        if ('stop' in stopsData[stopindex]) {
-          if (stopsData[stopindex]['stop']['id'] == lastStopID) {
-            endStopLocation = stopsData[stopindex]["stop"]["geometry"]["coordinates"];
-            break; // stop pushing when end-stop founded
-          }
-        }
-      }
-      console.log('Sum mini location (geometry): ' + stopsData_temp.length);
+      
+       
 
       var distanceR = 0, distanceL = 0, SumDistance_Air = 0, sumNull = 0;
       var cBus, diffC, persent, persentSide, sum_cBus = 0;
@@ -277,12 +281,6 @@
 
       if (isDay){
         for (var i = 0; i < stopsData_temp.length - 1; i++) {
-
-          /*
-          --- moved to withLine method
-          startStop = stopsData_temp[i]["stop"]["geometry"]["coordinates"];
-          endStop = stopsData_temp[i + 1]["stop"]["geometry"]["coordinates"];
-          */
 
           // start stop
           if ('stop' in stopsData_temp[i]) {
@@ -445,21 +443,21 @@
 
           firstStopID = rootAllFirstStopsID[tempValue1];
 
-          var stopOnRoute = L.featureGroup().addTo(map);
+          //var stopOnRoute = L.featureGroup().addTo(map);
+          map.removeLayer(nearbyStopMarker);
+
+          
           var nearbyIcon = L.icon({
             iconUrl: 'icons8-marker-48inRoute.png',
             iconSize:     [20, 20], // size of the icon
           });
-          map.removeLayer(nearbyStopMarker);
-          //nearbyStopMarker.remove()
-          //map.removeLayer(layer)
-
+          
 
           // sorted
           sortedStops_withLine = sortStopsList(obj["features"][0]);
 
-          var sortStops = [];
-          var flag_firstStopID, sortStops_counter = 0, flag_firstStopID_inWithLine;
+          
+          var flag_firstStopID, sortStops_counter = 0, flag_firstStopID_inWithLine = 0;
           previusCoordinates=null;
 
           for (i = 0; i < sortedStops_withLine.length; i++) {
@@ -489,19 +487,26 @@
               } 
             }
           }
-          sortStops.splice(0, flag_firstStopID - 1); //short the list from the seleced (start) stop
-          //console.log('check '+sortStops[0]['stop']['stop_name']);
 
-          //stopsData = sortStops;
-
+          //short the list from the seleced (start) stop
+          sortStops.splice(0, flag_firstStopID - 1); // the (-1) for showing in the list the first stop
           sortedStops_withLine.splice(0, flag_firstStopID_inWithLine);
-          //console.log('check withLine '+sortedStops_withLine[0]['stop']['stop_name']);
+          
 
+          // (OLD) stopsData = sortStops;
           stopsData = sortedStops_withLine;
 
 
           
 
+          coordinates = [sortStops[0]["stop"]['geometry']['coordinates'][1],sortStops[0]["stop"]['geometry']['coordinates'][0]];          
+          var getOn = new L.Marker(coordinates, {icon: busGetOn}).bindPopup(sortStops[0]["stop"]['stop_name']);
+          //On_OffRoute.addLayer(getOn);
+          coordinates = [sortStops[sortStops.length-1]["stop"]['geometry']['coordinates'][1],sortStops[sortStops.length-1]["stop"]['geometry']['coordinates'][0]];
+          var getOff = new L.Marker(coordinates, {icon: busGetOff}).bindPopup(sortStops[sortStops.length-1]["stop"]['stop_name']);
+          //On_OffRoute.addLayer(getOff);
+
+          //map.fitBounds(On_OffRoute.getBounds());
 
 
           //stopData replaced with sortStops
@@ -540,14 +545,74 @@
 
     }
 
+    // show button
+    // show on map start\end stops
+    // short the list
     function showButtonForCalc() {
       document.getElementById('button_startCalc').innerHTML = `Date:<input id="date" type="date" name="task_date" />
-Time:<input id="time" type="time" name="task_time" /><br><br><button onclick="calculatePerFullRoute()">Start Calculate</button>`;
+      Time:<input id="time" type="time" name="task_time" /><br><br><button onclick="calculatePerFullRoute()">Start Calculate</button>`;
+
+      // remove old route
+      //map.removeLayer(On_OffRoute);
+      On_OffRoute = L.featureGroup({}).addTo(map);
+
+      // show on map the start and end stops
+      coordinates = [sortStops[0]["stop"]['geometry']['coordinates'][1],sortStops[0]["stop"]['geometry']['coordinates'][0]];          
+      var getOn = new L.Marker(coordinates, {icon: busGetOn}).bindPopup(sortStops[0]["stop"]['stop_name']);
+      On_OffRoute.addLayer(getOn);
+
+      var element_input = document.getElementById('eStop');
+      var element_datalist = document.getElementById('eStop1');
+      var opSelected = element_datalist.querySelector(`[value="${element_input.value}"]`);
+      lastStopID = opSelected.getAttribute('data-value');
+
+      var previusCoordinates = null;
+      
+      
+
+
+      for (stopindex in stopsData) {
+        stopsData_temp.push(stopsData[stopindex]);
+        if ('stop' in stopsData[stopindex]) {
+          if (stopsData[stopindex]['stop']['id'] == lastStopID) {
+            endStopLocation = stopsData[stopindex]["stop"]["geometry"]["coordinates"];
+
+            coordinates = [endStopLocation[1],endStopLocation[0]];
+            var getOff = new L.Marker(coordinates, {icon: busGetOff}).bindPopup(stopsData[stopindex]["stop"]['stop_name']);
+            On_OffRoute.addLayer(getOff);
+            break; // stop pushing when end-stop founded
+          }
+        }
+        else{
+          coordinates = [stopsData[stopindex][1],stopsData[stopindex][0]];
+          if (previusCoordinates!=null&&stopindex<stopsData.length-1){
+            var line = new L.polyline([previusCoordinates, coordinates]);
+            On_OffRoute.addLayer(line);
+          }
+          previusCoordinates = coordinates;
+          
+        }
+      }
+      //console.log('Sum mini location (geometry): ' + stopsData_temp.length);
+
+
+      
+      map.fitBounds(On_OffRoute.getBounds());
+      // remove all stop
+      map.removeLayer(stopOnRoute);
     }
 
     function findNearStops() {
       //show section
       document.getElementById('section2').style.display='block';
+
+      // reset old
+      map.removeLayer(nearbyStopMarker);
+      map.removeLayer(On_OffRoute);
+      map.removeLayer(stopOnRoute);
+      nearbyStopMarker = L.featureGroup({}).addTo(map);
+      On_OffRoute = L.featureGroup({}).addTo(map);
+      stopOnRoute = L.featureGroup({}).addTo(map);
 
       var lat = document.getElementById('lat').value;
       var lon = document.getElementById('lon').value;
