@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
 
 
-<meta http-equiv="Content-Security-Policy" content="default-src *; style-src * 'unsafe-inline'; media-src *; img-src *; script-src * 'unsafe-inline' 'unsafe-eval'">
+<!--meta http-equiv="Content-Security-Policy" content="default-src *; style-src * 'unsafe-inline'; media-src *; img-src *; script-src * 'unsafe-inline' 'unsafe-eval'"-->
 <style>
   .backgroud {
     background-color: #336B90;
@@ -24,7 +24,7 @@
 
   @media (min-width: 481px) {
     img {
-      max-width: 42%;
+      max-width: 38%;
       width: auto;
       height: auto;
     }
@@ -428,9 +428,9 @@
       map.setView(rootAllNearbyStopsLocation[val]);
       
 
-      var x = `<label for="routes">Choose a Route: <input id="routes" list="routes1" onfocus="this.value=''" onChange="showStopsListInRoute()"></label>
+      var x = `<label for="routes">Choose a Route: <input id="routes" list="routes1" onChange="showStopsListInRoute()"> <button onclick="document.getElementById('routes').value=''">Reset</button></label>
                       <datalist name="routes" id="routes1">
-                        <option value="" selected disabled hidden>Choose Route</option>`;//<option value="volvo">Volvo</option>
+                        <option value="" selected disabled hidden>Choose Route</option>`;//<option value="volvo">Volvo</option> onfocus="this.value=''"
 
 
       var n = 0;
@@ -499,9 +499,9 @@
           obj = JSON.parse(this.responseText);
           stopsData = obj["features"][0]["properties"]["route_stops"];
 
-          var x = `<label for="endstops">Choose a End Stop: <input id="eStop" list="eStop1" onfocus="this.value=''" onChange="showButtonForCalc()"></label>
+          var x = `<label for="endstops">Choose a End Stop: <input id="eStop" list="eStop1" onChange="showButtonForCalc()"> <button onclick="document.getElementById('eStop').value=''">Reset</button></label>
                       <datalist name="eStop" id="eStop1">
-                        <option value="" selected disabled hidden>Choose End Stop</option>`;
+                        <option value="" selected disabled hidden>Choose End Stop</option>`;// onfocus="this.value=''"
 
       
           var element_input = document.getElementById('stops');
@@ -692,9 +692,9 @@
 
           // Getting the ul element
           let list = document.getElementById("list");
-          str = `<label for="stops">Choose a Stop:<input list="stops1" id="stops" onfocus="this.value=''" onChange="showRoutesListInStop()"></label>
+          str = `<label for="stops">Choose a Stop:<input list="stops1" id="stops" onChange="showRoutesListInStop()"> <button onclick="document.getElementById('stops').value=''">Reset</button></label>
                           <datalist name="stops" id="stops1">
-                            <option value="" selected disabled hidden>Choose Start Stop</option>`;
+                            <option value="" selected disabled hidden>Choose Start Stop</option>`; //onfocus="this.value=''" 
 
           var n = 0;
           var stop_code = [];
