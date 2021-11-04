@@ -81,20 +81,20 @@
   </header>
 
   <!-- Modal -->
-  <div id="id01" class="w3-modal">
+  <div id="id01" class="w3-modal" style="z-index: 1;">
     <div class="w3-modal-content w3-card-4 w3-animate-top">
       <header class="w3-container w3-theme-l1">
         <span onclick="document.getElementById('id01').style.display='none'"
           class="w3-button w3-display-topright">×</span>
-        <h4>חלון קופץ בלחיצה על הכפתור מתחת לכותרת</h4>
-        <h5>Because we can <i class="fa fa-smile-o"></i></h5>
+        <h4 id="modalHeader">חלון קופץ בלחיצה על הכפתור מתחת לכותרת</h4>
+        <!--h5>Because we can <i class="fa fa-smile-o"></i></h5-->
       </header>
       <div class="w3-padding">
-        <p>Cool huh? Ok, enough teasing around..</p>
-        <p>Go to our <a class="w3-btn" href="/w3css/default.asp">W3.CSS Tutorial</a> to learn more!</p>
+        <p id="modalBody">Cool huh? Ok, enough teasing around..</p>
+        <!--p>Go to our <a class="w3-btn" href="/w3css/default.asp">W3.CSS Tutorial</a> to learn more!</p-->
       </div>
-      <footer class="w3-container w3-theme-l1">
-        <p>Modal footer</p>
+      <!--footer class="w3-container w3-theme-l1">
+        <p>Modal footer</p-->
       </footer>
     </div>
   </div>
@@ -136,7 +136,7 @@
       <!--#################################################### 
         for right set: "position: absolute;"
       but it over the input section -->
-      <div class="w3-card w3-container" id="mapInRight" style="min-height:400px">
+      <div class="w3-card w3-container" id="mapInRight" style="min-height:400px; z-index: -1;">
       </div>
     </div>
     <!-- not in use script src="OpenLayers.js"></script-->
@@ -149,7 +149,7 @@
       var pickMarker = null;
 
       // Height has to be set. You can do this in CSS too.
-      //element.style = 'height:400px;';
+      //element.style = 'z-index: 1;';
 
       // Create Leaflet map on map element.
       var map = L.map(element);
@@ -276,6 +276,7 @@
     function calculatePerFullRoute() {
       
       var firstStopID, lastStopID;
+      var textToShow = '';
       
       //find the first and last stop (to remove all stop out-line)
       var element_input = document.getElementById('stops');
@@ -375,16 +376,23 @@
         x = { 'persent': Math.round(persent*100), 'persentSide': persentSide , 'persentSideNegativ': persentSideNegativ};
 
         if (i == 0) {
-          document.getElementById('showAnswer').innerHTML = "Please choose another stop that isn't start"
+          textToShow = "Please choose another stop that isn't start"
+          document.getElementById('showAnswer').innerHTML = textToShow;
           alert('Same Location! set another end stop.')
         } else {
-          document.getElementById('showAnswer').innerHTML = `<p>${x["persent"]}% From the Route,\nThe SUN is on your ${x["persentSide"]} side.\nYou should sit on the ${x["persentSideNegativ"]} side</p>`;
+          textToShow = `${x["persent"]}% From the Route,\nThe SUN is on your ${x["persentSide"]} side.\nYou should sit on the ${x["persentSideNegativ"]} side`;
+          document.getElementById('showAnswer').innerHTML = textToShow;
         }
       }
       //if is not day (or error in compare)
       else{
-        document.getElementById('showAnswer').innerHTML = "You can sit wherever you want"
+        textToShow = "You can sit wherever you want"
+        document.getElementById('showAnswer').innerHTML = textToShow;
       }
+      document.getElementById('modalBody').innerHTML = textToShow
+      // check when empty (user press reset button)
+      document.getElementById('modalHeader').innerHTML = `ב${document.getElementById('routes').value}, מהתחנה ${document.getElementById('stops').value} עד תחנה ${document.getElementById('eStop').value}`
+      document.getElementById('id01').style.display='block'
     }
 
     function routes(data) {
@@ -460,7 +468,7 @@
     function showStopsListInRoute() {
 
       //dataFile = [];
-      stopsData = [];
+      //stopsData = [];
       stopsData_temp = [];
       //rootAllFirstStopsID = [];
       sortStops = [];
