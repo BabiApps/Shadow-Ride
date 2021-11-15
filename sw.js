@@ -1,13 +1,13 @@
 var cacheName = 'hello-pwa';
 var filesToCache = [
   '/',
-  '/index.html',
+  '/index.html']; /*,
   '/suncalc.js',
   '/fun.js',
   '/OpenLayers.js',
   '/manifest.json',
   '/ShadowRide_logo_3-11.png'
-];
+];*/
 
 /* Start the service worker and cache all of the app's content */
 self.addEventListener('install', function(e) {
