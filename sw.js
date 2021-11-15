@@ -5,6 +5,7 @@ var filesToCache = [
   '/suncalc.js',
   '/fun.js',
   '/OpenLayers.js',
+  '/manifest.json',
   '/ShadowRide_logo_3-11.png'
 ];
 
