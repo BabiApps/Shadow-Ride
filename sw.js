@@ -3,7 +3,9 @@ var filesToCache = [
   '/',
   '/index.html',
   '/suncalc.js',
-  '/fun.js'
+  '/fun.js',
+  '/OpenLayers.js',
+  '/ShadowRide_logo_3-11.png'
 ];
 
 /* Start the service worker and cache all of the app's content */

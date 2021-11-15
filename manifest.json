@@ -2,12 +2,28 @@
   "name": "Shadow Ride",
   "short_name": "Shadow Ride",
   "icons": [{
-    "src": "images/ShadowRide_applogo.jpeg",
+      "src": "images/ShadowRide_applogo128.png",
       "sizes": "128x128",
       "type": "image/png"
     }, {
-      "src": "images/ShadowRide_applogo.jpeg",
+      "src": "images/ShadowRide_applogo144.png",
       "sizes": "144x144",
+      "type": "image/png"
+    }, {
+      "src": "images/ShadowRide_applogo152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    }, {
+      "src": "images/ShadowRide_applogo192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }, {
+      "src": "images/ShadowRide_applogo256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }, {
+      "src": "images/ShadowRide_applogo512.png",
+      "sizes": "512x512",
       "type": "image/png"
     }],
   "lang": "en-US",
