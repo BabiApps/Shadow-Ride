@@ -23,7 +23,9 @@
   "devDependencies": {
     "eslint": "^3.12.2",
     "eslint-config-mourner": "^2.0.1",
-    "tap": "^8.0.1"
+    "favicons-webpack-plugin": "^5.0.2",
+    "tap": "^8.0.1",
+    "webpack-pwa-manifest": "^4.3.0"
   },
   "eslintConfig": {
     "extends": "mourner",
