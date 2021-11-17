@@ -1,17 +1,17 @@
 {
-	"author": "J.Fechner",
-	"name": "Shadow-Ride",
-	"short_name": "Chrome Shadow-Ride",
-	"description": "Simple template for a chrome WebAPK.",
+	"author": "Shilo Babila",
+	"name": "Shadow Ride",
+	"short_name": "Shadow Ride",
+	"description": "We tell you where to sit on the bus, so you will sunless in the ride.",
 	"orientation": "portrait",
 	"start_url": "/Shadow-Ride/",
 	"scope": "/Shadow-Ride/",
 	"display": "standalone",
 	"background_color": "grey",
-	"theme_color": "black",
+	"theme_color": "white",
 	"icons": [
 		{
-			"src": "/Shadow-Ride/logo.png",
+			"src": "/Shadow-Ride/images/logo.png",
 			"sizes": "48x48 72x72 96x96 128x128 192x192 256x256 512x512",
 			"type": "image/png"
 		}
