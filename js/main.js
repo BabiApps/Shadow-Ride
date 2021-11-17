@@ -47,9 +47,9 @@ function init(){
 	});
 	
 	// Initialize online/offline detection
-	checkOnlineStatus();
-	window.addEventListener("online",checkOnlineStatus);
-	window.addEventListener("offline",checkOnlineStatus);
+	//checkOnlineStatus();
+	//window.addEventListener("online",checkOnlineStatus);
+	//window.addEventListener("offline",checkOnlineStatus);
 }
 
 init();
