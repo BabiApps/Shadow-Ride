@@ -5,14 +5,15 @@ abbr {
 	position: absolute;
 	top: 5px;
 	right: 5px;
+	visibility: hidden;
 }
 #showInstall {
+	
+}
+#installApp {
 	position: absolute ;
 	top: 30px;
 	right: 6px;
-}
-#installApp {
-	
 	width:20px;
 	height:20px;
 }
