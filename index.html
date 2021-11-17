@@ -1,27 +1,26 @@
 <!DOCTYPE html>
-<html>
-<title>Shadow Ride</title>
-<meta
-  name="description"           
-  content="We tell you where to sit on the bus, so you will sunless in the ride">
-<meta charset="UTF-8">
+<html lang="en">
 
 <head>
-  <staticContent>
-    <mimeMap fileExtension=".json" mimeType="application/json" />
- </staticContent>
+  <title>Shadow Ride</title>
+  <meta name="description"           
+    content="We tell you where to sit on the bus, so you will sunless in the ride">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+  <link rel="icon" type="image/png" href="logo.png">
+	<link rel="manifest" href="manifest.json">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+
+  <!--link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
   <link rel="shortcut icon" href="favicon.ico"/>
-  <!--link rel="manifest" href="manifest.json"-->
   <link rel="apple-touch-icon" href="images/ShadowRide_applogo152.png">
   <meta name="theme-color" content="white"/>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Shadow Ride">
   <meta name="msapplication-TileImage" content="images/ShadowRide_applogo144.png">
-  <meta name="msapplication-TileColor" content="#FFFFFF">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="msapplication-TileColor" content="#FFFFFF"--> 
 </head>
 
 
@@ -158,16 +157,14 @@
     <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script-->
   </header>
 
-    <!-- The Modal -->
-    <div id="myModal" class="modal">
-
-      <!-- Modal content -->
-      <div class="modal-content">
-        <span onclick="document.getElementById('myModal').style.display='none'" class="close">&times;</span>
-        <p id="modal-body">Some text in the Modal..</p>
-      </div>
-
+  <!-- The Modal -->
+  <div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span onclick="document.getElementById('myModal').style.display='none'" class="close">&times;</span>
+      <p id="modal-body">Some text in the Modal..</p>
     </div>
+  </div>
 
   <div class="w3-row-padding w3-margin-top">
     <div class="w3-third">
@@ -303,7 +300,7 @@
   </div>
 
 
-  <!-- banner in shadow ride mobile -->
+  <!-- ads banner in shadow ride mobile -->
   <ins class="adsbygoogle"
     style="display:block"
     data-ad-client="ca-pub-6474275493517014"
@@ -311,12 +308,16 @@
     data-ad-format="auto"
     data-full-width-responsive="true">
   </ins>
+
   <script>
   (adsbygoogle = window.adsbygoogle || []).push({});
   </script>
 
   <script src="./fun.js"></script>
   <script src="./suncalc.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/main.js"></script>
+
   <script>
     //globle varible
     var dataFile = [];
@@ -888,23 +889,18 @@
     };
 
 
+    /*
     window.onload = () => {
       'use strict';
-
-      /*
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker
-                .register('/sw.js');
-      }
-      */
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", function () {
           // navigator.serviceWorker.register("/flutter_service_worker.js");
           navigator.serviceWorker.register("./sw.js");
-      });
+        });
+      }
     }
-  }
 
+    */
   </script>
 
 
