@@ -32,16 +32,18 @@ function init(){
 	// Trigger install prompt for WebAPK
 	window.addEventListener("beforeinstallprompt",function(event){
 		console.log("[*] WebAPK install event fired!");
-		var btn = $("<button>install</button>");
-		$("body").append(btn);
+		var btn = $(`<button><img src="images/download.png"></button>`);
+		$("showInstall").append(btn);
 		btn.click(function(e){
 			event.prompt();
 			btn.remove();
 		});
+		/*
 		$("installApp").click(function(e){
 			event.prompt();
-			$("installApp").remove();
+			$("showInstall").remove();
 		});
+		*/
 	});
 	
 	// Initialize online/offline detection

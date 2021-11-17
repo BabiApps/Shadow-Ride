@@ -6,10 +6,13 @@ abbr {
 	top: 5px;
 	right: 5px;
 }
-#installApp {
+#showInstall {
 	position: absolute ;
 	top: 30px;
 	right: 6px;
+}
+#installApp {
+	
 	width:20px;
 	height:20px;
 }
