@@ -38,6 +38,10 @@ function init(){
 			event.prompt();
 			btn.remove();
 		});
+		$("installApp").click(function(e){
+			event.prompt();
+			$("installApp").remove();
+		});
 	});
 	
 	// Initialize online/offline detection
