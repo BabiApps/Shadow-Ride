@@ -20,3 +20,18 @@ abbr {
 	50% { transform: scale(1.1); }
 	100% { transform: scale(1); }
 }
+input {
+	font-size: 17px;
+	padding: 5px;
+	width: max-content;
+	
+	border: 1px solid blue;
+	outline: none;
+	border-radius: 5px;
+	
+}
+.resetbutton {
+	border-radius: 5px;
+	padding: 2px;
+	font-size: 17px;
+}

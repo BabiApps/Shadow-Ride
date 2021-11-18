@@ -279,7 +279,7 @@
   }</script>
 <!-- middle -->
     <div class="w3-third pedding_section" id="section2" style="display: none;">
-      <div class="w3-card w3-container w3-center" style="min-height:400px">
+      <div class="w3-card w3-container " style="min-height:400px">
         <h3 id=collapse_head></h3><br>
         <div id='list'></div>
         <br>
@@ -798,7 +798,7 @@
 
           // Getting the ul element
           let list = document.getElementById("list");
-          str = `<label for="stops">Choose a Stop:<input list="stops1" id="stops" onChange="showRoutesListInStop()"> <button onclick="document.getElementById('stops').value=''">Reset</button></label>
+          str = `<label for="stops">Choose a Stop: <input list="stops1" autocomplete="off" id="stops" onChange="showRoutesListInStop()"> <button class="resetbutton" onclick="document.getElementById('stops').value=''">Reset</button></label>
                           <datalist name="stops" id="stops1">
                             <option value="" selected disabled hidden>Choose Start Stop</option>`; //onfocus="this.value=''" 
 
