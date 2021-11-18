@@ -9,6 +9,7 @@ abbr {
 }
 #installApp {
 	position: absolute ;
+	z-index: 3;
 	top: 30px;
 	right: 6px;
 	width:20px;
