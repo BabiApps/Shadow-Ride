@@ -21,17 +21,28 @@ abbr {
 	100% { transform: scale(1); }
 }
 input {
-	font-size: 17px;
+	
 	padding: 5px;
 	width: max-content;
-	
+	flex: 1;
 	border: 1px solid blue;
 	outline: none;
 	border-radius: 5px;
 	
 }
 .resetbutton {
+	
 	border-radius: 5px;
 	padding: 2px;
-	font-size: 17px;
+	
+}
+label {
+	gap: 5px;	
+	
+	display: flex;
+	flex-direction: row;
+}
+label[type="text"]{
+	vertical-align: middle;
+	height:50%;
 }

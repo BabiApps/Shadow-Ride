@@ -280,14 +280,14 @@
 <!-- middle -->
     <div class="w3-third pedding_section" id="section2" style="display: none;">
       <div class="w3-card w3-container " style="min-height:400px">
-        <h3 id=collapse_head></h3><br>
+        <h3 class="w3-center" id=collapse_head></h3><br>
         <div id='list'></div>
         <br>
         <div id='listForTest'></div>
         <br>
         <div id='list_StopsInRoute'></div>
         <br>
-        <div id='button_startCalc'></div>
+        <div class="w3-center" id='button_startCalc'></div>
         <br>
         <div id='showAnswer'></div>
         
@@ -534,7 +534,7 @@
       map.setView(rootAllNearbyStopsLocation[val]);
       
 
-      var x = `<label for="routes">Choose a Route: <input id="routes" list="routes1" onChange="showStopsListInRoute()"> <button onclick="document.getElementById('routes').value=''">Reset</button></label>
+      var x = `<label for="routes">Choose a Route: <input id="routes" class="resetbutton" list="routes1" onChange="showStopsListInRoute()"> <button class="resetbutton" onclick="document.getElementById('routes').value=''">Reset</button></label>
                       <datalist name="routes" id="routes1">
                         <option value="" selected disabled hidden>Choose Route</option>`;//<option value="volvo">Volvo</option> onfocus="this.value=''"
 
@@ -605,7 +605,7 @@
           obj = JSON.parse(this.responseText);
           stopsData = obj["features"][0]["properties"]["route_stops"];
 
-          var x = `<label for="endstops">Choose a End Stop: <input id="eStop" list="eStop1" onChange="showButtonForCalc()"> <button onclick="document.getElementById('eStop').value=''">Reset</button></label>
+          var x = `<label for="endstops">Choose a End Stop: <input autocomplete="off" id="eStop" list="eStop1" onChange="showButtonForCalc()"> <button class="resetbutton" onclick="document.getElementById('eStop').value=''">Reset</button></label>
                       <datalist name="eStop" id="eStop1">
                         <option value="" selected disabled hidden>Choose End Stop</option>`;// onfocus="this.value=''"
 
@@ -798,7 +798,7 @@
 
           // Getting the ul element
           let list = document.getElementById("list");
-          str = `<label for="stops">Choose a Stop: <input list="stops1" autocomplete="off" id="stops" onChange="showRoutesListInStop()"> <button class="resetbutton" onclick="document.getElementById('stops').value=''">Reset</button></label>
+          str = `<label for="stops"><label type="text">Choose a Stop: </label><input list="stops1" autocomplete="off" id="stops" onChange="showRoutesListInStop()"> <button class="resetbutton" onclick="document.getElementById('stops').value=''">Reset</button></label>
                           <datalist name="stops" id="stops1">
                             <option value="" selected disabled hidden>Choose Start Stop</option>`; //onfocus="this.value=''" 
 
