@@ -100,7 +100,7 @@
   top: 0;
   width: 100%; /* Full width */
   height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
+  overflow: hidden; /* Enable scroll if needed */
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
@@ -108,8 +108,8 @@
 /* Modal Content/Box */
 .modal-content {
   background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
-  padding: 20px;
+  margin: 25% auto; /* 45% from the top and centered */
+  padding: 15px;
   border: 1px solid #888;
   width: 80%; /* Could be more or less, depending on screen size */
 }
@@ -145,11 +145,19 @@
       <img src="ShadowRide_logo_3-11.png" alt="shadowRidePic">
     </div>
 
+
     <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
     <link rel="stylesheet" href="center-radar.css">
+   <!--#######################################################################################################################
+      ########################################################################################################################
+      ########################################################################################################################
+      todo - move to local method (ring loading)link rel="stylesheet" href="css/loading.css"-->
+  <!--div class="ring">Loading<span></span>
+  </div--> 
 
-    <!--script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6474275493517014"
-     crossorigin="anonymous"></script-->
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6474275493517014"
+     crossorigin="anonymous"></script>
     <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script-->
   </header>
 
@@ -162,31 +170,32 @@
     </div>
   </div>
 
+  
+
   <div class="w3-row-padding w3-margin-top">
     <div class="w3-third">
-      <div class="w3-card w3-container" style="min-height:400px; padding-bottom: 10px;">
-        <!--h3>ריבוע שמאלי</h3-->
-        <!--br><i class="fa fa-desktop w3-margin-bottom w3-text-theme" style="font-size:120px"></i-->
+      <div class="w3-card w3-container" style=" padding-bottom: 10px;">
+        <!--h3>min-height:400px;ריבוע שמאלי</h3-->
 
-        <h2>Input location</h2>
-        <div class="w3-section">
-          <input class="w3-input" type="number" step="0.00000001" id="lat" required>
+        <br>
+        <details>
+          <summary>הכנס מיקום ידנית</summary>
+        <div style="margin-top: 5px;" class="w3-section">
+          <input class="input-value-manually" type="number" step="0.00000001" id="lat" required>
           <label>Latitude</label>
         </div>
         <div class="w3-section">
-          <input class="w3-input" type="number" step="0.00000001" id="lon" required>
+          <input class="input-value-manually" type="number" step="0.00000001" id="lon" required>
           <label>Longtitude</label>
         </div>
         <div class="w3-section">
-          <input class="w3-input" type="number" id="radius" value="20" required>
-          <label>Radius (m)</label>
+          <input class="input-value-manually" type="number" id="radius" value="20" required>
+          <label>Radius (M)</label>
         </div>
-        <br>
+        </details>
         
-        <button class="w3-btn w3-dark-grey w3-hover-light-grey" onclick="getLocation()">Get my location</button>
-        <button class="w3-btn w3-blue w3-hover-light-grey" onclick="findNearStops()">Find nearby bus stops</button>
-        <!-- "document.getElementById('section2').style.display='block'" -->
-        <!-- "document.getElementById('section2').style.display='none'" -->
+        <button style="margin-right: 5px;margin-top: 10px" class="w3-btn w3-dark-grey w3-hover-light-grey" onclick="getLocation()">Get my location</button> 
+        <button style="margin-top: 10px" class="w3-btn w3-blue w3-hover-light-grey" onclick="findNearStops()">Find nearby bus stops</button>
 
       </div>
     </div>
@@ -282,13 +291,9 @@
       <div class="w3-card w3-container " style="min-height:400px">
         <h3 class="w3-center" id=collapse_head></h3><br>
         <div id='list'></div>
-        <br>
         <div id='listForTest'></div>
-        <br>
         <div id='list_StopsInRoute'></div>
-        <br>
         <div class="w3-center" id='button_startCalc'></div>
-        <br>
         <div id='showAnswer'></div>
         
       </div>
@@ -296,7 +301,7 @@
   </div>
 
 
-  <!-- ads banner in shadow ride mobile -->
+  <!-- ads banner in shadow ride -->
   <ins class="adsbygoogle"
     style="display:block"
     data-ad-client="ca-pub-6474275493517014"
@@ -534,7 +539,7 @@
       map.setView(rootAllNearbyStopsLocation[val]);
       
 
-      var x = `<label for="routes">Choose a Route: <input id="routes" class="resetbutton" list="routes1" onChange="showStopsListInRoute()"> <button class="resetbutton" onclick="document.getElementById('routes').value=''">Reset</button></label>
+      var x = `<label for="routes">Choose a Route: <input id="routes" onfocus="blur()" list="routes1" onChange="showStopsListInRoute()"> <button class="resetbutton" onclick="document.getElementById('routes').value=''">Reset</button></label>
                       <datalist name="routes" id="routes1">
                         <option value="" selected disabled hidden>Choose Route</option>`;//<option value="volvo">Volvo</option> onfocus="this.value=''"
 
@@ -605,7 +610,7 @@
           obj = JSON.parse(this.responseText);
           stopsData = obj["features"][0]["properties"]["route_stops"];
 
-          var x = `<label for="endstops">Choose a End Stop: <input autocomplete="off" id="eStop" list="eStop1" onChange="showButtonForCalc()"> <button class="resetbutton" onclick="document.getElementById('eStop').value=''">Reset</button></label>
+          var x = `<label for="endstops">Choose a End Stop: <input autocomplete="off" id="eStop" onfocus="blur()" list="eStop1" onChange="showButtonForCalc()"> <button class="resetbutton" onclick="document.getElementById('eStop').value=''">Reset</button></label>
                       <datalist name="eStop" id="eStop1">
                         <option value="" selected disabled hidden>Choose End Stop</option>`;// onfocus="this.value=''"
 
@@ -708,7 +713,7 @@
     // short the list
     function showButtonForCalc() {
       document.getElementById('button_startCalc').innerHTML = `Date:<input id="date" type="date" name="task_date" />
-      Time:<input id="time" type="time" name="task_time" /><br><br><button onclick="calculatePerFullRoute()">Start Calculate</button>`;
+      Time:<input id="time" type="time" name="task_time" /><br><br><button class="w3-btn w3-blue w3-hover-light-grey" onclick="calculatePerFullRoute()">Start Calculate</button>`;
 
       // remove old route
       map.removeLayer(On_OffRoute);
@@ -798,7 +803,7 @@
 
           // Getting the ul element
           let list = document.getElementById("list");
-          str = `<label for="stops"><label type="text">Choose a Stop: </label><input list="stops1" autocomplete="off" id="stops" onChange="showRoutesListInStop()"> <button class="resetbutton" onclick="document.getElementById('stops').value=''">Reset</button></label>
+          str = `<label style="width: 100%" for="stops"><label type="text">Choose a Stop: </label><input list="stops1" onfocus="blur()" autocomplete="off" id="stops" onChange="showRoutesListInStop()"> <button class="resetbutton" onclick="document.getElementById('stops').value=''">Reset</button></label>
                           <datalist name="stops" id="stops1">
                             <option value="" selected disabled hidden>Choose Start Stop</option>`; //onfocus="this.value=''" 
 
@@ -879,7 +884,7 @@
 
       section2.scrollIntoView({
         behavior: "smooth",
-        block: "start",
+        block: "end",
         inline: "nearest"
       });
     };
