@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="iw">
 
 <head>
   <title>Shadow Ride</title>
   <meta name="description"           
-    content="We tell you where to sit on the bus, so you will sunless in the ride">
+    content="Do you travel a lot on the bus? 
+    Ride with us, and we tell you where to sit on the bus, 
+    so your ride will be sunless">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -182,20 +184,20 @@
           <summary>הכנס מיקום ידנית</summary>
         <div style="margin-top: 5px;" class="w3-section">
           <input class="input-value-manually" type="number" step="0.00000001" id="lat" required>
-          <label>Latitude</label>
+          <label>קו רוחב</label>
         </div>
         <div class="w3-section">
           <input class="input-value-manually" type="number" step="0.00000001" id="lon" required>
-          <label>Longtitude</label>
+          <label>קו אורך</label>
         </div>
         <div class="w3-section">
           <input class="input-value-manually" type="number" id="radius" value="20" required>
-          <label>Radius (M)</label>
+          <label>מרחק (M)</label>
         </div>
         </details>
         
-        <button style="margin-right: 5px;margin-top: 10px" class="w3-btn w3-dark-grey w3-hover-light-grey" onclick="getLocation()">Get my location</button> 
-        <button style="margin-top: 10px" class="w3-btn w3-blue w3-hover-light-grey" onclick="findNearStops()">Find nearby bus stops</button>
+        <button style="margin-right: 5px;margin-top: 10px" class="w3-btn w3-dark-grey w3-hover-light-grey" onclick="getLocation()">מצא את המיקום שלי</button> 
+        <button style="margin-top: 10px" class="w3-btn w3-blue w3-hover-light-grey" onclick="findNearStops()">מצא תחנות קרובות באיזור</button>
 
       </div>
     </div>
@@ -232,7 +234,9 @@
       }).addTo(map);
 
       // Target's GPS coordinates.
-      var target = L.latLng('31.8788761797386', '35.246309360500305');
+      
+      
+      var target = L.latLng('32.83325770280918', '35.79960352932844');
       document.getElementById('lat').value = target['lat'];
       document.getElementById('lon').value = target['lng'];
 
@@ -411,7 +415,7 @@
           else {
             startStop = stopsData_temp[i];
           }
-          // finf end stop location
+          // find end stop location
           if ('stop' in stopsData_temp[i + 1]) {
             endStop = stopsData_temp[i + 1]["stop"]["geometry"]["coordinates"];
           }
@@ -461,29 +465,32 @@
 
         if (distanceR > distanceL) {
           persent = distanceR / SumDistance_Air;
-          persentSide = "Right";
-          persentSideNegativ = "Left";
+          persentSide = "ימין";
+          persentSideNegativ = "שמאל";
         }
         else {
           persent = distanceL / SumDistance_Air;
-          persentSide = "Left";
-          persentSideNegativ = "Right";
+          persentSide = "שמאל";
+          persentSideNegativ = "ימין";
         }
 
         x = { 'persent': Math.round(persent*100), 'persentSide': persentSide , 'persentSideNegativ': persentSideNegativ};
 
         if (i == 0) {
-          textToShow = "Please choose another stop that isn't start"
+          textToShow = "אנא בחר תחנה יעד שהיא לא התחנת מוצא"
           document.getElementById('showAnswer').innerHTML = textToShow;
-          alert('Same Location! set another end stop.')
+          alert('אותו מיקום! אנא בחר תחנת ירידה אחרת')
         } else {
-          textToShow = `${x["persent"]}% From the Route,\nThe SUN is on your ${x["persentSide"]} side.\nYou should sit on the ${x["persentSideNegativ"]} side`;
+          //textToShow_old = `${x["persent"]}% From the Route,\nThe SUN is on your ${x["persentSide"]} side.\nYou should sit on the ${x["persentSideNegativ"]} side`;
+          textToShow = `אוי לא! צד ${x["persentSide"]} מלא בשמש (כ${x["persent"]}% מהדרך).\n
+          ולכן אנחנו ממליצים לך לשבת בצד ${x["persentSideNegativ"]} של האוטובוס :)
+           נסיעה נעימה`
           document.getElementById('showAnswer').innerHTML = textToShow;
         }
       }
       //if is not day (or error in compare)
       else{
-        textToShow = "You can sit wherever you want"
+        textToShow = "חדשות טובות! אתה יכול לשבת איפה שרק תרצה באוטובוס :)"
         document.getElementById('showAnswer').innerHTML = textToShow;
       }
       document.getElementById('modal-body').innerHTML = textToShow
@@ -539,9 +546,9 @@
       map.setView(rootAllNearbyStopsLocation[val]);
       
 
-      var x = `<label for="routes">Choose a Route: <input id="routes" onfocus="blur()" list="routes1" onChange="showStopsListInRoute()"> <button class="resetbutton" onclick="document.getElementById('routes').value=''">Reset</button></label>
+      var x = `<label for="routes">בחר קו: <input id="routes" onfocus="blur()" list="routes1" onChange="showStopsListInRoute()"> <button class="resetbutton" onclick="document.getElementById('routes').value=''">אפס</button></label>
                       <datalist name="routes" id="routes1">
-                        <option value="" selected disabled hidden>Choose Route</option>`;//<option value="volvo">Volvo</option> onfocus="this.value=''"
+                        <option value="" selected disabled hidden>בחר קו</option>`;//<option value="volvo">Volvo</option> onfocus="this.value=''"
 
 
       var n = 0;
@@ -610,9 +617,9 @@
           obj = JSON.parse(this.responseText);
           stopsData = obj["features"][0]["properties"]["route_stops"];
 
-          var x = `<label for="endstops">Choose a End Stop: <input autocomplete="off" id="eStop" onfocus="blur()" list="eStop1" onChange="showButtonForCalc()"> <button class="resetbutton" onclick="document.getElementById('eStop').value=''">Reset</button></label>
+          var x = `<label for="endstops">בחר תחנת יעד: <input autocomplete="off" id="eStop" onfocus="blur()" list="eStop1" onChange="showButtonForCalc()"> <button class="resetbutton" onclick="document.getElementById('eStop').value=''">אפס</button></label>
                       <datalist name="eStop" id="eStop1">
-                        <option value="" selected disabled hidden>Choose End Stop</option>`;// onfocus="this.value=''"
+                        <option value="" selected disabled hidden>בחר תחנת ירידה</option>`;// onfocus="this.value=''"
 
       
           var element_input = document.getElementById('stops');
@@ -712,8 +719,9 @@
     // show on map start\end stops
     // short the list
     function showButtonForCalc() {
-      document.getElementById('button_startCalc').innerHTML = `Date:<input id="date" type="date" name="task_date" />
-      Time:<input id="time" type="time" name="task_time" /><br><br><button class="w3-btn w3-blue w3-hover-light-grey" onclick="calculatePerFullRoute()">Start Calculate</button>`;
+      document.getElementById('button_startCalc').innerHTML = `תאריך(אופציה):<input id="date" type="date" name="task_date" />
+      שעה(אופציה):<input id="time" type="time" name="task_time" /><br><br>
+      <button class="w3-btn w3-blue w3-hover-light-grey" onclick="calculatePerFullRoute()">התחל לחשב</button>`;
 
       // remove old route
       map.removeLayer(On_OffRoute);
@@ -803,12 +811,14 @@
 
           // Getting the ul element
           let list = document.getElementById("list");
-          str = `<label style="width: 100%" for="stops"><label type="text">Choose a Stop: </label><input list="stops1" onfocus="blur()" autocomplete="off" id="stops" onChange="showRoutesListInStop()"> <button class="resetbutton" onclick="document.getElementById('stops').value=''">Reset</button></label>
+          str = `<label style="width: 100%" for="stops"><label type="text">בחר תחנת מוצא: </label><input list="stops1" onfocus="blur()" autocomplete="off" id="stops" onChange="showRoutesListInStop()"> <button class="resetbutton" onclick="document.getElementById('stops').value=''">אפס</button></label>
                           <datalist name="stops" id="stops1">
-                            <option value="" selected disabled hidden>Choose Start Stop</option>`; //onfocus="this.value=''" 
+                            <option value="" selected disabled hidden>בחר תחנת עלייה</option>`; //onfocus="this.value=''" 
 
           var n = 0;
           var stop_code = [];
+          var stop_names = [];
+          stop_name_counter = 1
         
           var nearbyIcon = L.icon({
             iconUrl: 'icons8-bus-48.png',
@@ -819,20 +829,30 @@
           //console.log('stops near by: ' + obj['features'].length);
           while (n < obj['features'].length) {
             data = obj['features'][n]['properties'];
-
+            coordinates = [data['geometry']['coordinates'][1],data['geometry']['coordinates'][0]];
+            //console.log(coordinates)
 
             // when the stop already in the list (רציפים)
             if (stop_code.includes(data["stop_code"])) {
               //console.log("exist - " + data["stop_code"]);
             }
             else {
-              str += `<option data-value="${data['stop_code']}" value="${data['stop_name']}">`;//${data['stop_code']}
+
+              //if the same name shown couple of time but in diffrent stops
+              stop_name_temp = data['stop_name']
+              if (stop_names.includes(stop_name_temp)){
+                stop_name_temp += ` #${stop_name_counter}`
+                stop_name_counter++
+              }
+
+              str += `<option data-value=${data['stop_code']} value="${stop_name_temp}">${data['stop_code']}</option>`;
               rootAllFirstStopsID[data['stop_code']] = data['id'];
               
               stop_code.push(data["stop_code"]);
-              //console.log(data["stop_code"]);
+              stop_names.push(stop_name_temp)
+              //console.log(stop_name_temp);
 
-              coordinates = [data['geometry']['coordinates'][1],data['geometry']['coordinates'][0]];
+              
               rootAllNearbyStopsLocation[data['stop_code']] = coordinates;
 
               var marker = new L.Marker(coordinates, {icon: nearbyIcon}).bindPopup(data['stop_name']);
@@ -863,16 +883,16 @@
 
 
           if (n != 0) {
-            document.getElementById('collapse_head').innerHTML = 'Stations Nearby:';
+            document.getElementById('collapse_head').innerHTML = 'תחנות קרובות:';
             list.innerHTML = str;
           }
           else {
-            alert("No stations found!\nTry to increase radius.")
+            alert("אין תחנות באיזור!\nנסה להגדיל ידנית את הטווח חיפוש.")
           }
 
         }
         else {
-          alert("Something went wrong!");
+          alert("משהו נכשל!");
         }
       }
 
