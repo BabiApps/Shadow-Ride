@@ -14,6 +14,6 @@ This feature calculates where the most shadow on your bus's rides and tells you 
 GitHub Pages -  https://zeani-shilix.github.io/Shadow-Ride/
 
 # thanks
-[jgoggo](https://github.com/jfoggo/WebAPK/) - for his template WebAPK
-[icons8](https://icons8.com/) - for some icons on the map
-[3LD0s](https://github.com/3LD0s) - wasn't possible without him :)
+[jgoggo](https://github.com/jfoggo/WebAPK/) - for his template WebAPK\n
+[icons8](https://icons8.com/) - for some icons on the map\n
+[3LD0s](https://github.com/3LD0s) - wasn't possible without him :)\n
