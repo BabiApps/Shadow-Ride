@@ -378,32 +378,228 @@
       
       var firstStopID, lastStopID;
       var textToShow = '';
-      
+
       //find the first and last stop (to remove all stop out-line)
-      var element_input = document.getElementById('stops');
+      {
+      var element_input_fStop = document.getElementById('stops');
       var element_datalist = document.getElementById('stops1');
-      var opSelected = element_datalist.querySelector(`[value="${element_input.value}"]`);
+      var opSelected = element_datalist.querySelector(`[value="${element_input_fStop.value}"]`);
       tempValue1 = opSelected.getAttribute('data-value');
       firstStopID = rootAllFirstStopsID[tempValue1];
       
-      
-      var element_input = document.getElementById('eStop');
+      var element_input_eStop = document.getElementById('eStop');
       var element_datalist = document.getElementById('eStop1');
-      var opSelected = element_datalist.querySelector(`[value="${element_input.value}"]`);
+      var opSelected = element_datalist.querySelector(`[value="${element_input_eStop.value}"]`);
       lastStopID = opSelected.getAttribute('data-value');
       
       //console.log('First stop ID - ' + firstStopID);
       //console.log('Last stop ID - ' + lastStopID);
+      }
+
+      var element_input = document.getElementById('routes');
+      var element_datalist = document.getElementById('routes1');
+      var opSelected = element_datalist.querySelector(`[value="${element_input.value}"]`);
+      tripID = opSelected.getAttribute('data-value');
+
+      var urlTrip = 'https://transit.land/api/v2/rest/routes/'
+                + tripID //+'11823599' // ID
+                +'/trips?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&format=geojson'
+
+      // Instantiate an new XHR Object
+      const xhr = new XMLHttpRequest();
+
+      // Open an obejct (GET/POST, PATH,
+      // ASYN-TRUE/FALSE)
+      xhr.open("GET", urlTrip, true);
+
+      // When response is ready
+      xhr.onload = function () {
+        if (this.status === 200) {
+          // Changing string data into JSON Object
+          objTrip = JSON.parse(this.responseText);
+
+          tripTime = objTrip['features'][0]['properties']['stop_times']
+
+          // Found the first stop time to compare to
+          let firstStopTimeInTrip = new Date(); 
+          for (numStops = 0; numStops< tripTime.length;numStops++){
+            if(stopsData_temp[0]['stop']['id'] == tripTime[numStops]['stop']['id']){
+              let [hours, minutes, seconds] = tripTime[numStops]['arrival_time'].split(':');
+              firstStopTimeInTrip.setHours(+hours); 
+              firstStopTimeInTrip.setMinutes(minutes); 
+              firstStopTimeInTrip.setSeconds(seconds);
+            }
+          }
+          
+
+          ///console.log(tripTime)
+          //################################################################################
+          //####################### move the function to here ##############################
+          // * isDayNow when time updated
+          // * comper to stop id (not name)
 
 
+          var distanceR = 0, distanceL = 0, SumDistance_Air = 0, sumNull = 0;
+          var cBus, diffC, persent, persentSide, sum_cBus = 0;
+
+          // get the intial time for calculation
+          var userDate = document.getElementById("date").value,
+              userTime = document.getElementById("time").value;
+          var dateNow = new Date();
+
+          // in case user didnt give info, use system time.
+          if (date == "") {
+            userDate = dateNow.toLocaleDateString();
+          }
+          if (time == "") {
+            userTime = dateNow.toLocaleTimeString();
+          }
+          var userFinalDate = new Date(userDate + " " + userTime);          
+
+          console.log('User Date: '+userFinalDate)
+          isDay = isDayNow(endStopLocation, userFinalDate);
+
+          if (isDay){
+            for (var i = 0; i < stopsData_temp.length - 1 && isDay; i++) {
+
+              // 1. Find start stop *location*
+              // 2. If its a stop - update the tripTime 
+              if ('stop' in stopsData_temp[i]) {
+                startStop = stopsData_temp[i]["stop"]["geometry"]["coordinates"];
+                for (numStops = 0; numStops< tripTime.length;numStops++){
+                  if(stopsData_temp[i]['stop']['id'] == tripTime[numStops]['stop']['id']){
+                    var customStopTime = new Date();
+                    var [hours2, minutes2, seconds2] = tripTime[numStops]['arrival_time'].split(':');
+                    customStopTime.setHours(+hours2)
+                    customStopTime.setMinutes(minutes2)
+                    customStopTime.setSeconds(seconds2);
+                    
+                    customStopTime = new Date(userFinalDate.getTime() + (customStopTime - firstStopTimeInTrip));
+                    console.log('-------\nThe bus will be in '+stopsData_temp[i]['stop']['stop_name']+'\nAt: '+ customStopTime)
+                    //this method not include the last stop
+                  }
+                }
+
+              }
+              else {
+                startStop = stopsData_temp[i];
+              }
+              // find end stop *location*
+              if ('stop' in stopsData_temp[i + 1]) {
+                endStop = stopsData_temp[i + 1]["stop"]["geometry"]["coordinates"];
+              }
+              else {
+                endStop = stopsData_temp[i + 1];
+              }
+
+              distance_Air = distanceBetweenStops(startStop, endStop);
+              SumDistance_Air += distance_Air;
+              cBus = anglePer2stops(startStop, endStop);          
+
+              suncalcVar = SunCalc.getPosition(customStopTime, startStop[0], startStop[1]);
+              cSun = suncalcVar['azimuth'] * 180 / Math.PI + 180;
+
+              diffC = cSun - cBus;
+              cBus_getSide = get_R_L_by_cBus(diffC);
+
+
+              //#########################################################################################################################
+              //#########################################################################################################################
+              //#########################################################################################################################
+              //#########################################################################################################################
+              // todo : colored line on road, for visual 
+
+              if (cBus_getSide == "Right") {
+                distanceR += distance_Air;
+              }
+              else if (cBus_getSide == "Left") {
+                distanceL += distance_Air;
+              }
+              else {
+                sumNull++;
+              }
+
+              // check if in the middle the sun go down
+              isDay = isDayNow(startStop, customStopTime)
+
+              //###############################################################
+              // todo - if is night in the middle trip - response
+            }
+          
+          
+            console.log('-------\nSum M in Right: ' + distanceR + '\nSum M in Left: ' + distanceL + '\nUndefined: ' + sumNull);
+
+
+            if (distanceR > distanceL) {
+              persent = distanceR / SumDistance_Air;
+              persentSide = "ימין";
+              persentSideNegativ = "שמאל";
+            }
+            else {
+              persent = distanceL / SumDistance_Air;
+              persentSide = "שמאל";
+              persentSideNegativ = "ימין";
+            }
+
+            x = { 'persent': Math.round(persent*100), 'persentSide': persentSide , 'persentSideNegativ': persentSideNegativ};
+
+            if (i == 0) {
+              textToShow = "אנא בחר תחנה יעד שהיא לא התחנת מוצא"
+              document.getElementById('showAnswer').innerHTML = textToShow;
+              alert('אותו מיקום! אנא בחר תחנת ירידה אחרת')
+            } else {
+              //textToShow_old = `${x["persent"]}% From the Route,\nThe SUN is on your ${x["persentSide"]} side.\nYou should sit on the ${x["persentSideNegativ"]} side`;
+              textToShow = `אוי לא! צד ${x["persentSide"]} מלא בשמש (כ${x["persent"]}% מהדרך).\n
+              ולכן אנחנו ממליצים לך לשבת בצד ${x["persentSideNegativ"]} של האוטובוס :)
+              נסיעה נעימה`
+              document.getElementById('showAnswer').innerHTML = textToShow;
+            }
+          }
+          //if is not day (or error in compare)
+          else{
+            textToShow = "חדשות טובות! אתה יכול לשבת איפה שרק תרצה באוטובוס :)"
+            document.getElementById('showAnswer').innerHTML = textToShow;
+          }
+          document.getElementById('modal-body').innerHTML = textToShow
+          // check when empty (user press reset button)
+          //document.getElementById('modalHeader').innerHTML = `ב${document.getElementById('routes').value}, מהתחנה ${document.getElementById('stops').value} עד תחנה ${document.getElementById('eStop').value}`
+          
+          document.getElementById('myModal').style.display = "block";
+          document.getElementById('myModal').style.zIndex = "2"
+
+        }
+        else {
+          alert("TripURL fail");
+          console.log("TripURL fail");
+        }
+      }
+      // At last send the request
+      xhr.send();
       
-       
 
+      //old method (no time diffrence)
+      /*
+      //console.log(firstStopID+'\n'+lastStopID)
+
+      //console.log(stopsData_temp)
       var distanceR = 0, distanceL = 0, SumDistance_Air = 0, sumNull = 0;
       var cBus, diffC, persent, persentSide, sum_cBus = 0;
 
       // check the time for calcultion
-      isDay = isDayNow(endStopLocation);
+      var userDate = document.getElementById("date").value,
+              userTime = document.getElementById("time").value;
+      var dateNow = new Date();
+
+      // in case user didnt give info, use system time.
+      if (date == "") {
+        userDate = dateNow.toDateString();
+      }
+      if (time == "") {
+        userTime = dateNow.toLocaleTimeString();
+      }
+      var userFinalDate = new Date(userDate + " " + userTime);
+      
+      isDay = isDayNow(endStopLocation, userFinalDate);
 
       if (isDay){
         for (var i = 0; i < stopsData_temp.length - 1; i++) {
@@ -427,18 +623,18 @@
           SumDistance_Air += distance_Air;
           cBus = anglePer2stops(startStop, endStop);          
 
-          suncalcVar = SunCalc.getPosition(customDate, startStop[0], startStop[1]);
+          suncalcVar = SunCalc.getPosition(userFinalDate, startStop[0], startStop[1]);
           cSun = suncalcVar['azimuth'] * 180 / Math.PI + 180;
 
           diffC = cSun - cBus;
           cBus_getSide = get_R_L_by_cBus(diffC);
 
 
-        //#########################################################################################################################
-        //#########################################################################################################################
-        //#########################################################################################################################
-        //#########################################################################################################################
-        // todo : colored line on road, for visual 
+          //#########################################################################################################################
+          //#########################################################################################################################
+          //#########################################################################################################################
+          //#########################################################################################################################
+          // todo : colored line on road, for visual 
 
           if (cBus_getSide == "Right") {
             distanceR += distance_Air;
@@ -450,12 +646,9 @@
             sumNull++;
           }
 
-          /*
-          console.log('From: ' + stopsData_temp[i]['stop']['stop_name'] + ', To: ' + stopsData_temp[i + 1]['stop']['stop_name'] +
-            '\nDistance ' + distance_Air +
-            '\nCalc num: ' + (i + 1) + ", cSun is " + cSun + ", and cBus is " + cBus + ",getSide - " + cBus_getSide);
+          
 
-          */
+        
 
         }
       
@@ -499,6 +692,7 @@
       
       document.getElementById('myModal').style.display = "block";
       document.getElementById('myModal').style.zIndex = "2"
+      */
     }
 
     function routes(data) {
@@ -719,10 +913,31 @@
     // show on map start\end stops
     // short the list
     function showButtonForCalc() {
-      document.getElementById('button_startCalc').innerHTML = `תאריך(אופציה):<input id="date" type="date" name="task_date" />
-      שעה(אופציה):<input id="time" type="time" name="task_time" /><br><br>
-      <button class="w3-btn w3-blue w3-hover-light-grey" onclick="calculatePerFullRoute()">התחל לחשב</button>`;
+      document.getElementById('button_startCalc').innerHTML = 
+                    `<input id="date" type="date" name="task_date" /> :תאריך<br>`+
+                    `<input id="time" type="time" name="task_time" /> :שעה
+                    <br>
+                    <br>
+                    <button class="w3-btn w3-blue w3-hover-light-grey" onclick="calculatePerFullRoute()">התחל לחשב</button>`;
 
+                    var date = new Date();
+
+                    var day = date.getDate(),
+                        month = date.getMonth() + 1,
+                        year = date.getFullYear(),
+                        hour = date.getHours(),
+                        min  = date.getMinutes();
+
+                    month = (month < 10 ? "0" : "") + month;
+                    day = (day < 10 ? "0" : "") + day;
+                    hour = (hour < 10 ? "0" : "") + hour;
+                    min = (min < 10 ? "0" : "") + min;
+
+                    var today = year + "-" + month + "-" + day,
+                        displayTime = hour + ":" + min; 
+
+                    document.getElementById('date').value = today;      
+                    document.getElementById("time").value = displayTime;
       // remove old route
       map.removeLayer(On_OffRoute);
       On_OffRoute = L.featureGroup().addTo(map);
@@ -993,22 +1208,7 @@
     }
 }
 
-function isDayNow(StopLocation) {
-
-  var date = document.getElementById("date").value,
-      time = document.getElementById("time").value;
-  var dateNow = new Date();
-
-  // in case user didnt give info, use current time.
-  if (date == "") {
-    date = dateNow.toDateString();
-  }
-  if (time == "") {
-    time = dateNow.toLocaleTimeString(); // option to add 'en-US'
-  }
-
-  customDate = new Date(date + " " + time);
-  //console.log(customDate)
+function isDayNow(StopLocation, customDate) {
 
   sunCalcTime = SunCalc.getTimes(/*Date*/ customDate,
                                   /*Number*/ StopLocation[0],
@@ -1017,6 +1217,7 @@ function isDayNow(StopLocation) {
 
   startTime = sunCalcTime['sunriseEnd']
   endTime = sunCalcTime['sunsetStart']
+
   return dates.inRange(customDate,startTime,endTime);
 }
 
