@@ -3,16 +3,15 @@
 
 <head>
   <title>Shadow Ride</title>
-  <meta name="description"           
-    content="Do you travel a lot on the bus? 
+  <meta name="description" content="Do you travel a lot on the bus? 
     Ride with us, and we tell you where to sit on the bus, 
     so your ride will be sunless">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="icon" type="image/png" href="images/logo.png">
-	<link rel="manifest" href="manifest.json">
-	<link rel="stylesheet" type="text/css" href="css/main.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 
 
@@ -44,92 +43,112 @@
       height: auto;
     }
   }
+
   @media (max-width: 480px) {
-   .pedding_section {
+    .pedding_section {
       padding-top: 10px;
       padding-bottom: 10px;
-     
-   }
-}
 
-@media (min-width: 481px) {
-   .pedding_section {
+    }
+  }
+
+  @media (min-width: 481px) {
+    .pedding_section {
       padding-left: 0;
       padding-right: 0;
-   }
-}
+    }
+  }
 
   .modal-header {
-  padding: 2px 16px;
-  background-color: #5cb85c;
-  color: white;
-}
+    padding: 2px 16px;
+    background-color: #5cb85c;
+    color: white;
+  }
 
-/* Modal Body */
-.modal-body {padding: 2px 16px;}
+  /* Modal Body */
+  .modal-body {
+    padding: 2px 16px;
+  }
 
-/* Modal Footer */
-.modal-footer {
-  padding: 2px 16px;
-  background-color: #5cb85c;
-  color: white;
-}
+  /* Modal Footer */
+  .modal-footer {
+    padding: 2px 16px;
+    background-color: #5cb85c;
+    color: white;
+  }
 
-/* Modal Content */
-.modal-content {
-  position: relative;
-  background-color: #fefefe;
-  margin: auto;
-  padding: 0;
-  border: 1px solid #888;
-  width: 80%;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-  animation-name: animatetop;
-  animation-duration: 0.4s
-}
+  /* Modal Content */
+  .modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    animation-name: animatetop;
+    animation-duration: 0.4s
+  }
 
-/* Add Animation */
-@keyframes animatetop {
-  from {top: -300px; opacity: 0}
-  to {top: 0; opacity: 1}
-}
+  /* Add Animation */
+  @keyframes animatetop {
+    from {
+      top: -300px;
+      opacity: 0
+    }
 
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: hidden; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
+    to {
+      top: 0;
+      opacity: 1
+    }
+  }
 
-/* Modal Content/Box */
-.modal-content {
-  background-color: #fefefe;
-  margin: 25% auto; /* 45% from the top and centered */
-  padding: 15px;
-  border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
-}
+  .modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: hidden;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+  }
 
-/* The Close Button */
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
+  /* Modal Content/Box */
+  .modal-content {
+    background-color: #fefefe;
+    margin: 25% auto;
+    /* 45% from the top and centered */
+    padding: 15px;
+    border: 1px solid #888;
+    width: 80%;
+    /* Could be more or less, depending on screen size */
+  }
 
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
+  /* The Close Button */
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
 </style>
 
 <body class="fullscreen">
@@ -138,7 +157,7 @@
     <!--img id="installApp" src="images/download.png"-->
   </div>
 
-  
+
 
   <!-- Header -->
   <header class="w3-container backgroud w3-padding" id="myHeader">
@@ -150,16 +169,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
     <link rel="stylesheet" href="center-radar.css">
-   <!--#######################################################################################################################
+    <!--#######################################################################################################################
       ########################################################################################################################
       ########################################################################################################################
       todo - move to local method (ring loading)link rel="stylesheet" href="css/loading.css"-->
-  <!--div class="ring">Loading<span></span>
-  </div--> 
+    <!--div class="ring">Loading<span></span>
+  </div-->
 
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6474275493517014"
-     crossorigin="anonymous"></script>
+      crossorigin="anonymous"></script>
     <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script-->
   </header>
 
@@ -172,7 +191,7 @@
     </div>
   </div>
 
-  
+
 
   <div class="w3-row-padding w3-margin-top">
     <div class="w3-third">
@@ -182,26 +201,28 @@
         <br>
         <details>
           <summary>הכנס מיקום ידנית</summary>
-        <div style="margin-top: 5px;" class="w3-section">
-          <input class="input-value-manually" type="number" step="0.00000001" id="lat" required>
-          <label>קו רוחב</label>
-        </div>
-        <div class="w3-section">
-          <input class="input-value-manually" type="number" step="0.00000001" id="lon" required>
-          <label>קו אורך</label>
-        </div>
-        <div class="w3-section">
-          <input class="input-value-manually" type="number" id="radius" value="20" required>
-          <label>מרחק (M)</label>
-        </div>
+          <div style="margin-top: 5px;" class="w3-section">
+            <input class="input-value-manually" type="number" step="0.00000001" id="lat" required>
+            <label>קו רוחב</label>
+          </div>
+          <div class="w3-section">
+            <input class="input-value-manually" type="number" step="0.00000001" id="lon" required>
+            <label>קו אורך</label>
+          </div>
+          <div class="w3-section">
+            <input class="input-value-manually" type="number" id="radius" value="20" required>
+            <label>מרחק (M)</label>
+          </div>
         </details>
-        
-        <button style="margin-right: 5px;margin-top: 10px" class="w3-btn w3-dark-grey w3-hover-light-grey" onclick="getLocation()">מצא את המיקום שלי</button> 
-        <button style="margin-top: 10px" class="w3-btn w3-blue w3-hover-light-grey" onclick="findNearStops()">מצא תחנות קרובות באיזור</button>
+
+        <button style="margin-right: 5px;margin-top: 10px" class="w3-btn w3-dark-grey w3-hover-light-grey"
+          onclick="getLocation()">מצא את המיקום שלי</button>
+        <button style="margin-top: 10px" class="w3-btn w3-blue w3-hover-light-grey" onclick="findNearStops()">מצא תחנות
+          קרובות באיזור</button>
 
       </div>
     </div>
-   
+
 
     <!-- ##################################################################
   MAP
@@ -234,8 +255,8 @@
       }).addTo(map);
 
       // Target's GPS coordinates.
-      
-      
+
+
       var target = L.latLng('32.83325770280918', '35.79960352932844');
       document.getElementById('lat').value = target['lat'];
       document.getElementById('lon').value = target['lng'];
@@ -263,34 +284,34 @@
   //L.marker(target).addTo(map);
     </script>
 
-    
-<script>// Get the modal
-  var modal = document.getElementById("myModal");
-  
-  // Get the button that opens the modal
-  /*var btn = document.getElementById("myBtn");
-  // When the user clicks on the button, open the modal
-  btn.onclick = function() {
-    modal.style.display = "block";
-    modal.style.zIndex = "2"
-  }*/
 
-  // Get the <span> element that closes the modal
-  var span = document.getElementsByClassName("close")[0];
-  
-  // When the user clicks on <span> (x), close the modal
-  span.onclick = function() {
-    modal.style.display = "none";
-    modal.style.zIndex = ""
-  }
-  
-  // When the user clicks anywhere outside of the modal, close it
-  window.onclick = function(event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  }</script>
-<!-- middle -->
+    <script>// Get the modal
+      var modal = document.getElementById("myModal");
+
+      // Get the button that opens the modal
+      /*var btn = document.getElementById("myBtn");
+      // When the user clicks on the button, open the modal
+      btn.onclick = function() {
+        modal.style.display = "block";
+        modal.style.zIndex = "2"
+      }*/
+
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close")[0];
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function () {
+        modal.style.display = "none";
+        modal.style.zIndex = ""
+      }
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }</script>
+    <!-- middle -->
     <div class="w3-third pedding_section" id="section2" style="display: none;">
       <div class="w3-card w3-container " style="min-height:400px">
         <h3 class="w3-center" id=collapse_head></h3><br>
@@ -299,23 +320,19 @@
         <div id='list_StopsInRoute'></div>
         <div class="w3-center" id='button_startCalc'></div>
         <div id='showAnswer'></div>
-        
+
       </div>
     </div>
   </div>
 
 
   <!-- ads banner in shadow ride -->
-  <ins class="adsbygoogle"
-    style="display:block"
-    data-ad-client="ca-pub-6474275493517014"
-    data-ad-slot="4521837045"
-    data-ad-format="auto"
-    data-full-width-responsive="true">
+  <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6474275493517014" data-ad-slot="4521837045"
+    data-ad-format="auto" data-full-width-responsive="true">
   </ins>
 
   <script>
-  (adsbygoogle = window.adsbygoogle || []).push({});
+      (adsbygoogle = window.adsbygoogle || []).push({});
   </script>
 
   <script src="./fun.js"></script>
@@ -332,19 +349,19 @@
     var rootAllNearbyStopsLocation = []; //###################################### TODO: need to be reset 
     var sortStops = []; // without geomrtry on road/line
     var getOn;
-    
+
     var nearbyStopMarker = L.featureGroup().addTo(map);
     var On_OffRoute = L.featureGroup().addTo(map);
     var stopOnRoute = L.featureGroup().addTo(map);
     // https://stackoverflow.com/a/39968118
 
     var busGetOn = L.icon({
-            iconUrl: 'icons8-get-on-bus-100.png',
-            iconSize:     [25, 25], // size of the icon
-          });
+      iconUrl: 'icons8-get-on-bus-100.png',
+      iconSize: [25, 25], // size of the icon
+    });
     var busGetOff = L.icon({
       iconUrl: 'icons8-get-off-bus-100.png',
-      iconSize:     [25, 25], // size of the icon
+      iconSize: [25, 25], // size of the icon
     });
 
     // find device location
@@ -375,25 +392,25 @@
     // ##################################################################################################################################
 
     function calculatePerFullRoute() {
-      
+
       var firstStopID, lastStopID;
       var textToShow = '';
 
       //find the first and last stop (to remove all stop out-line)
       {
-      var element_input_fStop = document.getElementById('stops');
-      var element_datalist = document.getElementById('stops1');
-      var opSelected = element_datalist.querySelector(`[value="${element_input_fStop.value}"]`);
-      tempValue1 = opSelected.getAttribute('data-value');
-      firstStopID = rootAllFirstStopsID[tempValue1];
-      
-      var element_input_eStop = document.getElementById('eStop');
-      var element_datalist = document.getElementById('eStop1');
-      var opSelected = element_datalist.querySelector(`[value="${element_input_eStop.value}"]`);
-      lastStopID = opSelected.getAttribute('data-value');
-      
-      //console.log('First stop ID - ' + firstStopID);
-      //console.log('Last stop ID - ' + lastStopID);
+        var element_input_fStop = document.getElementById('stops');
+        var element_datalist = document.getElementById('stops1');
+        var opSelected = element_datalist.querySelector(`[value="${element_input_fStop.value}"]`);
+        tempValue1 = opSelected.getAttribute('data-value');
+        firstStopID = rootAllFirstStopsID[tempValue1];
+
+        var element_input_eStop = document.getElementById('eStop');
+        var element_datalist = document.getElementById('eStop1');
+        var opSelected = element_datalist.querySelector(`[value="${element_input_eStop.value}"]`);
+        lastStopID = opSelected.getAttribute('data-value');
+
+        //console.log('First stop ID - ' + firstStopID);
+        //console.log('Last stop ID - ' + lastStopID);
       }
 
       var element_input = document.getElementById('routes');
@@ -402,8 +419,8 @@
       tripID = opSelected.getAttribute('data-value');
 
       var urlTrip = 'https://transit.land/api/v2/rest/routes/'
-                + tripID //+'11823599' // ID
-                +'/trips?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&format=geojson'
+        + tripID //+'11823599' // ID
+        + '/trips?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&format=geojson'
 
       // Instantiate an new XHR Object
       const xhr = new XMLHttpRequest();
@@ -418,19 +435,31 @@
           // Changing string data into JSON Object
           objTrip = JSON.parse(this.responseText);
 
-          try{
-          tripTime = objTrip['features'][0]['properties']['stop_times']
 
-          
+          // flag in no error on objTrip
+          objTrip_flag = true
+
+          try {
+            tripTime = objTrip['features'][0]['properties']['stop_times']
+          }
+          catch {
+            alert("Error! Can't get the Trip\nOnly the first time will be used.");
+            console.log('ERROR! Cant get the trip info')
+            objTrip_flag = false
+            tripTime = []
+          }
+
+
 
           // Found the first stop time to compare to
-          let firstStopTimeInTrip = new Date(); 
-          for (numStops = 0; numStops< tripTime.length;numStops++){
-            if(stopsData_temp[0]['stop']['id'] == tripTime[numStops]['stop']['id']){
+          let firstStopTimeInTrip = new Date();
+          for (numStops = 0; numStops < tripTime.length; numStops++) {
+            if (stopsData_temp[0]['stop']['id'] == tripTime[numStops]['stop']['id']) {
               let [hours, minutes, seconds] = tripTime[numStops]['arrival_time'].split(':');
-              firstStopTimeInTrip.setHours(+hours); 
-              firstStopTimeInTrip.setMinutes(minutes); 
+              firstStopTimeInTrip.setHours(+hours);
+              firstStopTimeInTrip.setMinutes(minutes);
               firstStopTimeInTrip.setSeconds(seconds);
+              break
             }
           }
           
@@ -447,7 +476,7 @@
 
           // get the intial time for calculation
           var userDate = document.getElementById("date").value,
-              userTime = document.getElementById("time").value;
+            userTime = document.getElementById("time").value;
           var dateNow = new Date();
 
           // in case user didnt give info, use system time.
@@ -457,28 +486,34 @@
           if (time == "") {
             userTime = dateNow.toLocaleTimeString();
           }
-          var userFinalDate = new Date(userDate + " " + userTime);          
+          var userFinalDate = new Date(userDate + " " + userTime);
 
-          console.log('User Date: '+userFinalDate)
+          console.log('User Date: ' + userFinalDate)
           isDay = isDayNow(endStopLocation, userFinalDate);
 
-          if (isDay){
+          if (isDay) {
             for (var i = 0; i < stopsData_temp.length - 1 && isDay; i++) {
 
               // 1. Find start stop *location*
-              // 2. If its a stop - update the tripTime 
+              // 2. when find a stop - update the tripTime 
               if ('stop' in stopsData_temp[i]) {
                 startStop = stopsData_temp[i]["stop"]["geometry"]["coordinates"];
-                for (numStops = 0; numStops< tripTime.length;numStops++){
-                  if(stopsData_temp[i]['stop']['id'] == tripTime[numStops]['stop']['id']){
-                    var customStopTime = new Date();
+
+                //defult time (by user)
+                var customStopTime = new Date(userFinalDate.getTime());
+                
+                //update the tripTime
+                for (numStops = 0; numStops < tripTime.length; numStops++) {
+                  if (stopsData_temp[i]['stop']['id'] == tripTime[numStops]['stop']['id']) {
+                    customStopTime = new Date();
                     var [hours2, minutes2, seconds2] = tripTime[numStops]['arrival_time'].split(':');
                     customStopTime.setHours(+hours2)
                     customStopTime.setMinutes(minutes2)
                     customStopTime.setSeconds(seconds2);
-                    
+
                     customStopTime = new Date(userFinalDate.getTime() + (customStopTime - firstStopTimeInTrip));
-                    console.log('-------\nThe bus will be in '+stopsData_temp[i]['stop']['stop_name']+'\nAt: '+ customStopTime)
+                    console.log('-------\nThe bus will be in ' + stopsData_temp[i]['stop']['stop_name'] + '\nAt: ' + customStopTime)
+                    break
                     //this method not include the last stop
                   }
                 }
@@ -497,7 +532,7 @@
 
               distance_Air = distanceBetweenStops(startStop, endStop);
               SumDistance_Air += distance_Air;
-              cBus = anglePer2stops(startStop, endStop);          
+              cBus = anglePer2stops(startStop, endStop);
 
               suncalcVar = SunCalc.getPosition(customStopTime, startStop[0], startStop[1]);
               cSun = suncalcVar['azimuth'] * 180 / Math.PI + 180;
@@ -528,8 +563,8 @@
               //###############################################################
               // todo - if is night in the middle trip - response
             }
-          
-          
+
+
             console.log('-------\nSum M in Right: ' + distanceR + '\nSum M in Left: ' + distanceL + '\nUndefined: ' + sumNull);
 
 
@@ -544,7 +579,7 @@
               persentSideNegativ = "ימין";
             }
 
-            x = { 'persent': Math.round(persent*100), 'persentSide': persentSide , 'persentSideNegativ': persentSideNegativ};
+            x = { 'persent': Math.round(persent * 100), 'persentSide': persentSide, 'persentSideNegativ': persentSideNegativ };
 
             if (i == 0) {
               textToShow = "אנא בחר תחנה יעד שהיא לא התחנת מוצא"
@@ -557,26 +592,21 @@
               נסיעה נעימה`
               document.getElementById('showAnswer').innerHTML = textToShow;
             }
-            
+
           }
           //if is not day (or error in compare)
-          else{
+          else {
             textToShow = "חדשות טובות! אתה יכול לשבת איפה שרק תרצה באוטובוס :)"
             document.getElementById('showAnswer').innerHTML = textToShow;
           }
           document.getElementById('modal-body').innerHTML = textToShow
           // check when empty (user press reset button)
           //document.getElementById('modalHeader').innerHTML = `ב${document.getElementById('routes').value}, מהתחנה ${document.getElementById('stops').value} עד תחנה ${document.getElementById('eStop').value}`
-          
+
           document.getElementById('myModal').style.display = "block";
           document.getElementById('myModal').style.zIndex = "2"
 
-          } 
-          catch{
-            alert("Error! Can't get the Trip");
-            console.log('cant get the trip info')
 
-          }
         }
         else {
           alert("TripURL fail");
@@ -585,7 +615,7 @@
       }
       // At last send the request
       xhr.send();
-      
+
 
       //old method (no time diffrence)
       /*
@@ -733,7 +763,7 @@
       //nearbyStopMarker = L.featureGroup({}).addTo(map);
       On_OffRoute = L.featureGroup({}).addTo(map);
       stopOnRoute = L.featureGroup({}).addTo(map);
-      
+
       var element_input = document.getElementById('stops');
       var element_datalist = document.getElementById('stops1');
       var opSelected = element_datalist.querySelector(`[value="${element_input.value}"]`);
@@ -744,11 +774,11 @@
         //map.removeLayer(oldMarker);
         getOn.setLatLng(rootAllNearbyStopsLocation[val]).update();  // Updates your defined marker position
       } else {
-        getOn = new L.Marker(rootAllNearbyStopsLocation[val], {icon: busGetOn}).bindPopup(element_input.value);
+        getOn = new L.Marker(rootAllNearbyStopsLocation[val], { icon: busGetOn }).bindPopup(element_input.value);
         getOn.addTo(map);
       }
       map.setView(rootAllNearbyStopsLocation[val]);
-      
+
 
       var x = `<label for="routes">בחר קו: <input id="routes" onfocus="blur()" list="routes1" onChange="showStopsListInRoute()"> <button class="resetbutton" onclick="document.getElementById('routes').value=''">אפס</button></label>
                       <datalist name="routes" id="routes1">
@@ -760,12 +790,12 @@
         // split long name
         route_long_name = dataFile[val][n]["route_long_name"];
         //console.log(route_long_name);
-        end=route_long_name.slice(route_long_name.indexOf(">")+1, route_long_name.indexOf('#')-2);
-        first=route_long_name.slice(0, route_long_name.indexOf('<'));
-        routeNumber = route_long_name.slice(route_long_name.indexOf('#')-1)
+        end = route_long_name.slice(route_long_name.indexOf(">") + 1, route_long_name.indexOf('#') - 2);
+        first = route_long_name.slice(0, route_long_name.indexOf('<'));
+        routeNumber = route_long_name.slice(route_long_name.indexOf('#') - 1)
         //console.log(routeNumber)
-        
-        
+
+
 
         x += `<option data-value="${dataFile[val][n]["id"]}" value="קו ${dataFile[val][n]["route_short_name"]}, מסלול ${routeNumber}">מ:${first}, לכיוון: ${end}</option>`;
         n++
@@ -783,7 +813,7 @@
       //rootAllFirstStopsID = [];
       sortStops = [];
 
-      
+
 
       //var stopOnRoute = L.featureGroup().addTo(map);
       //map.removeLayer(nearbyStopMarker);
@@ -825,23 +855,23 @@
                       <datalist name="eStop" id="eStop1">
                         <option value="" selected disabled hidden>בחר תחנת ירידה</option>`;// onfocus="this.value=''"
 
-      
+
           var element_input = document.getElementById('stops');
           var element_datalist = document.getElementById('stops1');
           var opSelected = element_datalist.querySelector(`[value="${element_input.value}"]`);
           var tempValue1 = opSelected.getAttribute('data-value');
 
           firstStopID = rootAllFirstStopsID[tempValue1];
-          
+
           var nearbyIcon = L.icon({
             iconUrl: 'icons8-marker-48inRoute.png',
-            iconSize:     [13, 13], // size of the icon
+            iconSize: [13, 13], // size of the icon
           });
-          
+
 
           // sort the list
           sortedStops_withLine = sortStopsList(obj["features"][0]);
-          
+
           var flag_firstStopID, sortStops_counter = 0, flag_firstStopID_inWithLine = 0;
 
           for (i = 0; i < sortedStops_withLine.length; i++) {
@@ -861,23 +891,23 @@
           //short the list from the seleced (start) stop
           sortStops.splice(0, flag_firstStopID - 1); // the (-1) for showing in the list the first stop
           sortedStops_withLine.splice(0, flag_firstStopID_inWithLine);
-          
+
           // (OLD) stopsData = sortStops;
           stopsData = sortedStops_withLine;
 
 
           // show the line from the selected stop to end stop on the map
-          previusCoordinates=null;
-          for (index in stopsData){
-            if (!('stop' in stopsData[index])){
-              coordinates = [stopsData[index][1],stopsData[index][0]];
-              if (index < stopsData.length-1){
-                if (previusCoordinates!=null){
+          previusCoordinates = null;
+          for (index in stopsData) {
+            if (!('stop' in stopsData[index])) {
+              coordinates = [stopsData[index][1], stopsData[index][0]];
+              if (index < stopsData.length - 1) {
+                if (previusCoordinates != null) {
                   var line = new L.polyline([previusCoordinates, coordinates]);
                   stopOnRoute.addLayer(line);
                 }
                 previusCoordinates = coordinates;
-              } 
+              }
             }
           }
 
@@ -885,12 +915,12 @@
           //stopData replaced with sortStops
           // sortStops only contain the stops (without geometry) 
           var n = 0;
-          while (n < sortStops.length-1) {
+          while (n < sortStops.length - 1) {
             x += `<option data-value="${sortStops[n]["stop"]["id"]}" value="${sortStops[n]["stop"]["stop_name"]}">`;
 
-            coordinates = [sortStops[n]["stop"]['geometry']['coordinates'][1],sortStops[n]["stop"]['geometry']['coordinates'][0]];
-            coordinates2 = [sortStops[n+1]["stop"]['geometry']['coordinates'][1],sortStops[n+1]["stop"]['geometry']['coordinates'][0]];
-            var marker = new L.Marker(coordinates, {icon: nearbyIcon}).bindPopup(sortStops[n]["stop"]['stop_name']);
+            coordinates = [sortStops[n]["stop"]['geometry']['coordinates'][1], sortStops[n]["stop"]['geometry']['coordinates'][0]];
+            coordinates2 = [sortStops[n + 1]["stop"]['geometry']['coordinates'][1], sortStops[n + 1]["stop"]['geometry']['coordinates'][0]];
+            var marker = new L.Marker(coordinates, { icon: nearbyIcon }).bindPopup(sortStops[n]["stop"]['stop_name']);
 
             //var line = new L.polyline([coordinates, coordinates2]);
             stopOnRoute.addLayer(marker);
@@ -898,10 +928,10 @@
 
             n++;
           }
-          x += `<option data-value="${sortStops[sortStops.length-1]["stop"]["id"]}" value="${sortStops[sortStops.length-1]["stop"]["stop_name"]}">`;
-          
-          coordinates = [sortStops[sortStops.length-1]["stop"]['geometry']['coordinates'][1],sortStops[sortStops.length-1]["stop"]['geometry']['coordinates'][0]];
-          var marker = new L.Marker(coordinates, {icon: nearbyIcon}).bindPopup(sortStops[sortStops.length-1]["stop"]['stop_name']);
+          x += `<option data-value="${sortStops[sortStops.length - 1]["stop"]["id"]}" value="${sortStops[sortStops.length - 1]["stop"]["stop_name"]}">`;
+
+          coordinates = [sortStops[sortStops.length - 1]["stop"]['geometry']['coordinates'][1], sortStops[sortStops.length - 1]["stop"]['geometry']['coordinates'][0]];
+          var marker = new L.Marker(coordinates, { icon: nearbyIcon }).bindPopup(sortStops[sortStops.length - 1]["stop"]['stop_name']);
           stopOnRoute.addLayer(marker);
           map.fitBounds(stopOnRoute.getBounds());
 
@@ -923,31 +953,31 @@
     // show on map start\end stops
     // short the list
     function showButtonForCalc() {
-      document.getElementById('button_startCalc').innerHTML = 
-                    `<input id="date" type="date" name="task_date" /> :תאריך<br>`+
-                    `<input id="time" type="time" name="task_time" /> :שעה
+      document.getElementById('button_startCalc').innerHTML =
+        `<input id="date" type="date" name="task_date" /> :תאריך<br>` +
+        `<input id="time" type="time" name="task_time" /> :שעה
                     <br>
                     <br>
                     <button class="w3-btn w3-blue w3-hover-light-grey" onclick="calculatePerFullRoute()">התחל לחשב</button>`;
 
-                    var date = new Date();
+      var date = new Date();
 
-                    var day = date.getDate(),
-                        month = date.getMonth() + 1,
-                        year = date.getFullYear(),
-                        hour = date.getHours(),
-                        min  = date.getMinutes();
+      var day = date.getDate(),
+        month = date.getMonth() + 1,
+        year = date.getFullYear(),
+        hour = date.getHours(),
+        min = date.getMinutes();
 
-                    month = (month < 10 ? "0" : "") + month;
-                    day = (day < 10 ? "0" : "") + day;
-                    hour = (hour < 10 ? "0" : "") + hour;
-                    min = (min < 10 ? "0" : "") + min;
+      month = (month < 10 ? "0" : "") + month;
+      day = (day < 10 ? "0" : "") + day;
+      hour = (hour < 10 ? "0" : "") + hour;
+      min = (min < 10 ? "0" : "") + min;
 
-                    var today = year + "-" + month + "-" + day,
-                        displayTime = hour + ":" + min; 
+      var today = year + "-" + month + "-" + day,
+        displayTime = hour + ":" + min;
 
-                    document.getElementById('date').value = today;      
-                    document.getElementById("time").value = displayTime;
+      document.getElementById('date').value = today;
+      document.getElementById("time").value = displayTime;
       // remove old route
       map.removeLayer(On_OffRoute);
       On_OffRoute = L.featureGroup().addTo(map);
@@ -958,7 +988,7 @@
       var opSelected = element_datalist.querySelector(`[value="${element_input.value}"]`);
       lastStopID = opSelected.getAttribute('data-value');
 
-      
+
       var previusCoordinates = null;
       for (stopindex in stopsData) {
         stopsData_temp.push(stopsData[stopindex]);
@@ -966,25 +996,25 @@
           // show marker for end stop
           if (stopsData[stopindex]['stop']['id'] == lastStopID) {
             endStopLocation = stopsData[stopindex]["stop"]["geometry"]["coordinates"];
-            coordinates = [endStopLocation[1],endStopLocation[0]];
-            var getOff = new L.Marker(coordinates, {icon: busGetOff}).bindPopup(stopsData[stopindex]["stop"]['stop_name']);
+            coordinates = [endStopLocation[1], endStopLocation[0]];
+            var getOff = new L.Marker(coordinates, { icon: busGetOff }).bindPopup(stopsData[stopindex]["stop"]['stop_name']);
             On_OffRoute.addLayer(getOff);
             break; // stop pushing when end-stop founded
           }
         }
-        else{
-          coordinates = [stopsData[stopindex][1],stopsData[stopindex][0]];
-          if (previusCoordinates!=null&&stopindex<stopsData.length-1){
+        else {
+          coordinates = [stopsData[stopindex][1], stopsData[stopindex][0]];
+          if (previusCoordinates != null && stopindex < stopsData.length - 1) {
             var line = new L.polyline([previusCoordinates, coordinates]);
             On_OffRoute.addLayer(line);
           }
-          previusCoordinates = coordinates;        
+          previusCoordinates = coordinates;
         }
       }
       //console.log('Sum mini location (geometry): ' + stopsData_temp.length);
 
 
-      
+
       map.fitBounds(On_OffRoute.getBounds());
       // remove all stop
       map.removeLayer(stopOnRoute);
@@ -992,7 +1022,7 @@
 
     function findNearStops() {
       //show section
-      document.getElementById('section2').style.display='block';
+      document.getElementById('section2').style.display = 'block';
 
       // reset old layer
       map.removeLayer(nearbyStopMarker);
@@ -1002,7 +1032,7 @@
       On_OffRoute = L.featureGroup().addTo(map);
       stopOnRoute = L.featureGroup().addTo(map);
 
-      if (getOn!=null){
+      if (getOn != null) {
         map.removeLayer(getOn);
         getOn = null;
       }
@@ -1044,17 +1074,17 @@
           var stop_code = [];
           var stop_names = [];
           stop_name_counter = 1
-        
+
           var nearbyIcon = L.icon({
             iconUrl: 'icons8-bus-48.png',
-            iconSize:     [20, 20], // size of the icon
+            iconSize: [20, 20], // size of the icon
           });
 
-           
+
           //console.log('stops near by: ' + obj['features'].length);
           while (n < obj['features'].length) {
             data = obj['features'][n]['properties'];
-            coordinates = [data['geometry']['coordinates'][1],data['geometry']['coordinates'][0]];
+            coordinates = [data['geometry']['coordinates'][1], data['geometry']['coordinates'][0]];
             //console.log(coordinates)
 
             // when the stop already in the list (רציפים)
@@ -1065,24 +1095,24 @@
 
               //if the same name shown couple of time but in diffrent stops
               stop_name_temp = data['stop_name']
-              if (stop_names.includes(stop_name_temp)){
+              if (stop_names.includes(stop_name_temp)) {
                 stop_name_temp += ` #${stop_name_counter}`
                 stop_name_counter++
               }
 
               str += `<option data-value=${data['stop_code']} value="${stop_name_temp}">${data['stop_code']}</option>`;
               rootAllFirstStopsID[data['stop_code']] = data['id'];
-              
+
               stop_code.push(data["stop_code"]);
               stop_names.push(stop_name_temp)
               //console.log(stop_name_temp);
 
-              
+
               rootAllNearbyStopsLocation[data['stop_code']] = coordinates;
 
-              var marker = new L.Marker(coordinates, {icon: nearbyIcon}).bindPopup(data['stop_name']);
+              var marker = new L.Marker(coordinates, { icon: nearbyIcon }).bindPopup(data['stop_name']);
               nearbyStopMarker.addLayer(marker);
-              
+
               //nearbyStopMarker.push(L.marker(coordinates).bindPopup('This is Littleton, CO.'));
             }
 
@@ -1092,7 +1122,7 @@
             dataFile[data['stop_code']] = [...dataFile[data['stop_code']], ...routes(data)]; //n+1 is the kay, value is the return array
 
             n++;
-          } 
+          }
 
           str += `</datalist><br>`;
           //str += `<label id="val_num"></label>`;
@@ -1155,19 +1185,19 @@
   <script src="languages.js"></script>
   <!-- Script for Sidebar, Tabs, Accordions, Progress bars and slideshows -->
   <script>
-    
-    function loadTranslate(){
+
+    function loadTranslate() {
       var LngObject = JSON.parse(data); // from "languages.js"
       var translate = new Translate();
       var currentLng = document.getElementById('lang').value;//'fr'\'en'
       var attributeName = 'data-lang';
       translate.init(attributeName, currentLng, LngObject);
-      translate.process(); 
+      translate.process();
     }
 
     // Source: http://stackoverflow.com/questions/497790
     var dates = {
-    convert:function(d) {
+      convert: function (d) {
         // Converts the date in d to a date-object. The input can be:
         //   a date object: returned without modification
         //  an array      : Interpreted as [year,month,day]. NOTE: month is 0-11.
@@ -1178,15 +1208,15 @@
         //  an object     : Interpreted as an object with year, month and date
         //                  attributes.  **NOTE** month is 0-11.
         return (
-            d.constructor === Date ? d :
-            d.constructor === Array ? new Date(d[0],d[1],d[2]) :
-            d.constructor === Number ? new Date(d) :
-            d.constructor === String ? new Date(d) :
-            typeof d === "object" ? new Date(d.year,d.month,d.date) :
-            NaN
+          d.constructor === Date ? d :
+            d.constructor === Array ? new Date(d[0], d[1], d[2]) :
+              d.constructor === Number ? new Date(d) :
+                d.constructor === String ? new Date(d) :
+                  typeof d === "object" ? new Date(d.year, d.month, d.date) :
+                    NaN
         );
-    },
-    compare:function(a,b) {
+      },
+      compare: function (a, b) {
         // Compare two dates (could be of any type supported by the convert
         // function above) and returns:
         //  -1 : if a < b
@@ -1195,41 +1225,41 @@
         // NaN : if a or b is an illegal date
         // NOTE: The code inside isFinite does an assignment (=).
         return (
-            isFinite(a=this.convert(a).valueOf()) &&
-            isFinite(b=this.convert(b).valueOf()) ?
-            (a>b)-(a<b) :
+          isFinite(a = this.convert(a).valueOf()) &&
+            isFinite(b = this.convert(b).valueOf()) ?
+            (a > b) - (a < b) :
             NaN
         );
-    },
-    inRange:function(d,start,end) {
+      },
+      inRange: function (d, start, end) {
         // Checks if date in d is between dates in start and end.
         // Returns a boolean or NaN:
         //    true  : if d is between start and end (inclusive)
         //    false : if d is before start or after end
         //    NaN   : if one or more of the dates is illegal.
         // NOTE: The code inside isFinite does an assignment (=).
-       return (
-            isFinite(d=this.convert(d).valueOf()) &&
-            isFinite(start=this.convert(start).valueOf()) &&
-            isFinite(end=this.convert(end).valueOf()) ?
+        return (
+          isFinite(d = this.convert(d).valueOf()) &&
+            isFinite(start = this.convert(start).valueOf()) &&
+            isFinite(end = this.convert(end).valueOf()) ?
             start <= d && d <= end :
             NaN
         );
+      }
     }
-}
 
-function isDayNow(StopLocation, customDate) {
+    function isDayNow(StopLocation, customDate) {
 
-  sunCalcTime = SunCalc.getTimes(/*Date*/ customDate,
+      sunCalcTime = SunCalc.getTimes(/*Date*/ customDate,
                                   /*Number*/ StopLocation[0],
-                                  /*Number*/ StopLocation[1], 
+                                  /*Number*/ StopLocation[1],
                                   /*Number (default=0)*/ 0);
 
-  startTime = sunCalcTime['sunriseEnd']
-  endTime = sunCalcTime['sunsetStart']
+      startTime = sunCalcTime['sunriseEnd']
+      endTime = sunCalcTime['sunsetStart']
 
-  return dates.inRange(customDate,startTime,endTime);
-}
+      return dates.inRange(customDate, startTime, endTime);
+    }
 
     /* Side navigation
     function w3_open() {
