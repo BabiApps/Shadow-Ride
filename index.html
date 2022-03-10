@@ -418,7 +418,10 @@
           // Changing string data into JSON Object
           objTrip = JSON.parse(this.responseText);
 
+          try{
           tripTime = objTrip['features'][0]['properties']['stop_times']
+
+          
 
           // Found the first stop time to compare to
           let firstStopTimeInTrip = new Date(); 
@@ -554,6 +557,7 @@
               נסיעה נעימה`
               document.getElementById('showAnswer').innerHTML = textToShow;
             }
+            
           }
           //if is not day (or error in compare)
           else{
@@ -567,6 +571,12 @@
           document.getElementById('myModal').style.display = "block";
           document.getElementById('myModal').style.zIndex = "2"
 
+          } 
+          catch{
+            alert("Error! Can't get the Trip");
+            console.log('cant get the trip info')
+
+          }
         }
         else {
           alert("TripURL fail");
