@@ -448,8 +448,8 @@
             tripTime = objTrip['features'][0]['properties']['stop_times']
           }
           catch {
-            alert("שגיאה! לא הצלחתי לגשת לזמני הנסיעה של האוטובוס\nולכן יהיה שימוש באותו הזמן לאורך כל הדרך (פחות מדוייק)");
-            console.log('ERROR! Cant get the trip info')
+            alert("שגיאה!\nלא הצלחתי לגשת לזמני הנסיעה של האוטובוס\nולכן יהיה שימוש באותו הזמן לאורך כל הדרך (פחות מדוייק)");
+            console.log('ERROR! Cant get the trip info\n'+ urlTrip)
             objTrip_flag = false
             tripTime = []
           }
@@ -499,13 +499,15 @@
           if (isDay) {
             for (var i = 0; i < stopsData_temp.length - 1 && isDay; i++) {
 
+              //defult time (by user)
+              var customStopTime = new Date(userFinalDate.getTime());
+                
               // 1. Find start stop *location*
               // 2. when find a stop - update the tripTime 
               if ('stop' in stopsData_temp[i]) {
                 startStop = stopsData_temp[i]["stop"]["geometry"]["coordinates"];
 
-                //defult time (by user)
-                var customStopTime = new Date(userFinalDate.getTime());
+                
                 
                 //update the tripTime
                 for (numStops = 0; numStops < tripTime.length; numStops++) {
