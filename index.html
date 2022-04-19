@@ -66,7 +66,10 @@
   }
 
   /* Modal Body */
-  .modal-body {
+  .modal-body1 {
+    padding: 2px 16px;
+  }
+  .modal-body2 {
     padding: 2px 16px;
   }
 
@@ -187,7 +190,9 @@
     <!-- Modal content -->
     <div class="modal-content">
       <span onclick="document.getElementById('myModal').style.display='none'" class="close">&times;</span>
-      <p id="modal-body">Some text in the Modal..</p>
+      <p id="modal-body1">Some text in the Modal..</p>
+      <p id="modal-body2">Some text in the Modal..</p>
+      <p id="modal-body3">נסיעה נעימה!</p>
     </div>
   </div>
 
@@ -443,7 +448,7 @@
             tripTime = objTrip['features'][0]['properties']['stop_times']
           }
           catch {
-            alert("Error! Can't get the Trip\nOnly the first time will be used.");
+            alert("שגיאה! לא הצלחתי לגשת לזמני הנסיעה של האוטובוס\nולכן יהיה שימוש באותו הזמן לאורך כל הדרך (פחות מדוייק)");
             console.log('ERROR! Cant get the trip info')
             objTrip_flag = false
             tripTime = []
@@ -582,24 +587,25 @@
             x = { 'persent': Math.round(persent * 100), 'persentSide': persentSide, 'persentSideNegativ': persentSideNegativ };
 
             if (i == 0) {
-              textToShow = "אנא בחר תחנה יעד שהיא לא התחנת מוצא"
-              document.getElementById('showAnswer').innerHTML = textToShow;
+              textToShow1 = "אנא בחר תחנה יעד שהיא לא התחנת מוצא"
+              document.getElementById('showAnswer').innerHTML = textToShow1;
               alert('אותו מיקום! אנא בחר תחנת ירידה אחרת')
             } else {
               //textToShow_old = `${x["persent"]}% From the Route,\nThe SUN is on your ${x["persentSide"]} side.\nYou should sit on the ${x["persentSideNegativ"]} side`;
-              textToShow = `אוי לא! צד ${x["persentSide"]} מלא בשמש (כ${x["persent"]}% מהדרך).\n
-              ולכן אנחנו ממליצים לך לשבת בצד ${x["persentSideNegativ"]} של האוטובוס :)
-              נסיעה נעימה`
-              document.getElementById('showAnswer').innerHTML = textToShow;
+              textToShow1 = `אוי לא! צד ${x["persentSide"]} מלא בשמש (כ${x["persent"]}% מהדרך).\n`
+              textToShow2 = `ולכן אנחנו ממליצים לך לשבת בצד ${x["persentSideNegativ"]} של האוטובוס :)`
+              document.getElementById('showAnswer').innerHTML = textToShow1 + textToShow2;
             }
 
           }
           //if is not day (or error in compare)
           else {
-            textToShow = "חדשות טובות! אתה יכול לשבת איפה שרק תרצה באוטובוס :)"
-            document.getElementById('showAnswer').innerHTML = textToShow;
+            textToShow1 = "חדשות טובות! אתה יכול לשבת איפה שרק תרצה באוטובוס :)"
+            textToShow2 = ""
+            document.getElementById('showAnswer').innerHTML = textToShow1;
           }
-          document.getElementById('modal-body').innerHTML = textToShow
+          document.getElementById('modal-body1').innerHTML = textToShow1
+          document.getElementById('modal-body2').innerHTML = textToShow2
           // check when empty (user press reset button)
           //document.getElementById('modalHeader').innerHTML = `ב${document.getElementById('routes').value}, מהתחנה ${document.getElementById('stops').value} עד תחנה ${document.getElementById('eStop').value}`
 
@@ -954,11 +960,12 @@
     // short the list
     function showButtonForCalc() {
       document.getElementById('button_startCalc').innerHTML =
-        `<input id="date" type="date" name="task_date" /> :תאריך<br>` +
+        `<div hidden><input  id="date" type="date" name="task_date" /> :תאריך<br></div>` + // the date is hidden (not needed)
         `<input id="time" type="time" name="task_time" /> :שעה
                     <br>
                     <br>
-                    <button class="w3-btn w3-blue w3-hover-light-grey" onclick="calculatePerFullRoute()">התחל לחשב</button>`;
+                    <button class="w3-btn w3-blue w3-hover-light-grey" onclick="calculatePerFullRoute()">התחל לחשב</button>
+                    <br>`;
 
       var date = new Date();
 
