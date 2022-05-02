@@ -369,6 +369,10 @@
       iconSize: [25, 25], // size of the icon
     });
 
+    $('.hidekeyboard').on('focus',function(){
+    $(this).trigger('blur');
+    });
+
     // find device location
     function getLocation() {
       if (navigator.geolocation) {
@@ -1075,9 +1079,11 @@
 
           // Getting the ul element
           let list = document.getElementById("list");
-          str = `<label style="width: 100%" for="stops"><label type="text">בחר תחנת מוצא: </label><input list="stops1" onfocus="blur()" autocomplete="off" id="stops" onChange="showRoutesListInStop()"> <button class="resetbutton" onclick="document.getElementById('stops').value=''">אפס</button></label>
+          str = `<label for="stops"><label type="text">בחר תחנת מוצא: </label><input list="stops1" class="hidekeyboard"  autocomplete="off" id="stops" onChange="showRoutesListInStop()"> <button class="resetbutton" onclick="document.getElementById('stops').value=''">אפס</button></label>
                           <datalist name="stops" id="stops1">
                             <option value="" selected disabled hidden>בחר תחנת עלייה</option>`; //onfocus="this.value=''" 
+
+                            // check if works - class="hidekeyboard" intead onfocus="blur()"
 
           var n = 0;
           var stop_code = [];
