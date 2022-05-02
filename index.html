@@ -792,9 +792,11 @@
       map.setView(rootAllNearbyStopsLocation[val]);
 
 
-      var x = `<label for="routes">בחר קו: <input id="routes" onfocus="blur()" list="routes1" onChange="showStopsListInRoute()"> <button class="resetbutton" onclick="document.getElementById('routes').value=''">אפס</button></label>
+      var x = `<label for="routes">בחר קו: <input id="routes" inputmode=“none” list="routes1" onChange="showStopsListInRoute()"> <button class="resetbutton" onclick="document.getElementById('routes').value=''">אפס</button></label>
                       <datalist name="routes" id="routes1">
-                        <option value="" selected disabled hidden>בחר קו</option>`;//<option value="volvo">Volvo</option> onfocus="this.value=''"
+                        <option value="" selected disabled hidden>בחר קו</option>`;
+                        //<option value="volvo">Volvo</option> onfocus="this.value=''"  
+                        //onfocus="blur()" 
 
 
       var n = 0;
@@ -863,9 +865,10 @@
           obj = JSON.parse(this.responseText);
           stopsData = obj["features"][0]["properties"]["route_stops"];
 
-          var x = `<label for="endstops">בחר תחנת יעד: <input autocomplete="off" id="eStop" onfocus="blur()" list="eStop1" onChange="showButtonForCalc()"> <button class="resetbutton" onclick="document.getElementById('eStop').value=''">אפס</button></label>
+          var x = `<label for="endstops">בחר תחנת יעד: <input autocomplete="off" id="eStop" inputmode=“none” list="eStop1" onChange="showButtonForCalc()"> <button class="resetbutton" onclick="document.getElementById('eStop').value=''">אפס</button></label>
                       <datalist name="eStop" id="eStop1">
-                        <option value="" selected disabled hidden>בחר תחנת ירידה</option>`;// onfocus="this.value=''"
+                        <option value="" selected disabled hidden>בחר תחנת ירידה</option>`;
+                        // onfocus="this.value=''" onfocus="blur()"
 
 
           var element_input = document.getElementById('stops');
@@ -1083,7 +1086,7 @@
                           <datalist name="stops" id="stops1">
                             <option value="" selected disabled hidden>בחר תחנת עלייה</option>`; //onfocus="this.value=''" 
 
-                            // check if works - class="hidekeyboard" intead onfocus="blur()"
+                            // check if works - class="hidekeyboard" intead onfocus="blur()" inputmode=“none”
 
           var n = 0;
           var stop_code = [];
