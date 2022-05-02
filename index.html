@@ -402,6 +402,9 @@
 
     function calculatePerFullRoute() {
 
+      document.getElementById('button_startCalc').innerHTML = ""
+      document.getElementById('showAnswer').innerHTML = ""
+
       var firstStopID, lastStopID;
       var textToShow = '';
 
@@ -767,6 +770,11 @@
       sortStops = [];
       */
 
+     
+      document.getElementById('list_StopsInRoute').innerHTML = ""
+      document.getElementById('button_startCalc').innerHTML = ""
+      document.getElementById('showAnswer').innerHTML = ""
+
 
       // reset old layer
       map.removeLayer(nearbyStopMarker);
@@ -827,7 +835,9 @@
       //rootAllFirstStopsID = [];
       sortStops = [];
 
-
+      document.getElementById('list_StopsInRoute').innerHTML = ""
+      document.getElementById('button_startCalc').innerHTML = ""
+      document.getElementById('showAnswer').innerHTML = ""
 
       //var stopOnRoute = L.featureGroup().addTo(map);
       //map.removeLayer(nearbyStopMarker);
@@ -1037,8 +1047,16 @@
     }
 
     function findNearStops() {
+      
       //show section
       document.getElementById('section2').style.display = 'block';
+
+      //clear
+      document.getElementById('listForTest').innerHTML = ""
+      document.getElementById('list_StopsInRoute').innerHTML = ""
+      document.getElementById('button_startCalc').innerHTML = ""
+      document.getElementById('showAnswer').innerHTML = ""
+    
 
       // reset old layer
       map.removeLayer(nearbyStopMarker);
