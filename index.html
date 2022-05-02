@@ -154,7 +154,7 @@
   }
 </style>
 
-<body class="fullscreen">
+<body onload="getLocation();" class="fullscreen">
   <span id="connection"><abbr title="You are online!">&#128246;</abbr></span>
   <div id="showInstall">
     <!--img id="installApp" src="images/download.png"-->
@@ -1179,10 +1179,6 @@
       });
     };
 
-
-    window.onload = function() {
-      getLocation()
-    };
 
 
     /*
