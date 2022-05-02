@@ -1079,7 +1079,7 @@
 
           // Getting the ul element
           let list = document.getElementById("list");
-          str = `<label for="stops"><label type="text">בחר תחנת מוצא: </label><input list="stops1" class="hidekeyboard"  autocomplete="off" id="stops" onChange="showRoutesListInStop()"> <button class="resetbutton" onclick="document.getElementById('stops').value=''">אפס</button></label>
+          str = `<label for="stops"><label type="text">בחר תחנת מוצא: </label><input list="stops1" inputmode=“none” autocomplete="off" id="stops" onChange="showRoutesListInStop()"> <button class="resetbutton" onclick="document.getElementById('stops').value=''">אפס</button></label>
                           <datalist name="stops" id="stops1">
                             <option value="" selected disabled hidden>בחר תחנת עלייה</option>`; //onfocus="this.value=''" 
 
