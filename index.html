@@ -402,9 +402,6 @@
 
     function calculatePerFullRoute() {
 
-      document.getElementById('button_startCalc').innerHTML = ""
-      document.getElementById('showAnswer').innerHTML = ""
-
       var firstStopID, lastStopID;
       var textToShow = '';
 
@@ -483,7 +480,7 @@
           // * comper to stop id (not name)
 
 
-          var distanceR = 0, distanceL = 0, SumDistance_Air = 0, sumNull = 0;
+          var distanceR = 0, distanceL = 0, distanceNull = 0, SumDistance_Air = 0, countNull = 0;
           var cBus, diffC, persent, persentSide, sum_cBus = 0;
 
           // get the intial time for calculation
@@ -568,7 +565,8 @@
                 distanceL += distance_Air;
               }
               else {
-                sumNull++;
+                countNull++;
+                distanceNull += distance_Air;
               }
 
               // check if in the middle the sun go down
@@ -579,7 +577,7 @@
             }
 
 
-            console.log('-------\nSum M in Right: ' + distanceR + '\nSum M in Left: ' + distanceL + '\nUndefined: ' + sumNull);
+            console.log('-------\nSum Meter in Right: ' + distanceR + '\nSum Meter in Left: ' + distanceL + '\nSum Meter Undefined: ' + distanceNull+ '\nUndefined: ' + countNull);
 
 
             if (distanceR > distanceL) {
