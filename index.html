@@ -12,6 +12,10 @@
   <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" type="text/css" href="css/main.css">
+
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6474275493517014"
+    crossorigin="anonymous"></script>
 </head>
 
 
@@ -20,9 +24,6 @@
 <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
 
-<!-- old color 
-  background-color: #336B90;
--->
 <style>
   .backgroud {
     background-color: #468aa6;
@@ -69,6 +70,7 @@
   .modal-body1 {
     padding: 2px 16px;
   }
+
   .modal-body2 {
     padding: 2px 16px;
   }
@@ -172,17 +174,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
     <link rel="stylesheet" href="center-radar.css">
-    <!--#######################################################################################################################
-      ########################################################################################################################
-      ########################################################################################################################
-      todo - move to local method (ring loading)link rel="stylesheet" href="css/loading.css"-->
-    <!--div class="ring">Loading<span></span>
-  </div-->
-
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6474275493517014"
       crossorigin="anonymous"></script>
-    <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script-->
   </header>
 
   <!-- The Modal -->
@@ -239,7 +233,6 @@
       <div class="w3-card w3-container" id="mapInRight" style="min-height:400px; z-index: 1;">
       </div>
     </div>
-    <!-- not in use script src="OpenLayers.js"></script-->
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
     <link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet" />
     <!-- script for showing the map -->
@@ -247,11 +240,6 @@
       // Where you want to render the map.
       var element = document.getElementById('mapInRight');
       var pickMarker = null;
-
-      // Height has to be set. You can do this in CSS too.
-      //element.style = 'z-index: 1;';
-
-      // Create Leaflet map on map element.
       var map = L.map(element);
 
       // Add OSM tile layer to the Leaflet map.
@@ -260,15 +248,11 @@
       }).addTo(map);
 
       // Target's GPS coordinates.
-
-
       var target = L.latLng('32.83325770280918', '35.79960352932844');
       document.getElementById('lat').value = target['lat'];
       document.getElementById('lon').value = target['lng'];
 
-      // Set map's center to target with zoom 14.
       map.setView(target, 14);
-
       map.on('click', addMarker);
 
       function addMarker(e) {
@@ -284,9 +268,6 @@
         document.getElementById('lat').value = e.latlng['lat'];
         document.getElementById('lon').value = e.latlng['lng'];
       }
-
-  // Place a marker on the same location.
-  //L.marker(target).addTo(map);
     </script>
 
 
@@ -315,7 +296,8 @@
         if (event.target == modal) {
           modal.style.display = "none";
         }
-      }</script>
+      }
+    </script>
     <!-- middle -->
     <div class="w3-third pedding_section" id="section2" style="display: none;">
       <div class="w3-card w3-container " style="min-height:400px">
@@ -369,8 +351,8 @@
       iconSize: [25, 25], // size of the icon
     });
 
-    $('.hidekeyboard').on('focus',function(){
-    $(this).trigger('blur');
+    $('.hidekeyboard').on('focus', function () {
+      $(this).trigger('blur');
     });
 
     // find device location
@@ -453,7 +435,7 @@
           }
           catch {
             alert("שגיאה!\nלא הצלחתי לגשת לזמני הנסיעה של האוטובוס\nולכן יהיה שימוש באותו הזמן לאורך כל הדרך (פחות מדוייק)");
-            console.log('ERROR! Cant get the trip info\n'+ urlTrip)
+            console.log('ERROR! Cant get the trip info\n' + urlTrip)
             objTrip_flag = false
             tripTime = []
           }
@@ -471,7 +453,7 @@
               break
             }
           }
-          
+
 
           ///console.log(tripTime)
           //################################################################################
@@ -505,14 +487,14 @@
 
               //defult time (by user)
               var customStopTime = new Date(userFinalDate.getTime());
-                
+
               // 1. Find start stop *location*
               // 2. when find a stop - update the tripTime 
               if ('stop' in stopsData_temp[i]) {
                 startStop = stopsData_temp[i]["stop"]["geometry"]["coordinates"];
 
-                
-                
+
+
                 //update the tripTime
                 for (numStops = 0; numStops < tripTime.length; numStops++) {
                   if (stopsData_temp[i]['stop']['id'] == tripTime[numStops]['stop']['id']) {
@@ -577,7 +559,7 @@
             }
 
 
-            console.log('-------\nSum Meter in Right: ' + distanceR + '\nSum Meter in Left: ' + distanceL + '\nSum Meter Undefined: ' + distanceNull+ '\nUndefined: ' + countNull);
+            console.log('-------\nSum Meter in Right: ' + distanceR + '\nSum Meter in Left: ' + distanceL + '\nSum Meter Undefined: ' + distanceNull + '\nUndefined: ' + countNull);
 
 
             if (distanceR > distanceL) {
@@ -768,7 +750,7 @@
       sortStops = [];
       */
 
-     
+
       document.getElementById('list_StopsInRoute').innerHTML = ""
       document.getElementById('button_startCalc').innerHTML = ""
       document.getElementById('showAnswer').innerHTML = ""
@@ -801,8 +783,8 @@
       var x = `<label for="routes">בחר קו: <input id="routes" inputmode=“none” list="routes1" onChange="showStopsListInRoute()"> <button class="resetbutton" onclick="document.getElementById('routes').value=''">אפס</button></label>
                       <datalist name="routes" id="routes1">
                         <option value="" selected disabled hidden>בחר קו</option>`;
-                        //<option value="volvo">Volvo</option> onfocus="this.value=''"  
-                        //onfocus="blur()" 
+      //<option value="volvo">Volvo</option> onfocus="this.value=''"  
+      //onfocus="blur()" 
 
 
       var n = 0;
@@ -876,7 +858,7 @@
           var x = `<label for="endstops">בחר תחנת יעד: <input autocomplete="off" id="eStop" inputmode=“none” list="eStop1" onChange="showButtonForCalc()"> <button class="resetbutton" onclick="document.getElementById('eStop').value=''">אפס</button></label>
                       <datalist name="eStop" id="eStop1">
                         <option value="" selected disabled hidden>בחר תחנת ירידה</option>`;
-                        // onfocus="this.value=''" onfocus="blur()"
+          // onfocus="this.value=''" onfocus="blur()"
 
 
           var element_input = document.getElementById('stops');
@@ -1045,7 +1027,7 @@
     }
 
     function findNearStops() {
-      
+
       //show section
       document.getElementById('section2').style.display = 'block';
 
@@ -1054,7 +1036,7 @@
       document.getElementById('list_StopsInRoute').innerHTML = ""
       document.getElementById('button_startCalc').innerHTML = ""
       document.getElementById('showAnswer').innerHTML = ""
-    
+
 
       // reset old layer
       map.removeLayer(nearbyStopMarker);
@@ -1081,6 +1063,7 @@
       var lon = document.getElementById('lon').value;
       var radius = document.getElementById('radius').value * 10;
       var url = 'https://transit.land/api/v2/rest/stops?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&feed_onestop_id=f-sv-גלים~מועצהאזוריתגולן~אפיקים~דןצפון~דןבדרום~דןבארשבע~ירושלים&lat=' + lat + '&lon=' + lon + '&radius=' + radius + '&format=geojson';
+      console.log(url)
 
       // Instantiate an new XHR Object
       const xhr = new XMLHttpRequest();
@@ -1098,13 +1081,12 @@
 
           // Getting the ul element
           let list = document.getElementById("list");
-          str = `<label for="stops"><label type="text">בחר תחנת מוצא: </label><input list="stops1" inputmode=“none” autocomplete="off" id="stops" onChange="showRoutesListInStop()"> <button class="resetbutton" onclick="document.getElementById('stops').value=''">אפס</button></label>
+          var str = `<label for="stops"><label type="text">בחר תחנת מוצא: </label><input list="stops1" inputmode=“none” autocomplete="off" id="stops" onChange="showRoutesListInStop()"> <button class="resetbutton" onclick="document.getElementById('stops').value=''">אפס</button></label>
                           <datalist name="stops" id="stops1">
                             <option value="" selected disabled hidden>בחר תחנת עלייה</option>`; //onfocus="this.value=''" 
 
-                            // check if works - class="hidekeyboard" intead onfocus="blur()" inputmode=“none”
+          // check if works - class="hidekeyboard" intead onfocus="blur()" inputmode=“none”
 
-          var n = 0;
           var stop_code = [];
           var stop_names = [];
           stop_name_counter = 1
@@ -1116,6 +1098,7 @@
 
 
           //console.log('stops near by: ' + obj['features'].length);
+          var n = 0;
           while (n < obj['features'].length) {
             data = obj['features'][n]['properties'];
             coordinates = [data['geometry']['coordinates'][1], data['geometry']['coordinates'][0]];
@@ -1167,11 +1150,12 @@
 
           //nearbyStopMarker.addLayer(new L.Marker(markers[n-1]));
 
-          map.fitBounds(nearbyStopMarker.getBounds());
+
 
 
 
           if (n != 0) {
+            map.fitBounds(nearbyStopMarker.getBounds());
             document.getElementById('collapse_head').innerHTML = 'תחנות קרובות:';
             list.innerHTML = str;
           }
