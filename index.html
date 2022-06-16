@@ -12,6 +12,10 @@
   <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" type="text/css" href="css/main.css">
+  <script src="./fun.js"></script>
+  <script src="./suncalc.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/main.js"></script>
 
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6474275493517014"
@@ -224,7 +228,7 @@
 
 
     <!-- ##################################################################
-  MAP
+                             MAP
 ####################################################################### -->
     <div class="w3-third w3-center pedding_section" style="right: 0; ">
       <!--#################################################### 
@@ -322,19 +326,17 @@
       (adsbygoogle = window.adsbygoogle || []).push({});
   </script>
 
-  <script src="./fun.js"></script>
-  <script src="./suncalc.js"></script>
-  <script src="js/jquery.min.js"></script>
-  <script src="js/main.js"></script>
+
 
   <script>
     //globle varible
     var dataFile = [];
     var stopsData = [];
-    var stopsData_temp = [];
+    var stops_firstToEnd = [];
     var rootAllFirstStopsID = [];
     var rootAllNearbyStopsLocation = []; //###################################### TODO: need to be reset 
     var sortStops = []; // without geomrtry on road/line
+    var stopsWithLine;
     var getOn;
 
     var nearbyStopMarker = L.featureGroup().addTo(map);
@@ -379,382 +381,26 @@
       map.setView(target, 14);
     }
 
-    // ##################################################################################################################################
-    // ##################################################################################################################################
-
+    /**
+     * get trip times, and print msg to user
+    */
     function calculatePerFullRoute() {
-
-      var firstStopID, lastStopID;
-      var textToShow = '';
-
-      //find the first and last stop (to remove all stop out-line)
-      {
-        var element_input_fStop = document.getElementById('stops');
-        var element_datalist = document.getElementById('stops1');
-        var opSelected = element_datalist.querySelector(`[value="${element_input_fStop.value}"]`);
-        tempValue1 = opSelected.getAttribute('data-value');
-        firstStopID = rootAllFirstStopsID[tempValue1];
-
-        var element_input_eStop = document.getElementById('eStop');
-        var element_datalist = document.getElementById('eStop1');
-        var opSelected = element_datalist.querySelector(`[value="${element_input_eStop.value}"]`);
-        lastStopID = opSelected.getAttribute('data-value');
-
-        //console.log('First stop ID - ' + firstStopID);
-        //console.log('Last stop ID - ' + lastStopID);
-      }
-
-      var element_input = document.getElementById('routes');
-      var element_datalist = document.getElementById('routes1');
-      var opSelected = element_datalist.querySelector(`[value="${element_input.value}"]`);
-      tripID = opSelected.getAttribute('data-value');
-
-      var urlTrip = 'https://transit.land/api/v2/rest/routes/'
-        + tripID //+'11823599' // ID
-        + '/trips?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&format=geojson'
-
-      // Instantiate an new XHR Object
-      const xhr = new XMLHttpRequest();
-
-      // Open an obejct (GET/POST, PATH,
-      // ASYN-TRUE/FALSE)
-      xhr.open("GET", urlTrip, true);
-
-      // When response is ready
-      xhr.onload = function () {
-        if (this.status === 200) {
-          // Changing string data into JSON Object
-          objTrip = JSON.parse(this.responseText);
-
-
-          // flag in no error on objTrip
-          objTrip_flag = true
-
-          try {
-            tripTime = objTrip['features'][0]['properties']['stop_times']
-          }
-          catch {
-            alert("שגיאה!\nלא הצלחתי לגשת לזמני הנסיעה של האוטובוס\nולכן יהיה שימוש באותו הזמן לאורך כל הדרך (פחות מדוייק)");
-            console.log('ERROR! Cant get the trip info\n' + urlTrip)
-            objTrip_flag = false
-            tripTime = []
-          }
-
-
-
-          // Found the first stop time to compare to
-          let firstStopTimeInTrip = new Date();
-          for (numStops = 0; numStops < tripTime.length; numStops++) {
-            if (stopsData_temp[0]['stop']['id'] == tripTime[numStops]['stop']['id']) {
-              let [hours, minutes, seconds] = tripTime[numStops]['arrival_time'].split(':');
-              firstStopTimeInTrip.setHours(+hours);
-              firstStopTimeInTrip.setMinutes(minutes);
-              firstStopTimeInTrip.setSeconds(seconds);
-              break
-            }
-          }
-
-
-          ///console.log(tripTime)
-          //################################################################################
-          //####################### move the function to here ##############################
-          // * isDayNow when time updated
-          // * comper to stop id (not name)
-
-
-          var distanceR = 0, distanceL = 0, distanceNull = 0, SumDistance_Air = 0, countNull = 0;
-          var cBus, diffC, persent, persentSide, sum_cBus = 0;
-
-          // get the intial time for calculation
-          var userDate = document.getElementById("date").value,
-            userTime = document.getElementById("time").value;
-          var dateNow = new Date();
-
-          // in case user didnt give info, use system time.
-          if (date == "") {
-            userDate = dateNow.toLocaleDateString();
-          }
-          if (time == "") {
-            userTime = dateNow.toLocaleTimeString();
-          }
-          var userFinalDate = new Date(userDate + " " + userTime);
-
-          console.log('User Date: ' + userFinalDate)
-          isDay = isDayNow(endStopLocation, userFinalDate);
-
-          if (isDay) {
-            for (var i = 0; i < stopsData_temp.length - 1 && isDay; i++) {
-
-              //defult time (by user)
-              var customStopTime = new Date(userFinalDate.getTime());
-
-              // 1. Find start stop *location*
-              // 2. when find a stop - update the tripTime 
-              if ('stop' in stopsData_temp[i]) {
-                startStop = stopsData_temp[i]["stop"]["geometry"]["coordinates"];
-
-
-
-                //update the tripTime
-                for (numStops = 0; numStops < tripTime.length; numStops++) {
-                  if (stopsData_temp[i]['stop']['id'] == tripTime[numStops]['stop']['id']) {
-                    customStopTime = new Date();
-                    var [hours2, minutes2, seconds2] = tripTime[numStops]['arrival_time'].split(':');
-                    customStopTime.setHours(+hours2)
-                    customStopTime.setMinutes(minutes2)
-                    customStopTime.setSeconds(seconds2);
-
-                    customStopTime = new Date(userFinalDate.getTime() + (customStopTime - firstStopTimeInTrip));
-                    console.log('-------\nThe bus will be in ' + stopsData_temp[i]['stop']['stop_name'] + '\nAt: ' + customStopTime)
-                    break
-                    //this method not include the last stop
-                  }
-                }
-
-              }
-              else {
-                startStop = stopsData_temp[i];
-              }
-              // find end stop *location*
-              if ('stop' in stopsData_temp[i + 1]) {
-                endStop = stopsData_temp[i + 1]["stop"]["geometry"]["coordinates"];
-              }
-              else {
-                endStop = stopsData_temp[i + 1];
-              }
-
-              distance_Air = distanceBetweenStops(startStop, endStop);
-              SumDistance_Air += distance_Air;
-              cBus = anglePer2stops(startStop, endStop);
-
-              suncalcVar = SunCalc.getPosition(customStopTime, startStop[0], startStop[1]);
-              cSun = suncalcVar['azimuth'] * 180 / Math.PI + 180;
-
-              diffC = cSun - cBus;
-              cBus_getSide = get_R_L_by_cBus(diffC);
-
-
-              //#########################################################################################################################
-              //#########################################################################################################################
-              //#########################################################################################################################
-              //#########################################################################################################################
-              // todo : colored line on road, for visual 
-
-              if (cBus_getSide == "Right") {
-                distanceR += distance_Air;
-              }
-              else if (cBus_getSide == "Left") {
-                distanceL += distance_Air;
-              }
-              else {
-                countNull++;
-                distanceNull += distance_Air;
-              }
-
-              // check if in the middle the sun go down
-              isDay = isDayNow(startStop, customStopTime)
-
-              //###############################################################
-              // todo - if is night in the middle trip - response
-            }
-
-
-            console.log('-------\nSum Meter in Right: ' + distanceR + '\nSum Meter in Left: ' + distanceL + '\nSum Meter Undefined: ' + distanceNull + '\nUndefined: ' + countNull);
-
-
-            if (distanceR > distanceL) {
-              persent = distanceR / SumDistance_Air;
-              persentSide = "ימין";
-              persentSideNegativ = "שמאל";
-            }
-            else {
-              persent = distanceL / SumDistance_Air;
-              persentSide = "שמאל";
-              persentSideNegativ = "ימין";
-            }
-
-            x = { 'persent': Math.round(persent * 100), 'persentSide': persentSide, 'persentSideNegativ': persentSideNegativ };
-
-            if (i == 0) {
-              textToShow1 = "אנא בחר תחנה יעד שהיא לא התחנת מוצא"
-              document.getElementById('showAnswer').innerHTML = textToShow1;
-              alert('אותו מיקום! אנא בחר תחנת ירידה אחרת')
-            } else {
-              //textToShow_old = `${x["persent"]}% From the Route,\nThe SUN is on your ${x["persentSide"]} side.\nYou should sit on the ${x["persentSideNegativ"]} side`;
-              textToShow1 = `אוי לא! צד ${x["persentSide"]} מלא בשמש (כ${x["persent"]}% מהדרך).\n`
-              textToShow2 = `ולכן אנחנו ממליצים לך לשבת בצד ${x["persentSideNegativ"]} של האוטובוס :)`
-              document.getElementById('showAnswer').innerHTML = textToShow1 + textToShow2;
-            }
-
-          }
-          //if is not day (or error in compare)
-          else {
-            textToShow1 = "חדשות טובות! אתה יכול לשבת איפה שרק תרצה באוטובוס :)"
-            textToShow2 = ""
-            document.getElementById('showAnswer').innerHTML = textToShow1;
-          }
-          document.getElementById('modal-body1').innerHTML = textToShow1
-          document.getElementById('modal-body2').innerHTML = textToShow2
-          // check when empty (user press reset button)
-          //document.getElementById('modalHeader').innerHTML = `ב${document.getElementById('routes').value}, מהתחנה ${document.getElementById('stops').value} עד תחנה ${document.getElementById('eStop').value}`
-
-          document.getElementById('myModal').style.display = "block";
-          document.getElementById('myModal').style.zIndex = "2"
-
-
-        }
-        else {
-          alert("TripURL fail");
-          console.log("TripURL fail");
-        }
-      }
-      // At last send the request
-      xhr.send();
-
-
-      //old method (no time diffrence)
-      /*
-      //console.log(firstStopID+'\n'+lastStopID)
-
-      //console.log(stopsData_temp)
-      var distanceR = 0, distanceL = 0, SumDistance_Air = 0, sumNull = 0;
-      var cBus, diffC, persent, persentSide, sum_cBus = 0;
-
-      // check the time for calcultion
-      var userDate = document.getElementById("date").value,
-              userTime = document.getElementById("time").value;
-      var dateNow = new Date();
-
-      // in case user didnt give info, use system time.
-      if (date == "") {
-        userDate = dateNow.toDateString();
-      }
-      if (time == "") {
-        userTime = dateNow.toLocaleTimeString();
-      }
-      var userFinalDate = new Date(userDate + " " + userTime);
-      
-      isDay = isDayNow(endStopLocation, userFinalDate);
-
-      if (isDay){
-        for (var i = 0; i < stopsData_temp.length - 1; i++) {
-
-          // find start stop location
-          if ('stop' in stopsData_temp[i]) {
-            startStop = stopsData_temp[i]["stop"]["geometry"]["coordinates"];
-          }
-          else {
-            startStop = stopsData_temp[i];
-          }
-          // find end stop location
-          if ('stop' in stopsData_temp[i + 1]) {
-            endStop = stopsData_temp[i + 1]["stop"]["geometry"]["coordinates"];
-          }
-          else {
-            endStop = stopsData_temp[i + 1];
-          }
-
-          distance_Air = distanceBetweenStops(startStop, endStop);
-          SumDistance_Air += distance_Air;
-          cBus = anglePer2stops(startStop, endStop);          
-
-          suncalcVar = SunCalc.getPosition(userFinalDate, startStop[0], startStop[1]);
-          cSun = suncalcVar['azimuth'] * 180 / Math.PI + 180;
-
-          diffC = cSun - cBus;
-          cBus_getSide = get_R_L_by_cBus(diffC);
-
-
-          //#########################################################################################################################
-          //#########################################################################################################################
-          //#########################################################################################################################
-          //#########################################################################################################################
-          // todo : colored line on road, for visual 
-
-          if (cBus_getSide == "Right") {
-            distanceR += distance_Air;
-          }
-          else if (cBus_getSide == "Left") {
-            distanceL += distance_Air;
-          }
-          else {
-            sumNull++;
-          }
-
-          
-
-        
-
-        }
-      
-      
-        console.log('-------\nSum M in Right: ' + distanceR + '\nSum M in Left: ' + distanceL + '\nUndefined: ' + sumNull);
-
-
-        if (distanceR > distanceL) {
-          persent = distanceR / SumDistance_Air;
-          persentSide = "ימין";
-          persentSideNegativ = "שמאל";
-        }
-        else {
-          persent = distanceL / SumDistance_Air;
-          persentSide = "שמאל";
-          persentSideNegativ = "ימין";
-        }
-
-        x = { 'persent': Math.round(persent*100), 'persentSide': persentSide , 'persentSideNegativ': persentSideNegativ};
-
-        if (i == 0) {
-          textToShow = "אנא בחר תחנה יעד שהיא לא התחנת מוצא"
-          document.getElementById('showAnswer').innerHTML = textToShow;
-          alert('אותו מיקום! אנא בחר תחנת ירידה אחרת')
-        } else {
-          //textToShow_old = `${x["persent"]}% From the Route,\nThe SUN is on your ${x["persentSide"]} side.\nYou should sit on the ${x["persentSideNegativ"]} side`;
-          textToShow = `אוי לא! צד ${x["persentSide"]} מלא בשמש (כ${x["persent"]}% מהדרך).\n
-          ולכן אנחנו ממליצים לך לשבת בצד ${x["persentSideNegativ"]} של האוטובוס :)
-           נסיעה נעימה`
-          document.getElementById('showAnswer').innerHTML = textToShow;
-        }
-      }
-      //if is not day (or error in compare)
-      else{
-        textToShow = "חדשות טובות! אתה יכול לשבת איפה שרק תרצה באוטובוס :)"
-        document.getElementById('showAnswer').innerHTML = textToShow;
-      }
-      document.getElementById('modal-body').innerHTML = textToShow
-      // check when empty (user press reset button)
-      //document.getElementById('modalHeader').innerHTML = `ב${document.getElementById('routes').value}, מהתחנה ${document.getElementById('stops').value} עד תחנה ${document.getElementById('eStop').value}`
-      
-      document.getElementById('myModal').style.display = "block";
-      document.getElementById('myModal').style.zIndex = "2"
-      */
+      whereIsRecommendedToSit(stops_firstToEnd);
     }
 
     function routes(data) {
-      //route_data = '';
       var routeList = [];
       for (i = 0; i < data['route_stops'].length; i++) {
-        routeList.push(data["route_stops"][i]["route"]);//{'short':[data["route_stops"][i]["route"]["route_short_name"]],'long':data["route_stops"][i]["route"]["route_long_name"]};
-
-        //route_data+=`<li><b>${data["route_stops"][i]["route"]["route_short_name"]}:</b> ${data["route_stops"][i]["route"]["route_long_name"]}</li>\n`;
+        routeList.push(data["route_stops"][i]["route"]);
       }
       return routeList;
     }
 
     function showRoutesListInStop() {
 
-      /*
-      stopsData = [];
-      stopsData_temp = [];
-      rootAllFirstStopsID = [];
-      sortStops = [];
-      */
-
-
       document.getElementById('list_StopsInRoute').innerHTML = ""
       document.getElementById('button_startCalc').innerHTML = ""
       document.getElementById('showAnswer').innerHTML = ""
-
 
       // reset old layer
       map.removeLayer(nearbyStopMarker);
@@ -780,11 +426,10 @@
       map.setView(rootAllNearbyStopsLocation[val]);
 
 
-      var x = `<label for="routes">בחר קו: <input id="routes" inputmode=“none” list="routes1" onChange="showStopsListInRoute()"> <button class="resetbutton" onclick="document.getElementById('routes').value=''">אפס</button></label>
-                      <datalist name="routes" id="routes1">
-                        <option value="" selected disabled hidden>בחר קו</option>`;
-      //<option value="volvo">Volvo</option> onfocus="this.value=''"  
-      //onfocus="blur()" 
+      var x = `<label for="routes">בחר קו: <input id="routes" list="routes1" inputmode=“none”  autocomplete="off"  onChange="showStopsListInRoute()"> <button class="resetbutton" onclick="document.getElementById('routes').value=''">אפס</button></label>
+              <datalist name="routes" id="routes1">
+              <option value="" selected disabled hidden>בחר קו</option>`;
+      //    class="hidekeyboard" onfocus="blur()"inputmode=“none” onfocus="this.value=''" 
 
 
       var n = 0;
@@ -794,10 +439,7 @@
         //console.log(route_long_name);
         end = route_long_name.slice(route_long_name.indexOf(">") + 1, route_long_name.indexOf('#') - 2);
         first = route_long_name.slice(0, route_long_name.indexOf('<'));
-        routeNumber = route_long_name.slice(route_long_name.indexOf('#') - 1)
-        //console.log(routeNumber)
-
-
+        routeNumber = route_long_name.slice(route_long_name.indexOf('#') - 1);
 
         x += `<option data-value="${dataFile[val][n]["id"]}" value="קו ${dataFile[val][n]["route_short_name"]}, מסלול ${routeNumber}">מ:${first}, לכיוון: ${end}</option>`;
         n++
@@ -806,22 +448,17 @@
       document.getElementById('listForTest').innerHTML = x;
     }
 
+    /**
+     * #######################################
+    */
 
     function showStopsListInRoute() {
 
-      //dataFile = [];
-      //stopsData = [];
-      stopsData_temp = [];
-      //rootAllFirstStopsID = [];
-      sortStops = [];
+      stops_firstToEnd = [];
 
-      document.getElementById('list_StopsInRoute').innerHTML = ""
-      document.getElementById('button_startCalc').innerHTML = ""
-      document.getElementById('showAnswer').innerHTML = ""
-
-      //var stopOnRoute = L.featureGroup().addTo(map);
-      //map.removeLayer(nearbyStopMarker);
-
+      document.getElementById('list_StopsInRoute').innerHTML = "";
+      document.getElementById('button_startCalc').innerHTML = "";
+      document.getElementById('showAnswer').innerHTML = "";
 
       // reset old layer
       map.removeLayer(nearbyStopMarker);
@@ -834,123 +471,79 @@
       var element_input = document.getElementById('routes');
       var element_datalist = document.getElementById('routes1');
       var opSelected = element_datalist.querySelector(`[value="${element_input.value}"]`);
-      var idOfRoute = opSelected.getAttribute('data-value');
-
-      //var idOfRoute = document.getElementById('routes').value;
-      var linkRoute = `https://transit.land/api/v2/rest/routes/${idOfRoute}?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&format=geojson`;
-      //console.log(linkRoute);
-
-      // Instantiate an new XHR Object
-      const xhr = new XMLHttpRequest();
-
-      // Open an obejct (GET/POST, PATH,
-      // ASYN-TRUE/FALSE)
-      xhr.open("GET", linkRoute, true);
-
-      // When response is ready
-      xhr.onload = function () {
-        if (this.status === 200) {
-
-          // Changing string data into JSON Object
-          obj = JSON.parse(this.responseText);
-          stopsData = obj["features"][0]["properties"]["route_stops"];
-
-          var x = `<label for="endstops">בחר תחנת יעד: <input autocomplete="off" id="eStop" inputmode=“none” list="eStop1" onChange="showButtonForCalc()"> <button class="resetbutton" onclick="document.getElementById('eStop').value=''">אפס</button></label>
-                      <datalist name="eStop" id="eStop1">
-                        <option value="" selected disabled hidden>בחר תחנת ירידה</option>`;
-          // onfocus="this.value=''" onfocus="blur()"
-
-
-          var element_input = document.getElementById('stops');
-          var element_datalist = document.getElementById('stops1');
-          var opSelected = element_datalist.querySelector(`[value="${element_input.value}"]`);
-          var tempValue1 = opSelected.getAttribute('data-value');
-
-          firstStopID = rootAllFirstStopsID[tempValue1];
-
-          var nearbyIcon = L.icon({
-            iconUrl: 'icons8-marker-48inRoute.png',
-            iconSize: [13, 13], // size of the icon
-          });
-
-
-          // sort the list
-          sortedStops_withLine = sortStopsList(obj["features"][0]);
-
-          var flag_firstStopID, sortStops_counter = 0, flag_firstStopID_inWithLine = 0;
-
-          for (i = 0; i < sortedStops_withLine.length; i++) {
-            if ('stop' in sortedStops_withLine[i]) {
-              stop_info = sortedStops_withLine[i];
-              sortStops.push(stop_info); // for storing list of stops only
-              sortStops_counter++;
-              if (stop_info['stop']['id'] == firstStopID) {
-                flag_firstStopID = sortStops_counter;
-                flag_firstStopID_inWithLine = i;
-                //console.log("Start stop: " + stop_info['stop']['stop_name']);
-              }
-              //console.log(i + ', Name - ' + stop_info['stop']['stop_name']);
-            }
-          }
-
-          //short the list from the seleced (start) stop
-          sortStops.splice(0, flag_firstStopID - 1); // the (-1) for showing in the list the first stop
-          sortedStops_withLine.splice(0, flag_firstStopID_inWithLine);
-
-          // (OLD) stopsData = sortStops;
-          stopsData = sortedStops_withLine;
-
-
-          // show the line from the selected stop to end stop on the map
-          previusCoordinates = null;
-          for (index in stopsData) {
-            if (!('stop' in stopsData[index])) {
-              coordinates = [stopsData[index][1], stopsData[index][0]];
-              if (index < stopsData.length - 1) {
-                if (previusCoordinates != null) {
-                  var line = new L.polyline([previusCoordinates, coordinates]);
-                  stopOnRoute.addLayer(line);
-                }
-                previusCoordinates = coordinates;
-              }
-            }
-          }
-
-
-          //stopData replaced with sortStops
-          // sortStops only contain the stops (without geometry) 
-          var n = 0;
-          while (n < sortStops.length - 1) {
-            x += `<option data-value="${sortStops[n]["stop"]["id"]}" value="${sortStops[n]["stop"]["stop_name"]}">`;
-
-            coordinates = [sortStops[n]["stop"]['geometry']['coordinates'][1], sortStops[n]["stop"]['geometry']['coordinates'][0]];
-            coordinates2 = [sortStops[n + 1]["stop"]['geometry']['coordinates'][1], sortStops[n + 1]["stop"]['geometry']['coordinates'][0]];
-            var marker = new L.Marker(coordinates, { icon: nearbyIcon }).bindPopup(sortStops[n]["stop"]['stop_name']);
-
-            //var line = new L.polyline([coordinates, coordinates2]);
-            stopOnRoute.addLayer(marker);
-            //stopOnRoute.addLayer(line);
-
-            n++;
-          }
-          x += `<option data-value="${sortStops[sortStops.length - 1]["stop"]["id"]}" value="${sortStops[sortStops.length - 1]["stop"]["stop_name"]}">`;
-
-          coordinates = [sortStops[sortStops.length - 1]["stop"]['geometry']['coordinates'][1], sortStops[sortStops.length - 1]["stop"]['geometry']['coordinates'][0]];
-          var marker = new L.Marker(coordinates, { icon: nearbyIcon }).bindPopup(sortStops[sortStops.length - 1]["stop"]['stop_name']);
-          stopOnRoute.addLayer(marker);
-          map.fitBounds(stopOnRoute.getBounds());
-
-          x += `</datalist><br>`;
-
-          document.getElementById('list_StopsInRoute').innerHTML = x;
-
-        }
-        else {
-          alert("Something went wrong!");
-        }
+      let idOfRoute = "";
+      try {
+        idOfRoute = opSelected.getAttribute('data-value');
+      } catch {
+        alert("מספר הקו לא תקין")
       }
-      // At last send the request
-      xhr.send();
+
+      var element_input = document.getElementById('stops');
+      var element_datalist = document.getElementById('stops1');
+      var opSelected = element_datalist.querySelector(`[value="${element_input.value}"]`);
+      var tempValue1 = "";
+      try {
+        tempValue1 = opSelected.getAttribute('data-value');
+      } catch {
+        alert("תחנת המוצא לא תקינה")
+      }
+      let firstStopID = rootAllFirstStopsID[tempValue1];
+
+      var linkRoute = `https://transit.land/api/v2/rest/routes/${idOfRoute}?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&format=geojson`;
+      console.log('linkRoute ' + linkRoute);
+
+      var urlTrip = `https://transit.land/api/v2/rest/routes/${idOfRoute}/trips?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&format=geojson`
+      console.log('urlTrip ' + urlTrip);
+
+      document.getElementById('list_StopsInRoute').innerHTML = "מעבד..."
+      const trip_XHR = new XMLHttpRequest();
+      trip_XHR.open("GET", urlTrip, true);
+      trip_XHR.onload = function () {
+        if (this.status !== 200) {
+          return useRouteInfo();
+        }
+
+        let tripObj = JSON.parse(this.responseText);
+
+        if (tripObj["features"][0] === undefined) {
+          // no data
+          useRouteInfo();
+          return
+        }
+        stopsWithLine = insertStopsToBusLine(tripObj["features"][0]);
+        let eStop_str = makeStr_eStop(stopsWithLine, firstStopID);
+        
+        document.getElementById('list_StopsInRoute').innerHTML = eStop_str;
+      }
+      trip_XHR.send();
+
+      /*############################################
+              if tripURL didnt give info
+      #############################################*/
+      function useRouteInfo(){
+        
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", linkRoute, true);
+  
+        xhr.onload = function () {
+          if (this.status !== 200){
+            return alert("שגיאה! לא מצליח לגשת לנתוני השרת");
+          } 
+
+          let routeObj = JSON.parse(this.responseText);
+          if (routeObj["features"][0] === undefined) {
+            // no data
+            alert("שגיאה! השרת החזיר נתון ריק");
+            return
+          }
+          let stopsWithLine = sortStopsByLine(routeObj["features"][0]);
+          let eStop_str = makeStr_eStop(stopsWithLine, firstStopID);
+  
+          document.getElementById('list_StopsInRoute').innerHTML = eStop_str;
+        }
+        // At last send the request
+        xhr.send();
+      }
 
     }
 
@@ -961,69 +554,60 @@
       document.getElementById('button_startCalc').innerHTML =
         `<div hidden><input  id="date" type="date" name="task_date" /> :תאריך<br></div>` + // the date is hidden (not needed)
         `<input id="time" type="time" name="task_time" /> :שעה
-                    <br>
-                    <br>
-                    <button class="w3-btn w3-blue w3-hover-light-grey" onclick="calculatePerFullRoute()">התחל לחשב</button>
-                    <br>`;
+        <br>
+        <br>
+        <button class="w3-btn w3-blue w3-hover-light-grey" onclick="calculatePerFullRoute()">התחל לחשב</button>
+        <br>`;
 
-      var date = new Date();
+      // set time on the timeInput
+      let timeToShow = getCurrentTime()
+      document.getElementById('date').value = timeToShow[0];
+      document.getElementById("time").value = timeToShow[1];
 
-      var day = date.getDate(),
-        month = date.getMonth() + 1,
-        year = date.getFullYear(),
-        hour = date.getHours(),
-        min = date.getMinutes();
-
-      month = (month < 10 ? "0" : "") + month;
-      day = (day < 10 ? "0" : "") + day;
-      hour = (hour < 10 ? "0" : "") + hour;
-      min = (min < 10 ? "0" : "") + min;
-
-      var today = year + "-" + month + "-" + day,
-        displayTime = hour + ":" + min;
-
-      document.getElementById('date').value = today;
-      document.getElementById("time").value = displayTime;
       // remove old route
-      map.removeLayer(On_OffRoute);
+      map.removeLayer(On_OffRoute); // when reselected
+      map.removeLayer(stopOnRoute); // all the stops from the user's first stop
       On_OffRoute = L.featureGroup().addTo(map);
-
-
+      
+      // find user's exit stop
       var element_input = document.getElementById('eStop');
       var element_datalist = document.getElementById('eStop1');
       var opSelected = element_datalist.querySelector(`[value="${element_input.value}"]`);
-      lastStopID = opSelected.getAttribute('data-value');
+      let lastStopID = opSelected.getAttribute('data-value');
 
-
+      // make new list with all stop from where the user get on the bus to end stop
+      // and show marker for end stop
+      stops_firstToEnd = [];
       var previusCoordinates = null;
-      for (stopindex in stopsData) {
-        stopsData_temp.push(stopsData[stopindex]);
-        if ('stop' in stopsData[stopindex]) {
-          // show marker for end stop
-          if (stopsData[stopindex]['stop']['id'] == lastStopID) {
-            endStopLocation = stopsData[stopindex]["stop"]["geometry"]["coordinates"];
-            coordinates = [endStopLocation[1], endStopLocation[0]];
-            var getOff = new L.Marker(coordinates, { icon: busGetOff }).bindPopup(stopsData[stopindex]["stop"]['stop_name']);
-            On_OffRoute.addLayer(getOff);
+
+      for (stopindex in stopsWithLine) {
+        stops_firstToEnd.push(stopsWithLine[stopindex]);
+
+        // show eStop marker
+        // stop when find the eStop
+        if ('stop' in stopsWithLine[stopindex]) {
+          //console.log(stopsWithLine[stopindex]['stop'])
+          if (stopsWithLine[stopindex]['stop']['id'] == lastStopID) {
+            var eStopLocation = stopsWithLine[stopindex]["stop"]["geometry"]["coordinates"];
+            coordinates = [eStopLocation[1], eStopLocation[0]];
+            let eStop_Marker = new L.Marker(coordinates, { icon: busGetOff }).bindPopup(stopsWithLine[stopindex]["stop"]['stop_name']);
+            On_OffRoute.addLayer(eStop_Marker);
             break; // stop pushing when end-stop founded
           }
         }
+        // show the line
         else {
-          coordinates = [stopsData[stopindex][1], stopsData[stopindex][0]];
-          if (previusCoordinates != null && stopindex < stopsData.length - 1) {
-            var line = new L.polyline([previusCoordinates, coordinates]);
+          coordinates = [stopsWithLine[stopindex][1], stopsWithLine[stopindex][0]];
+          if (previusCoordinates != null && stopindex < stopsWithLine.length - 1) {
+            let line = new L.polyline([previusCoordinates, coordinates]);
             On_OffRoute.addLayer(line);
           }
           previusCoordinates = coordinates;
         }
       }
-      //console.log('Sum mini location (geometry): ' + stopsData_temp.length);
-
-
 
       map.fitBounds(On_OffRoute.getBounds());
-      // remove all stop
-      map.removeLayer(stopOnRoute);
+
     }
 
     function findNearStops() {
@@ -1054,7 +638,7 @@
       // reset old data files
       dataFile = [];
       stopsData = [];
-      stopsData_temp = [];
+      stops_firstToEnd = [];
       rootAllFirstStopsID = [];
       rootAllNearbyStopsLocation = [];
       sortStops = [];
@@ -1063,29 +647,22 @@
       var lon = document.getElementById('lon').value;
       var radius = document.getElementById('radius').value * 10;
       var url = 'https://transit.land/api/v2/rest/stops?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&feed_onestop_id=f-sv-גלים~מועצהאזוריתגולן~אפיקים~דןצפון~דןבדרום~דןבארשבע~ירושלים&lat=' + lat + '&lon=' + lon + '&radius=' + radius + '&format=geojson';
-      console.log(url)
+      console.log("nearby stop link:\n"+url)
 
-      // Instantiate an new XHR Object
       const xhr = new XMLHttpRequest();
-
-      // Open an obejct (GET/POST, PATH,
-      // ASYN-TRUE/FALSE)
       xhr.open("GET", url, true);
 
-      // When response is ready
       xhr.onload = function () {
         if (this.status === 200) {
-
-          // Changing string data into JSON Object
           obj = JSON.parse(this.responseText);
 
           // Getting the ul element
           let list = document.getElementById("list");
-          var str = `<label for="stops"><label type="text">בחר תחנת מוצא: </label><input list="stops1" inputmode=“none” autocomplete="off" id="stops" onChange="showRoutesListInStop()"> <button class="resetbutton" onclick="document.getElementById('stops').value=''">אפס</button></label>
+          var str = `<label for="stops"><label type="text">בחר תחנת מוצא: </label><input list="stops1" id="stops" onChange="showRoutesListInStop()"> <button class="resetbutton" onclick="document.getElementById('stops').value=''">אפס</button></label>
                           <datalist name="stops" id="stops1">
-                            <option value="" selected disabled hidden>בחר תחנת עלייה</option>`; //onfocus="this.value=''" 
+                            <option value="" selected disabled hidden>בחר תחנת עלייה</option>`; //onfocus="this.value=''" inputmode=“none” autocomplete="off"
 
-          // check if works - class="hidekeyboard" intead onfocus="blur()" inputmode=“none”
+          // check if works - class="hidekeyboard" intead  inputmode=“none” onfocus="this.value=''" class="hidekeyboard"onfocus="blur()" 
 
           var stop_code = [];
           var stop_names = [];
@@ -1129,8 +706,6 @@
 
               var marker = new L.Marker(coordinates, { icon: nearbyIcon }).bindPopup(data['stop_name']);
               nearbyStopMarker.addLayer(marker);
-
-              //nearbyStopMarker.push(L.marker(coordinates).bindPopup('This is Littleton, CO.'));
             }
 
             if (dataFile[data['stop_code']] == null) {
@@ -1142,17 +717,7 @@
           }
 
           str += `</datalist><br>`;
-          //str += `<label id="val_num"></label>`;
-
-          //var overlay = {'markers': nearbyStopMarker};
-          //L.layerGroup(nearbyStopMarker);
-          //L.control.layers(null,overlay).addTo(map);
-
-          //nearbyStopMarker.addLayer(new L.Marker(markers[n-1]));
-
-
-
-
+          
 
           if (n != 0) {
             map.fitBounds(nearbyStopMarker.getBounds());
@@ -1174,12 +739,12 @@
 
 
       var section2 = document.getElementById("section2");
-
       section2.scrollIntoView({
         behavior: "smooth",
         block: "end",
         inline: "nearest"
       });
+
     };
 
 
