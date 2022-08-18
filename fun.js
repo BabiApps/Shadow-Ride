@@ -258,12 +258,21 @@ function insertStopsToBusLine(rootData) {
 }
 
 function getLocalStorage() {
-    let data = localStorage['saved'];
-    if (data === undefined) return {};
-    return JSON.parse(data);
+    try {
+        let data = localStorage['saved'];
+        if (data === undefined) return {};
+        return JSON.parse(data);
+    } catch (error) {
+        console.error;
+        return {};
+    }
 }
 function setLocalStorage(data) {
-    localStorage['saved'] = JSON.stringify(data);
+    try {
+        localStorage['saved'] = JSON.stringify(data);
+    } catch (error) {
+        console.error;
+    }
 }
 
 /**
@@ -465,7 +474,7 @@ function whereIsRecommendedToSit(stops_firstToEnd_withLine) {
     let userTime = document.getElementById("time")?.value || dateNow.toLocaleTimeString();
 
     let [day, month, year] = userDate.split(/[.-]/);
-    if (day > 2000){
+    if (day > 2000) {
         let tempDay = year;
         year = day;
         day = tempDay;
@@ -474,7 +483,7 @@ function whereIsRecommendedToSit(stops_firstToEnd_withLine) {
     if (seconds === undefined) seconds = 0;
 
     console.log(year, month, day, hours, minutes, seconds);
-    let userFinalDate = new Date(year, Number(month)-1, day, hours, minutes, seconds);
+    let userFinalDate = new Date(year, Number(month) - 1, day, hours, minutes, seconds);
 
     let customStopTime = new Date(userFinalDate.getTime());
     console.log('User Date: ' + userFinalDate)
