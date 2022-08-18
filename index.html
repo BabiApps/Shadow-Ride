@@ -28,6 +28,7 @@
 <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
 
+
 <style>
   .backgroud {
     background-color: #468aa6;
@@ -160,7 +161,7 @@
   }
 </style>
 
-<body onload="getLocation();" class="fullscreen">
+<body onload="getLocation();" class="fullscreen" dir="rtl">
   <span id="connection"><abbr title="You are online!">&#128246;</abbr></span>
   <div id="showInstall">
     <!--img id="installApp" src="images/download.png"-->
@@ -203,6 +204,21 @@
 
         <br>
         <details>
+          <summary>בחר מחיפושים קודמים</summary>
+          <select name="historylist" id="historylist" onchange="historyGotSelected()">
+            <option value="" selected disabled hidden>בחר...</option>
+          </select>
+        </details>
+        <hr>
+
+
+
+        <button style="margin-right: 5px;margin-top: 10px" class="w3-btn w3-dark-grey w3-hover-light-grey"
+          onclick="getLocation()">המיקום שלי 📌🌍</button>
+        <button style="margin-top: 10px" class="w3-btn w3-blue w3-hover-light-grey" onclick="findNearStops()">מצא תחנות
+          קרובות באיזור</button>
+
+        <details hidden>
           <summary>הכנס מיקום ידנית</summary>
           <div style="margin-top: 5px;" class="w3-section">
             <input class="input-value-manually" type="number" step="0.00000001" id="lat" required>
@@ -218,10 +234,6 @@
           </div>
         </details>
 
-        <button style="margin-right: 5px;margin-top: 10px" class="w3-btn w3-dark-grey w3-hover-light-grey"
-          onclick="getLocation()">מצא את המיקום שלי</button>
-        <button style="margin-top: 10px" class="w3-btn w3-blue w3-hover-light-grey" onclick="findNearStops()">מצא תחנות
-          קרובות באיזור</button>
 
       </div>
     </div>
@@ -329,12 +341,22 @@
 
 
   <script>
+    const search_caches = getLocalStorage();
+    //console.log(search_caches)
+    for (const key of Object.keys(search_caches)) {
+      let historylist = document.getElementById("historylist");
+      var option = document.createElement("option");
+      option.text = key;
+      historylist.add(option)
+    }
+    //setLocalStorage(search_caches)
+
     //globle varible
     var dataFile = [];
     var stopsData = [];
     var stops_firstToEnd = [];
     var rootAllFirstStopsID = [];
-    var rootAllNearbyStopsLocation = []; //###################################### TODO: need to be reset 
+    var rootAllNearbyStopsLocation = [];
     var sortStops = []; // without geomrtry on road/line
     var stopsWithLine;
     var getOn;
@@ -512,7 +534,7 @@
         }
         stopsWithLine = insertStopsToBusLine(tripObj["features"][0]);
         let eStop_str = makeStr_eStop(stopsWithLine, firstStopID);
-        
+
         document.getElementById('list_StopsInRoute').innerHTML = eStop_str;
       }
       trip_XHR.send();
@@ -520,15 +542,15 @@
       /*############################################
               if tripURL didnt give info
       #############################################*/
-      function useRouteInfo(){
-        
+      function useRouteInfo() {
+
         const xhr = new XMLHttpRequest();
         xhr.open("GET", linkRoute, true);
-  
+
         xhr.onload = function () {
-          if (this.status !== 200){
+          if (this.status !== 200) {
             return alert("שגיאה! לא מצליח לגשת לנתוני השרת");
-          } 
+          }
 
           let routeObj = JSON.parse(this.responseText);
           if (routeObj["features"][0] === undefined) {
@@ -538,7 +560,7 @@
           }
           let stopsWithLine = sortStopsByLine(routeObj["features"][0]);
           let eStop_str = makeStr_eStop(stopsWithLine, firstStopID);
-  
+
           document.getElementById('list_StopsInRoute').innerHTML = eStop_str;
         }
         // At last send the request
@@ -568,7 +590,7 @@
       map.removeLayer(On_OffRoute); // when reselected
       map.removeLayer(stopOnRoute); // all the stops from the user's first stop
       On_OffRoute = L.featureGroup().addTo(map);
-      
+
       // find user's exit stop
       var element_input = document.getElementById('eStop');
       var element_datalist = document.getElementById('eStop1');
@@ -647,7 +669,7 @@
       var lon = document.getElementById('lon').value;
       var radius = document.getElementById('radius').value * 10;
       var url = 'https://transit.land/api/v2/rest/stops?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&feed_onestop_id=f-sv-גלים~מועצהאזוריתגולן~אפיקים~דןצפון~דןבדרום~דןבארשבע~ירושלים&lat=' + lat + '&lon=' + lon + '&radius=' + radius + '&format=geojson';
-      console.log("nearby stop link:\n"+url)
+      console.log("nearby stop link:\n" + url)
 
       const xhr = new XMLHttpRequest();
       xhr.open("GET", url, true);
@@ -717,7 +739,7 @@
           }
 
           str += `</datalist><br>`;
-          
+
 
           if (n != 0) {
             map.fitBounds(nearbyStopMarker.getBounds());
@@ -747,7 +769,13 @@
 
     };
 
-
+    function historyGotSelected() {
+      let historylist = document.getElementById("historylist");
+      let historylist_value = historylist.value;
+      console.log(historylist_value);
+      let arrayRouteInfo = search_caches[historylist_value];
+      whereIsRecommendedToSit(arrayRouteInfo);
+    }
 
     /*
     window.onload = () => {
@@ -923,6 +951,34 @@
     }
     */
   </script>
+  <link rel="stylesheet" href="css/footer.css">
+
+  <!-- Site footer -->
+  <footer class="site-footer">
+    <div class="container" dir="rtl">
+      <div class="row">
+        <div class="col-sm-12 col-md-6">
+          <h6>⚫ Shadow Ride</h6>
+          <ul class="footer-links">
+            <li>הכלי שיעזור לך להחליט באיזה צד של האוטובוס הכי כדאי לך לשבת, וכך תהיה לך נסיעה נעימה ללא שמש שתקפח על
+              ראשך :)</li>
+          </ul>
+          <!--p class="text-justify">הכלי שיעזור לך להחליט באיזה צד של האוטובוס הכי כדאי לך לשבת, וכך תהיה לך נסיעה נעימה ללא שמש שתקפח על ראשך :)</p-->
+        </div>
+
+        <div class="col-xs-6 col-md-3">
+          <h6>⚫ יצירת קשר</h6>
+          <ul class="footer-links">
+            <li>הערוץ שלי ב <a href="http://t.me/shiABC">Telegram</a></li>
+            <li>לשיחה איתי <a href="http://t.me/shilobabila">Telegram</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+    <hr>
+
+  </footer>
 
 </body>
 

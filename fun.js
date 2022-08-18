@@ -257,6 +257,15 @@ function insertStopsToBusLine(rootData) {
     return lineGeometry_withstops;
 }
 
+function getLocalStorage() {
+    let data = localStorage['saved'];
+    if (data === undefined) return {};
+    return JSON.parse(data);
+}
+function setLocalStorage(data) {
+    localStorage['saved'] = JSON.stringify(data);
+}
+
 /**
  * @param {*} rootData ["features"][0]
  * @param - only for Route info
@@ -396,6 +405,23 @@ function getCurrentTime() {
     return [today, displayTime]
 }
 
+function saveSearch(array) {
+    let firstStopName = document.getElementById('stops');
+    let routeName = document.getElementById('routes');
+    let endStopName = document.getElementById('eStop');
+    let historyName;
+    try {
+        historyName = `מ${firstStopName.value} ל${endStopName.value} ב${routeName.value}`;
+    } catch (error) {
+        console.log("Cant save history, firstStopName / routeName / endStopName - does not have value");
+        //console.error(error);
+        return;
+    }
+
+    let local = getLocalStorage();
+    local[historyName] = array;
+    setLocalStorage(local);
+}
 
 
 /**
@@ -409,7 +435,9 @@ function whereIsRecommendedToSit(stops_firstToEnd_withLine) {
      * stops_firstToEnd_withLine
      * can be from trip or from route
      * trip have also the key: 'arrival_time'
-     */
+    */
+
+    saveSearch(stops_firstToEnd_withLine);
 
 
     /* Found the first stop */
@@ -430,17 +458,27 @@ function whereIsRecommendedToSit(stops_firstToEnd_withLine) {
     }
 
     // get the intial time for calculation
-    let userDate = document.getElementById("date").value,
-        userTime = document.getElementById("time").value;
     let dateNow = new Date();
 
     // in case user didnt give info, use system time.
-    userDate = userDate || dateNow.toLocaleDateString();
-    userTime = userTime || dateNow.toLocaleTimeString();
+    let userDate = document.getElementById("date")?.value || dateNow.toLocaleDateString();
+    let userTime = document.getElementById("time")?.value || dateNow.toLocaleTimeString();
 
-    let userFinalDate = new Date(userDate + " " + userTime);
+    let [day, month, year] = userDate.split(/[.-]/);
+    if (day > 2000){
+        let tempDay = year;
+        year = day;
+        day = tempDay;
+    }
+    let [hours, minutes, seconds] = userTime.split(":");
+    if (seconds === undefined) seconds = 0;
+
+    console.log(year, month, day, hours, minutes, seconds);
+    let userFinalDate = new Date(year, Number(month)-1, day, hours, minutes, seconds);
+
     let customStopTime = new Date(userFinalDate.getTime());
     console.log('User Date: ' + userFinalDate)
+    //console.log('User Date: ' + new Date())
 
     // calculaion itself
     let distanceR = 0, distanceL = 0, distanceNull = 0, countNull = 0, sumDistance = 0;
