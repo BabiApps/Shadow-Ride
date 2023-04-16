@@ -18,14 +18,14 @@
   <script src="js/main.js"></script>
 
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-G37FDNHEJV"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G37FDNHEJV"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
-  gtag('config', 'G-G37FDNHEJV');
-</script>
+    gtag('config', 'G-G37FDNHEJV');
+  </script>
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6474275493517014"
     crossorigin="anonymous"></script>
@@ -226,7 +226,7 @@
           onclick="getLocation()">המיקום שלי 📌🌍</button>
         <button style="margin-top: 10px" class="w3-btn w3-blue w3-hover-light-grey" onclick="findNearStops()">מצא תחנות
           קרובות באיזור</button>
-        
+
 
         <details hidden>
           <summary>הכנס מיקום ידנית</summary>
@@ -420,9 +420,15 @@
       whereIsRecommendedToSit(stops_firstToEnd);
     }
 
-    function routes(data) {
+    async function routes(data) {
       var routeList = [];
-      for (i = 0; i < data['route_stops'].length; i++) {
+      if (data['route_stops'] == null) {
+        let idStop = data.id;
+        let url = `https://transit.land/api/v2/rest/stops/${idStop}?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&feed_onestop_id=f-sv-%D7%92%D7%9C%D7%99%D7%9D~%D7%9E%D7%95%D7%A2%D7%A6%D7%94%D7%90%D7%96%D7%95%D7%A8%D7%99%D7%AA%D7%92%D7%95%D7%9C%D7%9F~%D7%90%D7%A4%D7%99%D7%A7%D7%99%D7%9D~%D7%93%D7%9F%D7%A6%D7%A4%D7%95%D7%9F~%D7%93%D7%9F%D7%91%D7%93%D7%A8%D7%95%D7%9D~%D7%93%D7%9F%D7%91%D7%90%D7%A8%D7%A9%D7%91%D7%A2~%D7%99%D7%A8%D7%95%D7%A9%D7%9C%D7%99%D7%9D&lat=31.765071628529192&lon=35.19436910662082&radius=200&format=geojson`
+        let dataJSON = await fetch(url).then(response => response.json())
+        data['route_stops'] = dataJSON.features[0]?.properties?.route_stops
+      }
+      for (i = 0; i < data['route_stops']?.length; i++) {
         routeList.push(data["route_stops"][i]["route"]);
       }
       return routeList;
@@ -642,7 +648,7 @@
 
     }
 
-    function findNearStops() {
+    async function findNearStops() {
 
       //show section
       document.getElementById('section2').style.display = 'block';
@@ -684,7 +690,7 @@
       const xhr = new XMLHttpRequest();
       xhr.open("GET", url, true);
 
-      xhr.onload = function () {
+      xhr.onload = async function () {
         if (this.status === 200) {
           obj = JSON.parse(this.responseText);
 
@@ -743,7 +749,7 @@
             if (dataFile[data['stop_code']] == null) {
               dataFile[data['stop_code']] = [];
             }
-            dataFile[data['stop_code']] = [...dataFile[data['stop_code']], ...routes(data)]; //n+1 is the kay, value is the return array
+            dataFile[data['stop_code']] = [...dataFile[data['stop_code']], ...await routes(data)]; //n+1 is the kay, value is the return array
 
             n++;
           }
