@@ -421,16 +421,19 @@
     }
 
     async function routes(data) {
+      //console.log(data)
       var routeList = [];
       if (data['route_stops'] == null) {
         let idStop = data.id;
-        let url = `https://transit.land/api/v2/rest/stops/${idStop}?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&feed_onestop_id=f-sv-%D7%92%D7%9C%D7%99%D7%9D~%D7%9E%D7%95%D7%A2%D7%A6%D7%94%D7%90%D7%96%D7%95%D7%A8%D7%99%D7%AA%D7%92%D7%95%D7%9C%D7%9F~%D7%90%D7%A4%D7%99%D7%A7%D7%99%D7%9D~%D7%93%D7%9F%D7%A6%D7%A4%D7%95%D7%9F~%D7%93%D7%9F%D7%91%D7%93%D7%A8%D7%95%D7%9D~%D7%93%D7%9F%D7%91%D7%90%D7%A8%D7%A9%D7%91%D7%A2~%D7%99%D7%A8%D7%95%D7%A9%D7%9C%D7%99%D7%9D&lat=31.765071628529192&lon=35.19436910662082&radius=200&format=geojson`
+        let url = `https://transit.land/api/v2/rest/stops/${idStop}?apikey=iMDAuMorfb5YN90M8fmjiswA5okKN0zX&feed_onestop_id=f-sv-%D7%92%D7%9C%D7%99%D7%9D~%D7%9E%D7%95%D7%A2%D7%A6%D7%94%D7%90%D7%96%D7%95%D7%A8%D7%99%D7%AA%D7%92%D7%95%D7%9C%D7%9F~%D7%90%D7%A4%D7%99%D7%A7%D7%99%D7%9D~%D7%93%D7%9F%D7%A6%D7%A4%D7%95%D7%9F~%D7%93%D7%9F%D7%91%D7%93%D7%A8%D7%95%D7%9D~%D7%93%D7%9F%D7%91%D7%90%D7%A8%D7%A9%D7%91%D7%A2~%D7%99%D7%A8%D7%95%D7%A9%D7%9C%D7%99%D7%9D&format=geojson`
         let dataJSON = await fetch(url).then(response => response.json())
+        //console.log(dataJSON)
         data['route_stops'] = dataJSON.features[0]?.properties?.route_stops
       }
       for (i = 0; i < data['route_stops']?.length; i++) {
         routeList.push(data["route_stops"][i]["route"]);
       }
+      console.log(routeList)
       return routeList;
     }
 
