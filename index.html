@@ -18,12 +18,14 @@
     <script src="./js/index.js" type="module" defer></script>
     <script src="./js/listeners.js" type="module" defer></script>
 
+    <link rel="manifest" href="manifest.json">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/main.js"></script>
 </head>
 
 <body id="body" class="bg-gray-100 min-h-screen p-4" dir="rtl">
-
     <header class="bg-blue-500 text-white p-4 logoBackgroud rounded-lg shadow-md text-center">
-        <img src="ShadowRide_logo_3-11.png" alt="Shadow Ride" class="mx-auto w-72">
+        <img src="images/ShadowRide_banner.png" alt="Shadow Ride" class="mx-auto w-72">
     </header>
 
     <main class="mt-4 grid gap-4 grid-cols-1 md:grid-cols-3">
@@ -31,7 +33,8 @@
             <h2 class="font-semibold text-lg">
                 חיפוש תחנות
             </h2>
-            <button id="getMyLocationButton" class="bg-blue-500 text-white px-4 py-2 rounded mt-2 w-full">המיקום שלי</button>
+            <button id="getMyLocationButton" class="bg-blue-500 text-white px-4 py-2 rounded mt-2 w-full">המיקום
+                שלי</button>
             <br>
             <button id="findNearbyStopsButton" class="bg-green-500 text-white px-4 py-2 rounded mt-2 w-full">מצא תחנות
                 קרובות</button>
@@ -113,7 +116,7 @@
     </div>
 
     <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center hidden justify-center z-50">
-        <img src="./loading.gif" alt="Loading..." class="w-48 h-48">
+        <img src="images/loading.gif" alt="Loading..." class="w-48 h-48">
     </div>
 
     <footer class="bg-gray-200 p-4 rounded-lg shadow-md text-center mt-4">

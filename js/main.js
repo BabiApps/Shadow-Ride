@@ -19,7 +19,7 @@ function init(){
 	// Register service worker
 	if ('serviceWorker' in navigator) {
 		console.log("[*] Register serviceWorker ...");
-		navigator.serviceWorker.register('/Shadow-Ride/serviceWorker.js').then(function(registration) {
+		navigator.serviceWorker.register('./js/serviceWorker.js').then(function(registration) {
 			// Registration was successful
 			console.log('[*] ServiceWorker registration successful with scope: ', registration.scope);
 		}, function(err) {
