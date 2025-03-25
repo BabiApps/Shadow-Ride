@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="iw">
+
+<head>
+  <title>Shadow Ride</title>
+  <meta name="description" content="Do you travel a lot on the bus? 
+    Ride with us, and we tell you where to sit on the bus, 
+    so your ride will be sunless">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" type="text/css" href="css/main.css">
+  <script src="./fun.js"></script>
+  <script src="./suncalc.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/main.js"></script>
+  <script src="languages.js"></script>
+
+  <script src="js/index.js" type="module"></script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G37FDNHEJV"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-G37FDNHEJV');
+  </script>
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6474275493517014"
+    crossorigin="anonymous"></script>
+</head>
+
+
+
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+
+
+<style>
+  .backgroud {
+    background-color: #468aa6;
+  }
+
+  @media (max-width: 480px) {
+    img {
+      max-width: 100%;
+      width: auto;
+      height: auto;
+    }
+  }
+
+  @media (min-width: 481px) {
+    img {
+      max-width: 38%;
+      width: auto;
+      height: auto;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .pedding_section {
+      padding-top: 10px;
+      padding-bottom: 10px;
+
+    }
+  }
+
+  @media (min-width: 481px) {
+    .pedding_section {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  .modal-header {
+    padding: 2px 16px;
+    background-color: #5cb85c;
+    color: white;
+  }
+
+  /* Modal Body */
+  .modal-body1 {
+    padding: 2px 16px;
+  }
+
+  .modal-body2 {
+    padding: 2px 16px;
+  }
+
+  /* Modal Footer */
+  .modal-footer {
+    padding: 2px 16px;
+    background-color: #5cb85c;
+    color: white;
+  }
+
+  /* Modal Content */
+  .modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    animation-name: animatetop;
+    animation-duration: 0.4s
+  }
+
+  /* Add Animation */
+  @keyframes animatetop {
+    from {
+      top: -300px;
+      opacity: 0
+    }
+
+    to {
+      top: 0;
+      opacity: 1
+    }
+  }
+
+  .modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: hidden;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+  }
+
+  /* Modal Content/Box */
+  .modal-content {
+    background-color: #fefefe;
+    margin: 25% auto;
+    /* 45% from the top and centered */
+    padding: 15px;
+    border: 1px solid #888;
+    width: 80%;
+    /* Could be more or less, depending on screen size */
+  }
+
+  /* The Close Button */
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+</style>
+
+<body onload="getLocation();" class="fullscreen" dir="rtl">
+  <script>
+    // find device location
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+    }
+    function showPosition(position) {
+      document.getElementById('lat').value = position.coords.latitude;
+      document.getElementById('lon').value = position.coords.longitude;
+      target = L.latLng(position.coords.latitude, position.coords.longitude);
+
+      if (pickMarker != null) {
+        //map.removeLayer(oldMarker);
+        pickMarker.setLatLng(target).update();  // Updates your defined marker position
+      } else {
+        pickMarker = new L.marker(target);
+        pickMarker.addTo(map);
+      }
+      map.setView(target, 14);
+    }
+    function getLocalStorage() {
+      try {
+        let data = localStorage['saved'];
+        if (data === undefined) return {};
+        return JSON.parse(data);
+      } catch (error) {
+        console.error;
+        return {};
+      }
+    }
+    function setLocalStorage(data) {
+      try {
+        localStorage['saved'] = JSON.stringify(data);
+      } catch (error) {
+        console.error;
+      }
+    }
+  </script>
+
+  <span id="connection"><abbr title="You are online!">&#128246;</abbr></span>
+  <div id="showInstall">
+    <!--img id="installApp" src="images/download.png"-->
+  </div>
+
+
+
+  <!-- Header -->
+  <header class="w3-container backgroud w3-padding" id="myHeader">
+
+    <div class="w3-center">
+      <img src="ShadowRide_logo_3-11.png" alt="shadowRidePic">
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
+    <link rel="stylesheet" href="center-radar.css">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6474275493517014"
+      crossorigin="anonymous"></script>
+  </header>
+
+  <!-- The Modal -->
+  <div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span onclick="document.getElementById('myModal').style.display='none'" class="close">&times;</span>
+      <p id="modal-body1">Some text in the Modal..</p>
+      <p id="modal-body2">Some text in the Modal..</p>
+      <p id="modal-body3">נסיעה נעימה!</p>
+    </div>
+  </div>
+
+
+
+  <div class="w3-row-padding w3-margin-top">
+    <div class="w3-third">
+      <div class="w3-card w3-container" style=" padding-bottom: 10px;">
+        <!--h3>min-height:400px;ריבוע שמאלי</h3-->
+
+        <br>
+        <details>
+          <summary>חיפושים קודמים</summary>
+          <select name="historylist" id="historylist" onchange="historyGotSelected()" style="width: 100%;">
+            <option value="" selected disabled hidden>בחר...</option>
+          </select>
+        </details>
+        <hr>
+
+
+
+        <button style="margin-right: 0px;margin-top: 10px" class="w3-btn w3-dark-grey w3-hover-light-grey"
+          onclick="getLocation()">המיקום שלי 📌🌍</button>
+        <button id="findNearStopsButton" style="margin-top: 10px" class="w3-btn w3-blue w3-hover-light-grey">מצא תחנות
+          קרובות באיזור</button>
+
+
+        <details hidden>
+          <summary>הכנס מיקום ידנית</summary>
+          <div style="margin-top: 5px;" class="w3-section">
+            <input class="input-value-manually" type="number" step="0.00000001" id="lat" required>
+            <label>קו רוחב</label>
+          </div>
+          <div class="w3-section">
+            <input class="input-value-manually" type="number" step="0.00000001" id="lon" required>
+            <label>קו אורך</label>
+          </div>
+          <div class="w3-section">
+            <input class="input-value-manually" type="number" id="radius" value="20" required>
+            <label>מרחק (M)</label>
+          </div>
+        </details>
+
+
+      </div>
+    </div>
+
+
+    <!-- ##################################################################
+                             MAP
+####################################################################### -->
+    <div class="w3-third w3-center pedding_section" style="right: 0; ">
+      <!--#################################################### 
+        for right set: "position: absolute;"
+      but it over the input section -->
+      <div class="w3-card w3-container" id="mapInRight" style="min-height:400px; z-index: 1;">
+      </div>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+    <link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet" />
+    <!-- script for showing the map -->
+    <script type="text/javascript">
+      // Where you want to render the map.
+      var element = document.getElementById('mapInRight');
+      var pickMarker = null;
+      var map = L.map(element);
+
+      // Add OSM tile layer to the Leaflet map.
+      L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+
+      // Target's GPS coordinates.
+      var target = L.latLng('32.83325770280918', '35.79960352932844');
+      document.getElementById('lat').value = target['lat'];
+      document.getElementById('lon').value = target['lng'];
+
+      map.setView(target, 14);
+      map.on('click', addMarker);
+
+      function addMarker(e) {
+        // Add marker to map at click location; 
+        if (pickMarker != null) {
+          //map.removeLayer(oldMarker);
+          pickMarker.setLatLng(e.latlng).update();  // Updates your defined marker position
+        } else {
+          pickMarker = new L.marker(e.latlng);
+          pickMarker.addTo(map);
+        }
+
+        document.getElementById('lat').value = e.latlng['lat'];
+        document.getElementById('lon').value = e.latlng['lng'];
+      }
+    </script>
+
+
+    <script>
+    // Get the modal
+      var modal = document.getElementById("myModal");
+
+      // Get the button that opens the modal
+      /*var btn = document.getElementById("myBtn");
+      // When the user clicks on the button, open the modal
+      btn.onclick = function() {
+        modal.style.display = "block";
+        modal.style.zIndex = "2"
+      }*/
+
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close")[0];
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function () {
+        modal.style.display = "none";
+        modal.style.zIndex = ""
+      }
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+    </script>
+    <!-- middle -->
+    <div class="w3-third pedding_section" id="section2" style="display: none;">
+      <div class="w3-card w3-container " style="min-height:400px">
+        <h3 class="w3-center" id=collapse_head></h3><br>
+        <div id='list'></div>
+        <div id='listForTest'></div>
+        <div id='list_StopsInRoute'></div>
+        <div class="w3-center" id='button_startCalc'></div>
+        <div id='showAnswer'></div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ads banner in shadow ride -->
+  <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6474275493517014" data-ad-slot="4521837045"
+    data-ad-format="auto" data-full-width-responsive="true">
+  </ins>
+
+  </div>
+  <link rel="stylesheet" href="css/footer.css">
+
+  <!-- Site footer -->
+  <footer class="site-footer">
+    <div class="container" dir="rtl">
+      <div class="row">
+        <div class="col-sm-12 col-md-6">
+          <h6>⚫ Shadow Ride</h6>
+          <ul class="footer-links">
+            <li>הכלי שיעזור לך להחליט באיזה צד של האוטובוס הכי כדאי לך לשבת, וכך תהיה לך נסיעה נעימה ללא שמש שתקפח על
+              ראשך :)</li>
+          </ul>
+          <!--p class="text-justify">הכלי שיעזור לך להחליט באיזה צד של האוטובוס הכי כדאי לך לשבת, וכך תהיה לך נסיעה נעימה ללא שמש שתקפח על ראשך :)</p-->
+        </div>
+
+        <div class="col-xs-6 col-md-3">
+          <h6>⚫ יצירת קשר</h6>
+          <ul class="footer-links">
+            <li>הערוץ שלי ב <a href="http://t.me/shiABC">Telegram</a></li>
+            <li>לשיחה איתי <a href="http://t.me/shilobabila">Telegram</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+    <hr>
+
+  </footer>
+
+</body>
+
+</html>
