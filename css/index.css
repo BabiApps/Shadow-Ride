@@ -1,0 +1,15 @@
+.logoBackgroud {
+    background-color: #468aa6;
+}
+
+#mapView {
+    height: 450px;
+    z-index: 0;
+}
+
+@media (max-width: 640px) {
+    #mapView {
+        height: 300px;
+        z-index: 0;
+    }
+}
