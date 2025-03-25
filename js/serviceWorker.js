@@ -4,16 +4,11 @@
 		1) cacheAll = true 		=> Cache all requests in urlsToCache list and all further requests
 		2) cacheAll = false 	=> Cache only all requests in urlsToCache list
 */
-var cacheAll = false;
+var cacheAll = true;
 var CACHE_NAME = 'webapk-cache';
 var urlsToCache = [
-	'/WebAPK/',
-	'/WebAPK/index.html',
-	'/WebAPK/logo.png',
-	'/WebAPK/manifest.json',
-	'/WebAPK/css/main.css',
-	'/WebAPK/js/main.js',
-	'/WebAPK/js/jquery.min.js'
+	'/Shadow-Ride/',
+	'/Shadow-Ride/index.html',
 ];
 var urlsNotToCache = [
 	// Urls that don't need to be cached can be added here explicitly
