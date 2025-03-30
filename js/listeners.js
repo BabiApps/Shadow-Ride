@@ -211,6 +211,7 @@ function removeAllLayers() {
 }
 
 window.addEventListener("error", function (event) {
+    console.log(event)
     this.alert("חלה שגיאה! יש לנסות שוב");
     window.location.href = window.location.href;
 });
