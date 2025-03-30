@@ -45,6 +45,18 @@ function initMap() {
     getLocation();
 }
 
+function loadHistory() {
+    const savedHistory = getLocalStorage();
+    const historyList = document.getElementById("historylist");
+    savedHistory.forEach((entry, index) => {
+        const option = document.createElement("option");
+        option.value = index;
+        option.textContent = `${entry.route_short_name} - ${entry.firstStop} - ${entry.endStop}`;
+        option.dataset.value = JSON.stringify(entry);
+        historyList.appendChild(option);
+    });
+}
+
 function resetInput(inputId) {
     const input = document.getElementById(inputId);
     input.value = '';
@@ -71,6 +83,7 @@ async function findNearbyStops() {
     }
 
     let firstStopList = document.getElementById("firstStopList");
+    firstStopList.replaceChildren();
 
     Vars.stopMarkers = L.featureGroup().addTo(Vars.map);
     Vars.nearbyStop = [];
@@ -93,6 +106,7 @@ async function findNearbyStops() {
         Vars.stopMarkers.addLayer(marker);
     }
     enableInput('firstStop');
+    Vars.map.fitBounds(Vars.stopMarkers.getBounds());
 
     // for Mobile scroll to the next section
     let userSelectionView = document.getElementById("userSelectionView");
@@ -105,6 +119,7 @@ async function findNearbyStops() {
 
 async function showRoutesListInStop() {
     let routesList = document.getElementById("routesList");
+    routesList.replaceChildren();
 
     const routes = await transitland.getRoutesByLocation({
         lat: Vars.selectedStop.geometry.coordinates[1],
@@ -133,21 +148,9 @@ async function showStopsListInSelectedRoute() {
     const route = await transitland.getRoutesByID(Vars.selectedRoute.properties.id);
 
     let stopsList = document.getElementById("endStopList");
+    stopsList.replaceChildren();
 
-    // remove the old stops marked on the map
-    Vars.map.removeLayer(Vars.stopMarkers);
-    let nextStopsMarkers = L.featureGroup().addTo(Vars.map);
-
-    // add first stop marker
-    if (Vars.firstStopMarker != null) {
-        Vars.map.removeLayer(Vars.firstStopMarker);
-    }
-    Vars.firstStopMarker = L.featureGroup().addTo(Vars.map);
-    let firstStopMarker = new L.Marker([
-        Vars.selectedStop.geometry.coordinates[1],
-        Vars.selectedStop.geometry.coordinates[0]
-    ], { icon: MarkersIcon.getOnBus }).bindPopup(Vars.selectedStop.properties.stop_name);
-    Vars.firstStopMarker.addLayer(firstStopMarker);
+    Vars.nextStopsMarkers = L.featureGroup().addTo(Vars.map);
 
     // sort stops by the closest point index
     let nextStops = route.features[0].properties.route_stops;
@@ -187,7 +190,7 @@ async function showStopsListInSelectedRoute() {
                 stop.stop.geometry.coordinates[1],
                 stop.stop.geometry.coordinates[0]
             ], { icon: MarkersIcon.nearbyIcon }).bindPopup(stop.stop.stop_name);
-            nextStopsMarkers.addLayer(marker);
+            Vars.nextStopsMarkers.addLayer(marker);
         }
 
         if (stop.stop.id === firstStopID) {
@@ -195,8 +198,10 @@ async function showStopsListInSelectedRoute() {
         }
     }
 
-    Vars.map.fitBounds(nextStopsMarkers.getBounds());
-    Vars.stopMarkers = nextStopsMarkers;
+    if (Vars.stopsOnSelectedRoute.length === 0) {
+        return alert("לא נמצאו תחנות על הקו הנבחר, אנא בחר קו אחר");
+    }
+    Vars.map.fitBounds(Vars.nextStopsMarkers.getBounds());
 
     // find the closeset coordinates to the first stop in the route (they not the same)
     let firstStop = Vars.selectedStop.geometry.coordinates;
@@ -272,6 +277,23 @@ function showRouteOnMapFirstToEnd() {
     Vars.map.removeLayer(Vars.LayerLineFromFirstStop);
 
     // show the route on the map from the first stop to the end stop
+    drewRouteLineOnMap();
+
+    // remove the old stops marked on the map
+    Vars.map.removeLayer(Vars.nextStopsMarkers);
+    if (Vars.endStopMarker != null) {
+        Vars.map.removeLayer(Vars.endStopMarker);
+    }
+    Vars.endStopMarker = L.featureGroup().addTo(Vars.map);
+    // add end stop marker
+    let endStopMarker = new L.Marker([
+        Vars.selectedStopOnSelectedRoute.geometry.coordinates[1],
+        Vars.selectedStopOnSelectedRoute.geometry.coordinates[0]
+    ], { icon: MarkersIcon.getOffBus }).bindPopup(Vars.selectedStopOnSelectedRoute.stop_name);
+    Vars.endStopMarker.addLayer(endStopMarker);
+}
+
+function drewRouteLineOnMap() {
     let routeOnTheMap = L.featureGroup().addTo(Vars.map);
     let previusCoordinates = null;
 
@@ -286,19 +308,6 @@ function showRouteOnMapFirstToEnd() {
 
     Vars.map.fitBounds(routeOnTheMap.getBounds());
     Vars.LayerLineFromFirstStopToEndStop = routeOnTheMap;
-
-    // remove the old stops marked on the map
-    Vars.map.removeLayer(Vars.stopMarkers);
-    if (Vars.endStopMarker != null) {
-        Vars.map.removeLayer(Vars.endStopMarker);
-    }
-    Vars.endStopMarker = L.featureGroup().addTo(Vars.map);
-    // add end stop marker
-    let endStopMarker = new L.Marker([
-        Vars.selectedStopOnSelectedRoute.geometry.coordinates[1],
-        Vars.selectedStopOnSelectedRoute.geometry.coordinates[0]
-    ], { icon: MarkersIcon.getOffBus }).bindPopup(Vars.selectedStopOnSelectedRoute.stop_name);
-    Vars.endStopMarker.addLayer(endStopMarker);
 }
 
 /**
@@ -397,11 +406,11 @@ function calculateWhereIsRecommendedToSit() {
     dateNow.setHours(hours);
     dateNow.setMinutes(minutes);
 
-    console.log(dateNow);
-
     let distanceR = 0, distanceL = 0, distanceNull = 0, countNull = 0, sumDistance = 0;
     let percent = 0, percentSide, percentSideNegativ;
 
+    let coloredRouteOnTheMap = L.featureGroup().addTo(Vars.map);
+    let coloredLine;
     let previus_crood;
     for (let current_crood of Vars.lineFromFirstStopToEndStop) {
         if (previus_crood == null) {
@@ -411,6 +420,13 @@ function calculateWhereIsRecommendedToSit() {
 
         if (!isDayNow(current_crood, dateNow)) {
             countNull++;
+            coloredLine = new L.polyline(
+                [[previus_crood[1], previus_crood[0]],
+                [current_crood[1], current_crood[0]]],
+                { color: "black" }
+            );
+            coloredRouteOnTheMap.addLayer(coloredLine);
+            previus_crood = current_crood;
             continue;
         }
 
@@ -428,21 +444,42 @@ function calculateWhereIsRecommendedToSit() {
 
         if (cBus_getSide == "Right") {
             distanceR += distance_Air;
+            coloredLine = new L.polyline(
+                [[previus_crood[1], previus_crood[0]],
+                [current_crood[1], current_crood[0]]],
+                { color: "blue" }
+            );
         }
         else if (cBus_getSide == "Left") {
             distanceL += distance_Air;
+            coloredLine = new L.polyline(
+                [[previus_crood[1], previus_crood[0]],
+                [current_crood[1], current_crood[0]]],
+                { color: "red" }
+            );
         }
         else {
             countNull++;
             distanceNull += distance_Air;
+            coloredLine = new L.polyline(
+                [[previus_crood[1], previus_crood[0]],
+                [current_crood[1], current_crood[0]]],
+                { color: "black" }
+            );
         }
+        coloredRouteOnTheMap.addLayer(coloredLine);
 
         // save to previus croodinate
         previus_crood = current_crood;
 
     }
+
     // conclusion
     console.log(`-------\nSum Meter in Right: ${distanceR}\nSum Meter in Left: ${distanceL}\nSum Meter Undefined: ${distanceNull}\nUndefined: ${countNull}`);
+
+    Vars.map.removeLayer(Vars.LayerLineFromFirstStopToEndStop)
+    Vars.LayerLineFromFirstStopToEndStop = coloredRouteOnTheMap;
+    Vars.map.fitBounds(coloredRouteOnTheMap.getBounds());
 
     // find which side have mode sun
     if (distanceR > distanceL) {
@@ -474,9 +511,50 @@ function calculateWhereIsRecommendedToSit() {
     document.getElementById("modal").classList.remove("hidden");
 }
 
+function getLocalStorage() {
+    /** @type {Array} */
+    let data = JSON.parse(localStorage.getItem('ShadowRide') || []);
+
+    const now = new Date();
+    const monthAgo = new Date(now.setMonth(now.getMonth() - 1));
+    data = data
+        // filter out old records
+        .filter((value) => {
+            const date = new Date(value.date);
+            return date > monthAgo;
+        })
+        // filter out duplicates
+        .filter((value, index, self) =>
+            self.findIndex(t => (
+                t.route_short_name === value.route_short_name &&
+                t.firstStop === value.firstStop
+                && t.endStop === value.endStop)
+            ) === index)
+        // sort by date
+        .sort((a, b) => b.date - a.date)
+        // get 25 last searchs
+        .slice(0, 25);
+
+    localStorage.setItem('ShadowRide', JSON.stringify(data));
+    return data;
+}
+
+function setLocalStorage(value) {
+    try {
+        let local = JSON.parse(localStorage.getItem('ShadowRide') || '[]');
+        local.push(value);
+        localStorage.setItem('ShadowRide', JSON.stringify(local));
+        console.log("saved to local storage", local);
+    } catch (error) {
+        localStorage.setItem('ShadowRide', JSON.stringify([value]));
+        console.log("saved to local storage", error);
+    }
+}
+
 
 export {
     initMap,
+    loadHistory,
     resetInput,
     enableInput,
     disabledInput,
@@ -485,5 +563,8 @@ export {
     showRoutesListInStop,
     showStopsListInSelectedRoute,
     showRouteOnMapFirstToEnd,
-    calculateWhereIsRecommendedToSit
+    drewRouteLineOnMap,
+    calculateWhereIsRecommendedToSit,
+    getLocalStorage,
+    setLocalStorage
 };
