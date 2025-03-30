@@ -75,11 +75,14 @@ function disabledInput(inputId) {
 }
 
 async function findNearbyStops() {
+    if (!Vars.location.lat) {
+        return alert("יש לבחור מיקום");
+    }
+
     const nearByStops = await transitland.nearByStops(Vars.location);
 
     if (nearByStops.features.length === 0) {
-        alert("No stops found near you, please select another location.");
-        return;
+        return alert("אין תחנות מסביב לנקודה שבחרת, נסה לבחור מיקום אחר");
     }
 
     let firstStopList = document.getElementById("firstStopList");
