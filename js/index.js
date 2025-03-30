@@ -503,7 +503,7 @@ function calculateWhereIsRecommendedToSit() {
         textToShow1 = `היי נוסע יקר! נראה שצד ${infoPercent["percentSide"]} מואר בשמש לאורך כ-${infoPercent["percent"]}% מהמסלול. ☀️`;
         textToShow2 = `כדי ליהנות מנסיעה נוחה יותר, כדאי לבחור מושב בצד ${infoPercent["percentSideNegativ"]} של האוטובוס (בכיוון הנסיעה).`;
     }
-    
+
     document.getElementById('modalTitle').textContent = textToShow1;
     document.getElementById('modalContent').textContent = textToShow2;
     document.getElementById('modalTime').textContent = `${dateNow.getHours()}:${dateNow.getMinutes()}`
@@ -511,8 +511,12 @@ function calculateWhereIsRecommendedToSit() {
 }
 
 function getLocalStorage() {
-    /** @type {Array} */
-    let data = JSON.parse(localStorage.getItem('ShadowRide') || []);
+    let data;
+    try {
+        data = JSON.parse(localStorage.getItem('ShadowRide'));
+    } catch (error) {
+        data = [];
+    }
 
     const now = new Date();
     const monthAgo = new Date(now.setMonth(now.getMonth() - 1));
@@ -539,15 +543,15 @@ function getLocalStorage() {
 }
 
 function setLocalStorage(value) {
+    let local;
     try {
-        let local = JSON.parse(localStorage.getItem('ShadowRide') || '[]');
-        local.push(value);
-        localStorage.setItem('ShadowRide', JSON.stringify(local));
-        console.log("saved to local storage", local);
+        local = JSON.parse(localStorage.getItem('ShadowRide'));
     } catch (error) {
-        localStorage.setItem('ShadowRide', JSON.stringify([value]));
-        console.log("saved to local storage", error);
+        local = [];
     }
+
+    local.push(value);
+    localStorage.setItem('ShadowRide', JSON.stringify(local));
 }
 
 
