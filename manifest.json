@@ -17,7 +17,7 @@
 		}
 	],
 	"manifest_version": 2,
-	"version": "0.1",
+	"version": "1.1",
 	"applications": {
 		"gecko": {
 			"id": "addon@example.com"
