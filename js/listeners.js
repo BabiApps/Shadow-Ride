@@ -209,9 +209,3 @@ function removeAllLayers() {
             Vars.map.removeLayer(Vars[layer])
     }
 }
-
-window.addEventListener("error", function (event) {
-    console.log(event)
-    this.alert("חלה שגיאה! יש לנסות שוב");
-    window.location.href = window.location.href;
-});
