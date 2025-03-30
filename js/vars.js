@@ -5,10 +5,11 @@ export const Vars = {
     location: {
         lat: null,
         lon: null,
-        radius: 150
+        radius: 200
     },
-    /** nearby stops or stops on selected route */ 
-    stopMarkers: [],
+    /** nearby stops */ 
+    stopMarkers: null,
+    nextStopsMarkers: [],
     firstStopMarker: null,
     endStopMarker: null,
     nearbyStop: [],
