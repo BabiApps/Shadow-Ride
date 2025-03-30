@@ -497,17 +497,16 @@ function calculateWhereIsRecommendedToSit() {
     let textToShow1, textToShow2;
     // when more then 90% have no side - sit anywhere :)
     if (countNull > Vars.lineFromFirstStopToEndStop.length * 0.9 || percent === 0) {
-        textToShow1 = "חדשות טובות! אתה יכול לשבת איפה שרק תרצה באוטובוס :)";
-        textToShow2 = "";
+        textToShow1 = "איזה כיף! רוב הדרך מוצלת, כך שתוכל לבחור כל מושב שמתחשק לך.";
+        textToShow2 = "פשוט תתמקם בנוחות ותיהנה מהנסיעה! 😃";
+    } else {
+        textToShow1 = `היי נוסע יקר! נראה שצד ${infoPercent["percentSide"]} מואר בשמש לאורך כ-${infoPercent["percent"]}% מהמסלול. ☀️`;
+        textToShow2 = `כדי ליהנות מנסיעה נוחה יותר, כדאי לבחור מושב בצד ${infoPercent["percentSideNegativ"]} של האוטובוס (בכיוון הנסיעה).`;
     }
-    else {
-        textToShow1 = `אוי לא! צד ${infoPercent["percentSide"]} מלא בשמש (כ${infoPercent["percent"]}% מהדרך).\n`;
-        textToShow2 = `ולכן אנחנו ממליצים לך לשבת בצד ${infoPercent["percentSideNegativ"]} של האוטובוס :)`;
-    }
-
-    console.log(textToShow1 + textToShow2);
+    
     document.getElementById('modalTitle').textContent = textToShow1;
     document.getElementById('modalContent').textContent = textToShow2;
+    document.getElementById('modalTime').textContent = `${dateNow.getHours()}:${dateNow.getMinutes()}`
     document.getElementById("modal").classList.remove("hidden");
 }
 
