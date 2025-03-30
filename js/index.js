@@ -514,12 +514,8 @@ function calculateWhereIsRecommendedToSit() {
 }
 
 function getLocalStorage() {
-    let data;
-    try {
-        data = JSON.parse(localStorage.getItem('ShadowRide'));
-    } catch (error) {
-        data = [];
-    }
+    let data = localStorage.getItem('ShadowRide');
+    data = data ? JSON.parse(data) : [];
 
     const now = new Date();
     const monthAgo = new Date(now.setMonth(now.getMonth() - 1));
@@ -546,13 +542,8 @@ function getLocalStorage() {
 }
 
 function setLocalStorage(value) {
-    let local;
-    try {
-        local = JSON.parse(localStorage.getItem('ShadowRide'));
-    } catch (error) {
-        local = [];
-    }
-
+    let local = localStorage.getItem('ShadowRide');
+    local = local ? JSON.parse(local) : [];
     local.push(value);
     localStorage.setItem('ShadowRide', JSON.stringify(local));
 }
