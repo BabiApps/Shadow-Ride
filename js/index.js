@@ -137,8 +137,10 @@ async function showRoutesListInStop() {
         option.value = route.properties.route_short_name;
         option.textContent =
             "קו " + route.properties.route_short_name
-            + ", מ: " + route.properties.route_long_name.slice(0, route.properties.route_long_name.indexOf('<'))
-            + ", ל: " + route.properties.route_long_name.slice(route.properties.route_long_name.indexOf('>') + 1, route.properties.route_long_name.indexOf('#') - 2);
+            + " לכיוון " + route.properties.route_long_name.slice(
+                route.properties.route_long_name.indexOf('>') + 1,
+                route.properties.route_long_name.indexOf('#') - 2
+            );
         routesList.appendChild(option);
 
         Vars.routes.push(route);
@@ -509,7 +511,7 @@ function calculateWhereIsRecommendedToSit() {
 
     document.getElementById('modalTitle').textContent = textToShow1;
     document.getElementById('modalContent').textContent = textToShow2;
-    document.getElementById('modalTime').textContent = `${dateNow.getHours()}:${dateNow.getMinutes()}`
+    document.getElementById('modalTime').textContent = `${dateNow.getHours()}:${dateNow.getMinutes().toString().padStart(2, '0')}`
     document.getElementById("modal").classList.remove("hidden");
 }
 
