@@ -29,6 +29,12 @@ function initMap() {
     Vars.map = L.map(element).setView([32.83325770280918, 35.79960352932844], 14);
     L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(Vars.map);
 
+    L.Control.geocoder({
+        defaultMarkGeocode: false
+    }).on('markgeocode', function (e) {
+        const latLng = e.geocode.center;
+        Vars.map.setView(latLng, 15)
+    }).addTo(Vars.map);
 
     Vars.map.on('click', function (e) {
         if (Vars.pickMarker != null) {
@@ -79,7 +85,21 @@ async function findNearbyStops() {
         return alert("יש לבחור מיקום");
     }
 
-    const nearByStops = await transitland.nearByStops(Vars.location);
+    let nearByStops;
+    let attempts = 0;
+    while (attempts < 2) {
+        try {
+            nearByStops = await transitland.nearByStops(Vars.location);
+            break; // Exit loop if successful
+        } catch (error) {
+            console.error(error);
+            attempts++;
+            if (attempts === 2) {
+                alert("שגיאה בטעינת תחנות, אנא נסה שוב מאוחר יותר");
+                return;
+            }
+        }
+    }
 
     if (nearByStops.features.length === 0) {
         return alert("אין תחנות מסביב לנקודה שבחרת, נסה לבחור מיקום אחר");
@@ -94,10 +114,7 @@ async function findNearbyStops() {
     for (let stop of nearByStops.features) {
 
         let option = document.createElement("option");
-        option.value = stop.properties.stop_name;
-        option.dataset.value = stop.properties.stop_code;
-        option.dataset.id = stop.properties.id;
-        option.dataset.location = stop.geometry.coordinates;
+        option.value = `${stop.properties.stop_name} [${stop.properties.stop_code}]`;
         firstStopList.appendChild(option);
 
         Vars.nearbyStop.push(stop);
@@ -105,7 +122,7 @@ async function findNearbyStops() {
         let marker = new L.Marker([
             stop.geometry.coordinates[1],
             stop.geometry.coordinates[0]
-        ], { icon: MarkersIcon.nearbyIcon }).bindPopup(stop.properties.stop_name);
+        ], { icon: MarkersIcon.nearbyIcon }).bindPopup(option.value);
         Vars.stopMarkers.addLayer(marker);
     }
     enableInput('firstStop');
@@ -124,23 +141,34 @@ async function showRoutesListInStop() {
     let routesList = document.getElementById("routesList");
     routesList.replaceChildren();
 
-    const routes = await transitland.getRoutesByLocation({
-        lat: Vars.selectedStop.geometry.coordinates[1],
-        lon: Vars.selectedStop.geometry.coordinates[0],
-        radius: 5
-    });
+    let routes;
+    let attempts = 0;
+    while (attempts < 2) {
+        try {
+            routes = await transitland.getRoutesByLocation({
+                lat: Vars.selectedStop.geometry.coordinates[1],
+                lon: Vars.selectedStop.geometry.coordinates[0],
+                radius: 5
+            });
+            break; // Exit loop if successful
+        } catch (error) {
+            console.error(error);
+            attempts++;
+            if (attempts === 2) {
+                alert("שגיאה בטעינת קווים, אנא נסה שוב מאוחר יותר");
+                return;
+            }
+        }
+    }
 
     Vars.routes = [];
 
     for (let route of routes.features) {
         let option = document.createElement("option");
-        option.value = route.properties.route_short_name;
-        option.textContent =
-            "קו " + route.properties.route_short_name
-            + " לכיוון " + route.properties.route_long_name.slice(
-                route.properties.route_long_name.indexOf('>') + 1,
-                route.properties.route_long_name.indexOf('#') - 2
-            );
+        option.value = `קו ${route.properties.route_short_name}, לכיוון ${route.properties.route_long_name.slice(
+            route.properties.route_long_name.indexOf('>') + 1,
+            route.properties.route_long_name.indexOf('#') - 2
+        )}`;
         routesList.appendChild(option);
 
         Vars.routes.push(route);
@@ -150,7 +178,21 @@ async function showRoutesListInStop() {
 }
 
 async function showStopsListInSelectedRoute() {
-    const route = await transitland.getRoutesByID(Vars.selectedRoute.properties.id);
+    let route;
+    let attempts = 0;
+    while (attempts < 2) {
+        try {
+            route = await transitland.getRoutesByID(Vars.selectedRoute.properties.id)
+            break; // Exit loop if successful
+        } catch (error) {
+            console.error(error);
+            attempts++;
+            if (attempts === 2) {
+                alert("שגיאה בטעינת תחנות, אנא נסה שוב מאוחר יותר");
+                return;
+            }
+        }
+    }
 
     let stopsList = document.getElementById("endStopList");
     stopsList.replaceChildren();
@@ -185,8 +227,7 @@ async function showStopsListInSelectedRoute() {
     for (let stop of nextStops) {
         if (firstStopFound) {
             let option = document.createElement("option");
-            option.value = stop.stop.stop_name;
-            option.textContent = stop.stop.stop_id;
+            option.value = `${stop.stop.stop_name} [${stop.stop.stop_id}]`;
             stopsList.appendChild(option);
 
             Vars.stopsOnSelectedRoute.push(stop.stop);
@@ -424,6 +465,7 @@ function calculateWhereIsRecommendedToSit() {
         }
 
         if (!isDayNow(current_crood, dateNow)) {
+            // continue the loop for black line
             countNull++;
             coloredLine = new L.polyline(
                 [[previus_crood[1], previus_crood[0]],
@@ -501,7 +543,10 @@ function calculateWhereIsRecommendedToSit() {
 
     let textToShow1, textToShow2;
     // when more then 90% have no side - sit anywhere :)
-    if (countNull > Vars.lineFromFirstStopToEndStop.length * 0.9 || percent === 0) {
+    if (!isDayNow(previus_crood, dateNow)) {
+        textToShow1 = "לילה טוב! אין צורך לדאוג לשמש, תתמקם איפה שנוח לך. 🌙";
+        textToShow2 = "נסיעה טובה!";
+    } else if (countNull > Vars.lineFromFirstStopToEndStop.length * 0.9 || percent === 0) {
         textToShow1 = "איזה כיף! רוב הדרך מוצלת, כך שתוכל לבחור כל מושב שמתחשק לך.";
         textToShow2 = "פשוט תתמקם בנוחות ותיהנה מהנסיעה! 😃";
     } else {

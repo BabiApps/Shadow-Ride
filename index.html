@@ -116,6 +116,17 @@
         </div>
     </div>
 
+    <div id="dynamicSelectDiv"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+            <h2 class="text-lg font-semibold mb-4 text-center">בחר אפשרות</h2>
+            <select id="dynamicSelect" class="w-full p-2 border rounded mb-4">
+                <option value="" selected disabled hidden>בחר...</option>
+            </select>
+            <button id="dynamicSelectButton" class="bg-blue-500 text-white px-4 py-2 rounded w-full">אישור</button>
+        </div>
+    </div>
+
     <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center hidden justify-center z-50">
         <img src="images/loading1.gif" alt="Loading..." class="w-48 h-48">
     </div>
@@ -125,8 +136,13 @@
         <p>Made By BabiApps | מוזמנים לעקוב ב <a href="http://t.me/shiABC" class="text-blue-500">Telegram</a>
     </footer>
 
-    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
-    <link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet" />
+    <!-- <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+    <link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet" /> -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
 </body>
 
 </html>

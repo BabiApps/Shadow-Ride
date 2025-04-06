@@ -6,6 +6,14 @@ import {
 } from './index.js';
 import MarkersIcon from './markersIcon.js';
 
+const select = document.getElementById("dynamicSelect");
+const confirmBtn = document.getElementById("dynamicSelectButton");
+const div = document.getElementById("dynamicSelectDiv");
+
+const firstStopElement = document.getElementById("firstStop");
+const routesInput = document.getElementById("routes");
+const endStopElement = document.getElementById("endStop");
+const loadingOverlay = document.getElementById("loadingOverlay");
 
 document.getElementById('body').onload = () => {
     initMap();
@@ -20,9 +28,9 @@ document.getElementById("historylist").addEventListener("change", function (e) {
 
     const elem = document.getElementById("historylist");
     const selected = JSON.parse(elem.options[elem.selectedIndex].dataset.value);
-    document.getElementById("firstStop").value = selected.firstStop;
-    document.getElementById("routes").value = selected.route_short_name;
-    document.getElementById("endStop").value = selected.endStop;
+    firstStopElement.value = selected.firstStop;
+    routesInput.value = selected.route_short_name;
+    endStopElement.value = selected.endStop;
     Vars.lineFromFirstStopToEndStop = selected.line;
     drewRouteLineOnMap();
 
@@ -51,9 +59,9 @@ document.getElementById("findNearbyStopsButton").addEventListener('click', () =>
     Vars.nearbyStop = [];
     Vars.stopMarkers ? Vars.map.removeLayer(Vars.stopMarkers) : null;
 
-    document.getElementById("loadingOverlay").classList.remove("hidden");
+    loadingOverlay.classList.remove("hidden");
     findNearbyStops().finally(() => {
-        document.getElementById("loadingOverlay").classList.add("hidden");
+        loadingOverlay.classList.add("hidden");
     });
 });
 
@@ -61,26 +69,33 @@ document.getElementById("findNearbyStopsButton").addEventListener('click', () =>
 // Reset buttons
 document.getElementById("resetFirstStop").addEventListener('click', () => {
     resetInput('firstStop');
+    Vars.selectedStop = null;
 });
 
 document.getElementById("resetRoutes").addEventListener('click', () => {
     resetInput('routes');
+    Vars.selectedRoute = null;
 });
 
 document.getElementById("resetEndStop").addEventListener('click', () => {
     resetInput('endStop');
+    Vars.selectedStopOnSelectedRoute = null;
 });
 
 
 // Selection buttons
-document.getElementById("firstStop").addEventListener('change', () => {
+function selectFirstStop() {
     onChange_firstStop();
 
     Vars.stopMarkers ? Vars.map.removeLayer(Vars.stopMarkers) : null;
 
     // get the selected stop
-    let selectedStop = document.getElementById("firstStop").value;
-    Vars.selectedStop = Vars.nearbyStop.find(stop => stop.properties.stop_name === selectedStop);
+    let selectedStop = firstStopElement.value;
+    Vars.selectedStop = Vars.nearbyStop.find(stop => `${stop.properties.stop_name} [${stop.properties.stop_code}]` === selectedStop);
+
+    if (Vars.selectedStop == null) {
+        return alert("יש לבחור תחנה קרובה");
+    }
 
     // add first stop marker
     if (Vars.firstStopMarker != null) {
@@ -93,38 +108,218 @@ document.getElementById("firstStop").addEventListener('change', () => {
     ], { icon: MarkersIcon.getOnBus }).bindPopup(Vars.selectedStop.properties.stop_name);
     Vars.firstStopMarker.addLayer(firstStopMarker);
 
-    document.getElementById("loadingOverlay").classList.remove("hidden");
+    loadingOverlay.classList.remove("hidden");
     showRoutesListInStop().finally(() => {
-        document.getElementById("loadingOverlay").classList.add("hidden");
+        loadingOverlay.classList.add("hidden");
     });
-});
+}
 
-document.getElementById("routes").addEventListener('change', (e) => {
+let firstStopTimeout = null;
+firstStopElement.addEventListener("blur", handleFirstStopEvent);
+firstStopElement.addEventListener("change", handleFirstStopEvent);
+firstStopElement.addEventListener("keypress", () => Vars.selectedStop = null);
+
+/** @param {Event} event */
+function handleFirstStopEvent(event) {
+    if (event.type === "change") {
+        // the default behavior is "blur" event, if "blur" event triggered too it will clear the timeout
+        firstStopTimeout = setTimeout(() => {
+            selectFirstStop();
+        }, 150);
+        return;
+    }
+    if (event.type === "blur") {
+        // if the user selected a stop from the list, we don't want to trigger the blur event
+        if (Vars.selectedStop != null)
+            return;
+
+        const userInput = firstStopElement.value?.trim();
+        if (!userInput) return;
+
+        const allOptions = Array.from(document.querySelectorAll("#firstStopList option"));
+        const matchingStop = allOptions.filter(opt => opt.value.includes(userInput));
+
+        if (matchingStop.length === 0) return;
+
+        if (matchingStop.length === 1) {
+            firstStopElement.value = matchingStop[0].value;
+            selectFirstStop();
+            return;
+        }
+
+        // multiple options: show selection dialog
+        select.innerHTML = "";
+        matchingStop.forEach(option => {
+            const opt = document.createElement("option");
+            opt.value = option.value;
+            opt.textContent = option.value;
+            select.appendChild(opt);
+        });
+
+        div.classList.remove("hidden");
+
+        confirmBtn.onclick = () => {
+            firstStopElement.value = select.value;
+            div.classList.add("hidden");
+            selectFirstStop();
+        };
+
+        if (firstStopTimeout) {
+            clearTimeout(firstStopTimeout);
+            firstStopTimeout = null;
+        }
+    }
+}
+
+let routeInputTimeout = null;
+routesInput.addEventListener("change", handleRouteEvent);
+routesInput.addEventListener("blur", handleRouteEvent);
+routesInput.addEventListener("keypress", () => Vars.selectedRoute = null);
+
+/** @param {Event} event */
+function handleRouteEvent(event) {
+    if (event.type === "change") {
+        // the default behavior is "blur" event, if "blur" event triggered too it will clear the timeout
+        routeInputTimeout = setTimeout(() => {
+            selectRoute();
+        }, 150);
+        return;
+    }
+
+    if (event.type === "blur") {
+        // if the user selected a route from the list, we don't want to trigger the blur event
+        if (Vars.selectedRoute != null)
+            return;
+
+        const userInput = routesInput.value?.trim();
+        if (!userInput) return;
+
+        const allOptions = Array.from(document.querySelectorAll("#routesList option"));
+        const matchingRoute = allOptions.filter(opt =>
+            opt.value.includes(userInput)
+        );
+
+        if (matchingRoute.length === 0) return;
+
+        if (matchingRoute.length === 1) {
+            routesInput.value = matchingRoute[0].value;
+            selectRoute();
+            return;
+        }
+
+        // multiple matches – show selection
+        select.innerHTML = "";
+        matchingRoute.forEach(option => {
+            const opt = document.createElement("option");
+            opt.value = option.value;
+            opt.textContent = option.value;
+            select.appendChild(opt);
+        });
+
+        div.classList.remove("hidden");
+
+        confirmBtn.onclick = () => {
+            routesInput.value = select.value;
+            div.classList.add("hidden");
+            selectRoute();
+        };
+
+        if (routeInputTimeout) {
+            clearTimeout(routeInputTimeout);
+            routeInputTimeout = null;
+        }
+    }
+}
+
+function selectRoute() {
     onChange_route();
 
-    const selectedRoute = document.getElementById("routes").value;
-    Vars.selectedRoute = Vars.routes.find(route => route.properties.route_short_name === selectedRoute);
+    const selectedRoute = routesInput.value;
+    Vars.selectedRoute = Vars.routes.find(route => `קו ${route.properties.route_short_name}, לכיוון ${route.properties.route_long_name.slice(
+        route.properties.route_long_name.indexOf('>') + 1,
+        route.properties.route_long_name.indexOf('#') - 2
+    )}` === selectedRoute);
 
-    document.getElementById("loadingOverlay").classList.remove("hidden");
+    loadingOverlay.classList.remove("hidden");
     showStopsListInSelectedRoute().finally(() => {
-        document.getElementById("loadingOverlay").classList.add("hidden");
+        loadingOverlay.classList.add("hidden");
     });
-});
+}
 
-document.getElementById("endStop").addEventListener('change', () => {
+let endStopInputTimeout = null;
+endStopElement.addEventListener('change', handleEndStopEvent);
+endStopElement.addEventListener('blur', handleEndStopEvent);
+endStopElement.addEventListener('keypress', () => Vars.selectedStopOnSelectedRoute = null);
+
+/** @param {Event} event */
+function handleEndStopEvent(event) {
+    if (event.type === "change") {
+        // the default behavior is "blur" event, if "blur" event triggered too it will clear the timeout
+        endStopInputTimeout = setTimeout(() => {
+            selectEndStop();
+        }, 150);
+        return;
+    }
+
+    if (event.type === "blur") {
+        // if the user selected a stop from the list, we don't want to trigger the blur event
+        if (Vars.selectedStopOnSelectedRoute != null)
+            return;
+
+        const userInput = endStopElement.value?.trim();
+        if (!userInput) return;
+
+        const allOptions = Array.from(document.querySelectorAll("#endStopList option"));
+        const matchingStop = allOptions.filter(opt =>
+            opt.value.includes(userInput)
+        );
+
+        if (matchingStop.length === 0) return;
+
+        if (matchingStop.length === 1) {
+            endStopElement.value = matchingStop[0].value;
+            selectEndStop();
+            return;
+        }
+
+        // multiple matches – show selection
+        select.innerHTML = "";
+        matchingStop.forEach(option => {
+            const opt = document.createElement("option");
+            opt.value = option.value;
+            opt.textContent = option.value;
+            select.appendChild(opt);
+        });
+
+        div.classList.remove("hidden");
+
+        confirmBtn.onclick = () => {
+            endStopElement.value = select.value;
+            div.classList.add("hidden");
+            selectEndStop();
+        };
+
+        if (endStopInputTimeout) {
+            clearTimeout(endStopInputTimeout);
+            endStopInputTimeout = null;
+        }
+    }
+}
+
+function selectEndStop() {
     onChange_endStop();
 
-    const selectedStop = document.getElementById("endStop").value;
-    Vars.selectedStopOnSelectedRoute = Vars.stopsOnSelectedRoute.find(stop => stop.stop_name === selectedStop);
+    const selectedStop = endStopElement.value;
+    Vars.selectedStopOnSelectedRoute = Vars.stopsOnSelectedRoute.find(stop => `${stop.stop_name} [${stop.stop_id}]` === selectedStop);
 
     showRouteOnMapFirstToEnd();
-});
+}
 
 document.getElementById("getRouteButton").addEventListener('click', () => {
     // check all fields are setted
-    if (!(document.getElementById("firstStop").value &&
-        document.getElementById("routes").value &&
-        document.getElementById("endStop").value
+    if (!(firstStopElement.value &&
+        routesInput.value &&
+        endStopElement.value
     ))
         return alert("יש לבחור מסלול קודם")
 
