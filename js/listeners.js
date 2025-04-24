@@ -65,6 +65,9 @@ document.getElementById("findNearbyStopsButton").addEventListener('click', () =>
     });
 });
 
+document.getElementById("currentTimeButton").addEventListener('click', () => {
+    document.getElementById("selectTime").value = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+});
 
 // Reset buttons
 document.getElementById("resetFirstStop").addEventListener('click', () => {

@@ -33,10 +33,10 @@
             <h2 class="font-semibold text-lg">
                 חיפוש תחנות
             </h2>
-            <button id="getMyLocationButton" class="bg-blue-500 text-white px-4 py-2 rounded mt-2 w-full">המיקום
+            <button id="getMyLocationButton" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mt-2 w-full">המיקום
                 שלי</button>
             <br>
-            <button id="findNearbyStopsButton" class="bg-green-500 text-white px-4 py-2 rounded mt-2 w-full">מצא תחנות
+            <button id="findNearbyStopsButton" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded mt-2 w-full">מצא תחנות
                 קרובות</button>
 
             <details class="mt-4">
@@ -94,13 +94,26 @@
                         <option value="" selected disabled hidden>בחר תחנת ירידה</option>
                     </datalist>
                 </div>
+                <div class="flex flex-col gap-2" dir="rtl">
+                    <label for="selectTime" class="font-semibold">בחר שעה:</label>
+                    <div class="flex items-center gap-2">
+                      <input
+                        id="selectTime"
+                        type="time"
+                        name="task_time"
+                        class="flex-grow border border-gray-300 rounded px-2 py-1"
+                      />
+                      <button
+                        id="currentTimeButton"
+                        class="text-sm bg-blue-500 hover:bg-blue-600 text-white rounded px-3 py-1 transition"
+                      >
+                        השעה הנוכחית
+                      </button>
+                    </div>
+                  </div>
+                  
 
-                <div class="flex flex-col gap-2">
-                    <label class="font-semibold">בחר שעה:</label>
-                    <input id="selectTime" type="time" name="task_time" />
-                </div>
-
-                <button id="getRouteButton" class="bg-blue-500 text-white px-4 py-2 rounded mt-2 w-full">חשב</button>
+                <button id="getRouteButton" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mt-2 w-full">חשב</button>
             </div>
         </section>
     </main>
@@ -133,11 +146,9 @@
 
     <footer class="bg-gray-200 p-4 rounded-lg shadow-md text-center mt-4">
         <p>הכלי שיעזור לך להחליט באיזה צד של האוטובוס הכי כדאי לך לשבת.</p>
-        <p>Made By BabiApps | מוזמנים לעקוב ב <a href="http://t.me/shiABC" class="text-blue-500">Telegram</a>
+        <p>Made By BabiApps | מוזמנים לעקוב ב <a href="https://t.me/shiABC" class="text-blue-500">Telegram</a>
     </footer>
 
-    <!-- <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
-    <link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet" /> -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
