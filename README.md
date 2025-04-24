@@ -1,27 +1,55 @@
-# Shadow Ride
-This feature will help you decide where to sit on your next bus ride.
+<p align="center">
+  <img src="images/ShadowRide_banner.png" alt="Shadow Ride Logo" width="400"/>
+</p>
 
-## What's the problem?
-Do you know that when you take the bus and there's sunlight on your face the entire way?<br/>
-You can't look out the window, because you're burning hot.<br/>
-So, you're trying to figure out where you should sit for the most shade.
+# 🌘 Shadow Ride
 
-## What does it do?
-This feature calculates where the most shadow on your bus's rides and tells you where you should sit.
+**Find the shadiest seat on your next bus ride.**  
+Tired of getting baked by the sun through the window? Shadow Ride helps you choose where to sit for maximum shade.
 
-Working GitHub Pages -  https://zeani-shilix.github.io/Shadow-Ride/ <br/>
-(with WebAPK)
+---
 
-## Thanks
-[TransitLand](https://www.transit.land/) - all the database and the API 
+## 🚨 The Problem
 
-[SunCalc](https://github.com/mourner/suncalc) -  his JavaScript library for calculating sun position
+Ever been stuck on the sunny side of the bus with the sun blazing in your face?  
+No view, just heat. 🥵  
+You're left guessing where the shade might be.
 
-[jgoggo](https://github.com/jfoggo/WebAPK/) - his template WebAPK
+---
 
-[Leaflet](https://leafletjs.com/) - the map
+## ✅ The Solution
 
-[icons8](https://icons8.com/) - some icons on the map
+Shadow Ride calculates the sun’s position during your ride and shows you where the **shady side** of the bus will be — so you can sit more comfortably.
 
-#### Special Thanks
-My friend [3LD0s](https://github.com/3LD0s) - wasn't possible without him :)
+---
+
+## 🌐 Live Demo
+
+👉 [Check it out on GitHub Pages](https://BabiApps.github.io/Shadow-Ride/)  
+Supports WebAPK for installable experience on Android!
+
+---
+
+## 🧠 How It Works
+
+- Determines your **route and direction**
+- Calculates **sun position** using live data
+- Suggests **best seat** for shade, based on sunlight angle and bus orientation
+- Uses interactive **maps and icons** to visualize it all in real-time
+
+---
+
+## 🛠️ Built With
+
+- [**TransitLand**](https://www.transit.land/) – Transit data and APIs  
+- [**SunCalc**](https://github.com/mourner/suncalc) – JS sun position calculations  
+- [**Leaflet**](https://leafletjs.com/) – For smooth, mobile-friendly maps  
+- [**WebAPK Template**](https://github.com/jfoggo/WebAPK/) – To install the app  
+- [**Icons8**](https://icons8.com/) – Map icons and UI elements  
+
+---
+
+## 🙌 Special Thanks
+
+- My friend [**3LD0s**](https://github.com/3LD0s) – This project wouldn’t exist without you 🙏  
+- Everyone who tested the early versions and gave feedback ❤️
