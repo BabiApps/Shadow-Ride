@@ -550,8 +550,12 @@ function calculateWhereIsRecommendedToSit() {
         textToShow1 = "איזה כיף! רוב הדרך מוצלת, כך שתוכל לבחור כל מושב שמתחשק לך.";
         textToShow2 = "פשוט תתמקם בנוחות ותיהנה מהנסיעה! 😃";
     } else {
-        textToShow1 = `היי נוסע יקר! נראה שצד ${infoPercent["percentSide"]} מואר בשמש לאורך כ-${infoPercent["percent"]}% מהמסלול. ☀️`;
-        textToShow2 = `כדי ליהנות מנסיעה נוחה יותר, כדאי לבחור מושב בצד ${infoPercent["percentSideNegativ"]} של האוטובוס (בכיוון הנסיעה).`;
+        if (percent < 0.5) {
+            textToShow1 = `היי נוסע יקר! נראה שצד ${infoPercent["percentSide"]} מואר יותר בשמש לאורך המסלול. ☀️`;
+        } else {
+            textToShow1 = `היי נוסע יקר! נראה שצד ${infoPercent["percentSide"]} מואר בשמש לאורך כ-${infoPercent["percent"]}% מהמסלול. ☀️`;
+        }
+        textToShow2 = `כדי ליהנות מנסיעה נוחה יותר, ההמלצה שלנו היא לבחור מושב בצד ${infoPercent["percentSideNegativ"]} של האוטובוס (בכיוון הנסיעה).`;
     }
 
     document.getElementById('modalTitle').textContent = textToShow1;
